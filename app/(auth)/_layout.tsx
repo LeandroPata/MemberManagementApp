@@ -5,6 +5,7 @@ const Layout = () => {
   return (
     <Stack>
       <Stack.Screen name='home' />
+      <Stack.Screen name='addUser' />
     </Stack>
   )
 }

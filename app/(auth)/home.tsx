@@ -8,7 +8,8 @@ const Home = () => {
     return (
         <View>
             <Text>Welcome back {user?.email}</Text>
-            <Button title='Add member' onPress={() => router.replace('/(auth)/addUser')} />
+            <Button title='Add member' onPress={() => router.push('/(auth)/addMember')} />
+            <Button title='Edit member' onPress={() => router.push('/(auth)/editMember')} />
             <Button title='Sign Out' onPress={() => auth().signOut()} />
         </View>
     )

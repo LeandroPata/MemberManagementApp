@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import {
     View,
     Text,
@@ -7,11 +7,16 @@ import {
     TextInput,
     Button,
     ActivityIndicator
-} from 'react-native'
+} from 'react-native';
+import { FirebaseError } from 'firebase/app';
+//import firebase from '@react-native-firebase/app';
+import firestore, { Timestamp } from '@react-native-firebase/firestore';
+import { router } from 'expo-router';
 
-export default function AddUser() {
+export default function AddMember() {
     const [loading, setLoading] = useState(false);
     const [name, setName] = useState('');
+    const [memberNumber, setMemberNumber] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     //const [addedDate, setAddedDate] = useState('');
@@ -19,9 +24,19 @@ export default function AddUser() {
     const addMember = async () => {
         setLoading(true);
         try {
-            console.log('Added');
-        } catch {
-            console.log('Error')
+            firestore().collection('users').add({
+                name: name,
+                memberNumber: parseInt(memberNumber),
+                email: email,
+                phoneNumber: phone,
+                addedDate: Timestamp.fromDate(new Date()),
+                profilePicture: ''
+            }).then(() => {
+                console.log('Added');
+            });
+        } catch (e: any) {
+            const err = e as FirebaseError;
+            alert('Adding member failed: ' + err.message)
         } finally {
             setLoading(false);
         }
@@ -37,6 +52,14 @@ export default function AddUser() {
                     autoCapitalize='words'
                     keyboardType='default'
                     placeholder="Name"
+                />
+                <TextInput
+                    style={styles.input}
+                    value={memberNumber}
+                    onChangeText={setMemberNumber}
+                    autoCapitalize='none'
+                    keyboardType='numeric'
+                    placeholder="Member Number (leave empty for automatic assignment)"
                 />
                 <TextInput
                     style={styles.input}
@@ -59,7 +82,7 @@ export default function AddUser() {
                 < ActivityIndicator size={'small'} style = {{ margin: 28 }}/>
                 ) : (
                 <>
-                <Button onPress={addMember} title="Add Member" />
+                    <Button onPress={addMember} title="Add Member" />
                 </>
                 )}
             </KeyboardAvoidingView>
@@ -78,7 +101,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderWidth: 1,
     borderRadius: 1,
-    padding: 10,
+    padding: 5,
     backgroundColor: '#ffffff'
   }
 })

@@ -25,50 +25,63 @@ export default function SearchMember() {
     const [selectedId, setSelectedId] = useState<string>();
     
     useEffect(() => {
-        const subscriber = firestore()
-        .collection('users')
-        .onSnapshot(querySnapshot => {
-            const members:any = [];
-            querySnapshot.forEach(documentSnapshot => {
-                members.push({key: documentSnapshot.id,...documentSnapshot.data()});
-                console.log(members)
+        if (searchResults) {
+            setLoading(true);
+            const subscriber = firestore()
+            .collection('users')
+            .where(Filter('name', '==', name))
+            .onSnapshot(querySnapshot => {
+                const members = [];
+                querySnapshot.forEach(documentSnapshot => {
+                    members.push({ key: documentSnapshot.id, ...documentSnapshot.data() });
+                    //console.log(members)
+                });
+                setMembers(members);
+                //console.log(members);
+                setLoading(false);
             });
-            setMembers(members);
-            //setLoading(false);
-        });
-        return () => subscriber();
+            return () => subscriber();
+        }
     }, []);
     
     const searchMember = async () => {
-        //setLoading(true);
+        //console.log(members);
+        setLoading(true);
         
-        const snapshot = await firestore().collection('users')
+        const snapshot = await firestore()
+        .collection('users')
         .where(Filter('name', '==', name)).get()
-        
-        if (snapshot.empty) {
-            console.log('No member found.');
-        } else {
-            snapshot.forEach(userDoc => {
-                console.log('User ID: ', userDoc.id, userDoc.data())
+        .then(querySnapshot => {
+            const members = [];
+            querySnapshot.forEach(documentSnapshot => {
+                members.push({ key: documentSnapshot.id, ...documentSnapshot.data() });
+                //console.log(members)
             });
-            setSearchResults(true);
-        }
+            setMembers(members);
+            console.log(members);
+            if (members.length <= 0) {
+                console.log('No member found.');
+            } else {
+                setSearchResults(true);
+            }
+            
+        });
         
-        //setLoading(false);
+        setLoading(false);
     }
     
     const renderItem = ({ item }) => {
         const backgroundColor = item.key === selectedId ? '#6e3b6e' : '#f9c2ff';
         const color = item.key === selectedId ? 'white' : 'black';
+        console.log(members);
         
         return (
             <Pressable
             style={[styles.item, { backgroundColor }]}
             onPress={() => setSelectedId(item.key)}>
-            <Image style={{width: 50, height: 50, resizeMode: 'contain'}} src={item.profilePicture}/>
+            <Image style={styles.picture} src={item.profilePicture}/>
             <Text style={[styles.title, {color: color}]}>Name: {item.name}</Text>
             <Text style={[styles.title, {color: color}]}>Member Number: {item.memberNumber}</Text>
-            
             </Pressable>
         )};
         
@@ -80,6 +93,7 @@ export default function SearchMember() {
                 renderItem={renderItem}
                 keyExtractor={item => item.key}
                 extraData={selectedId}
+                numColumns={2}
                 />
             ) : (
                 <KeyboardAvoidingView behavior='padding'>
@@ -111,7 +125,9 @@ export default function SearchMember() {
         container: {
             marginHorizontal: 20,
             flex: 1,
-            justifyContent: 'center'
+            justifyContent: 'center',
+            //flexDirection: 'row',
+            //flexWrap: 'wrap'
         },
         input: {
             marginVertical: 4,
@@ -124,11 +140,21 @@ export default function SearchMember() {
             alignContent: 'center'
         },
         item: {
-            padding: 15,
+            //padding: 15,
+            paddingHorizontal: 15,
+            paddingVertical: 5,
             marginVertical: 8,
-            marginHorizontal: 16,
+            marginHorizontal: 8,
+            height: 150,
+            width: 175
         },
         title: {
-            fontSize: 18,
+            fontSize: 15,
         },
+        picture: {
+            width: 100,
+            height: 100,
+            resizeMode: 'contain',
+            alignSelf: 'center'
+        }
     })

@@ -19,7 +19,6 @@ export default function AddMember() {
     const [memberNumber, setMemberNumber] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
-    //const [addedDate, setAddedDate] = useState('');
 
     const addMember = async () => {
         setLoading(true);
@@ -33,6 +32,10 @@ export default function AddMember() {
                 profilePicture: ''
             }).then(() => {
                 console.log('Added');
+                setName('');
+                setMemberNumber('');
+                setEmail('');
+                setPhone('');
             });
         } catch (e: any) {
             const err = e as FirebaseError;

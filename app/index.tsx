@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Text, View, StyleSheet, KeyboardAvoidingView, TextInput, Button, ActivityIndicator } from "react-native";
+import { View, StyleSheet, KeyboardAvoidingView, TextInput, Button, ActivityIndicator } from "react-native";
 import { FirebaseError } from 'firebase/app';
 import auth from '@react-native-firebase/auth';
 

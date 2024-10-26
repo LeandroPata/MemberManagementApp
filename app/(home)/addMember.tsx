@@ -15,7 +15,7 @@ export default function AddMember() {
     const [name, setName] = useState('');
     const [memberNumber, setMemberNumber] = useState('');
     const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
+    const [phoneNumber, setPhone] = useState('');
 
     const addMember = async () => {
         setLoading(true);
@@ -24,7 +24,7 @@ export default function AddMember() {
                 name: name,
                 memberNumber: parseInt(memberNumber),
                 email: email,
-                phoneNumber: phone,
+                phoneNumber: phoneNumber,
                 addedDate: Timestamp.fromDate(new Date()),
                 profilePicture: ''
             }).then(() => {
@@ -71,7 +71,7 @@ export default function AddMember() {
                 />
                 <TextInput
                     style={styles.input}
-                    value={phone}
+                    value={phoneNumber}
                     onChangeText={setPhone}
                     autoCapitalize='none'
                     inputMode='tel'

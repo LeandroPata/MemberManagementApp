@@ -1,5 +1,12 @@
-import { useState } from "react";
-import { View, StyleSheet, KeyboardAvoidingView, TextInput, Button, ActivityIndicator } from "react-native";
+import { useState } from 'react';
+import {
+  View,
+  StyleSheet,
+  KeyboardAvoidingView,
+  TextInput,
+  Button,
+  ActivityIndicator,
+} from 'react-native';
 import { FirebaseError } from 'firebase/app';
 import auth from '@react-native-firebase/auth';
 
@@ -15,61 +22,60 @@ export default function Index() {
       alert('Check your emails!');
     } catch (e: any) {
       const err = e as FirebaseError;
-      alert('Registration failed: ' + err.message)
+      alert('Registration failed: ' + err.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
-  
+
   const signIn = async () => {
     setLoading(true);
     try {
       await auth().signInWithEmailAndPassword(email, password);
     } catch (e: any) {
       const err = e as FirebaseError;
-      alert('Sign in failed: ' + err.message)
+      alert('Sign in failed: ' + err.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <View style={ styles.container }>
-      <KeyboardAvoidingView behavior="padding">
+    <View style={styles.container}>
+      <KeyboardAvoidingView behavior='padding'>
         <TextInput
           style={styles.input}
           value={email}
           onChangeText={setEmail}
-          autoCapitalize="none"
-          keyboardType="email-address"
-          placeholder="Email"
+          autoCapitalize='none'
+          keyboardType='email-address'
+          placeholder='Email'
         />
         <TextInput
           style={styles.input}
           value={password}
           onChangeText={setPassword}
           secureTextEntry
-          placeholder="Password"
+          placeholder='Password'
         />
         {loading ? (
-          < ActivityIndicator size={'small'} style = {{ margin: 28 }}/>
+          <ActivityIndicator size={'small'} style={{ margin: 28 }} />
         ) : (
-        <>
-          <Button onPress={signIn} title="Login" />
-          <Button onPress={signUp} title="Create Account" />
-        </>
+          <>
+            <Button onPress={signIn} title='Login' />
+            <Button onPress={signUp} title='Create Account' />
+          </>
         )}
       </KeyboardAvoidingView>
     </View>
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     marginHorizontal: 20,
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   input: {
     marginVertical: 4,
@@ -77,6 +83,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 1,
     padding: 10,
-    backgroundColor: '#ffffff'
-  }
-})
+    backgroundColor: '#ffffff',
+  },
+});

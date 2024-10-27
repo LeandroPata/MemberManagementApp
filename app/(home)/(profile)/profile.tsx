@@ -80,7 +80,12 @@ export default function Profile() {
       return;
     }
 
-    const result = await ImagePicker.launchCameraAsync();
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsMultipleSelection: false,
+      allowsEditing: true,
+      quality: 0.5,
+    });
 
     console.log(result);
 

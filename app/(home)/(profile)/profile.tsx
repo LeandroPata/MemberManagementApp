@@ -15,6 +15,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FirebaseError } from 'firebase/app';
 import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
 
 export default function Profile() {
@@ -34,6 +35,7 @@ export default function Profile() {
 
   useEffect(() => {
     setLoading(true);
+
     const subscriber = firestore()
       .collection('users')
       .doc(profileID)
@@ -49,6 +51,8 @@ export default function Profile() {
     return () => subscriber();
   }, []);
 
+  const reference = storage().ref(name + '.png');
+
   const pickImage = async () => {
     setPictureModal(false);
     // No permissions request is necessary for launching the image library
@@ -63,17 +67,6 @@ export default function Profile() {
 
     if (!result.canceled) {
       setProfilePicture(result.assets[0].uri);
-    }
-
-    if (result.assets[0].uri != profile.profilePicture) {
-      // Upload picture to Firebase
-    }
-
-    if (
-      profile.profilePicture !=
-      ''
-    ) {
-      // Delete previous picture if it is different from the placeholder
     }
   };
 
@@ -96,8 +89,42 @@ export default function Profile() {
     }
   };
 
+  const uploadPicture = async () => {
+    // Delete previous picture if it is different from the placeholder
+    reference
+      .delete()
+      .then(() => {
+        console.log('File deleted!');
+      })
+      .catch((e: any) => {
+        const err = e as FirebaseError;
+        console.log('File deletion failed: ' + err.message);
+      });
+
+    // Upload picture to Firebase
+    const task = reference.putFile(profilePicture);
+
+    task.on('state_changed', (taskSnapshot) => {
+      console.log(
+        `${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`
+      );
+    });
+
+    task.then(() => {
+      console.log('Image uploaded to the bucket!');
+    });
+
+    //await reference.putFile(result.assets[0].uri);
+    // Get download url
+    const url = await reference.getDownloadURL();
+    setProfilePicture(url);
+  };
+
   const saveMember = async () => {
     setLoading(true);
+
+    await uploadPicture();
+
     try {
       firestore()
         .collection('users')
@@ -114,7 +141,7 @@ export default function Profile() {
         });
     } catch (e: any) {
       const err = e as FirebaseError;
-      alert('Adding member failed: ' + err.message);
+      console.log('Updating member failed: ' + err.message);
     } finally {
       setLoading(false);
     }
@@ -188,7 +215,9 @@ export default function Profile() {
         </KeyboardAvoidingView>
       ) : (
         <View>
-          <Image style={styles.picture} src={profilePicture} />
+          {profilePicture ? (
+            <Image style={styles.picture} src={profilePicture} />
+          ) : null}
           <Text style={styles.title}>Name: {name}</Text>
           <Text style={styles.title}>Member Number: {memberNumber}</Text>
           <Text style={styles.title}>Email: {email}</Text>

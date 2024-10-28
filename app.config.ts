@@ -17,7 +17,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ios: {
     supportsTablet: true,
     bundleIdentifier: "com.leandropata.membermanagementapp",
-    googleServicesFile: "./GoogleService-Info.plist"
+    googleServicesFile: process.env.GOOGLE_SERVICES_PLIST || './GoogleService-Info.plist'
   },
   android: {
     adaptiveIcon: {
@@ -25,7 +25,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       backgroundColor: "#ffffff"
     },
     package: "com.leandropata.membermanagementapp",
-    googleServicesFile: "./google-services.json"
+    googleServicesFile: process.env.GOOGLE_SERVICES_JSON || './google-services.json'
   },
   web: {
     bundler: "metro",

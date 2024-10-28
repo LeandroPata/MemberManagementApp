@@ -19,6 +19,7 @@ export default function AddMember() {
 
   const addMember = async () => {
     setLoading(true);
+    console.log(process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL);
     try {
       firestore()
         .collection('users')
@@ -28,8 +29,7 @@ export default function AddMember() {
           email: email,
           phoneNumber: phoneNumber,
           addedDate: Timestamp.fromDate(new Date()),
-          profilePicture:
-            '',
+          profilePicture: process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL,
         })
         .then(() => {
           console.log('Added');

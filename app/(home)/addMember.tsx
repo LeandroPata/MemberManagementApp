@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
+import { parse } from '@babel/core';
 
 export default function AddMember() {
   const [loading, setLoading] = useState(false);
@@ -17,15 +18,43 @@ export default function AddMember() {
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhone] = useState('');
 
+  let minNumber = 0;
+
+  const assignMemberNumber = async () => {
+    await firestore()
+      .collection('users')
+      .orderBy('memberNumber', 'asc')
+      .get()
+      .then((querySnapshot) => {
+        let i = 1;
+        querySnapshot.forEach((documentSnapshot) => {
+          if (i == documentSnapshot.data().memberNumber) {
+            i = documentSnapshot.data().memberNumber + 1;
+            console.log(i);
+          }
+        });
+        //setMemberNumber(minNumber.toString());
+        minNumber = i;
+        console.log(minNumber);
+      });
+  };
+
   const addMember = async () => {
     setLoading(true);
-    console.log(process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL);
+
+    if (!memberNumber && !memberNumber.trim()) {
+      await assignMemberNumber();
+    } else {
+      minNumber = parseInt(memberNumber);
+    }
+    console.log(memberNumber);
+    console.log(minNumber);
     try {
       firestore()
         .collection('users')
         .add({
           name: name,
-          memberNumber: parseInt(memberNumber),
+          memberNumber: minNumber,
           email: email,
           phoneNumber: phoneNumber,
           addedDate: Timestamp.fromDate(new Date()),
@@ -35,6 +64,7 @@ export default function AddMember() {
           console.log('Added');
           setName('');
           setMemberNumber('');
+          minNumber = 0;
           setEmail('');
           setPhone('');
         });

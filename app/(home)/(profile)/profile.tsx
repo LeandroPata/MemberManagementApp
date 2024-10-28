@@ -135,9 +135,9 @@ export default function Profile() {
         .collection('users')
         .doc(profileID)
         .update({
-          name: name,
+          name: name.trim(),
           memberNumber: memberNumber,
-          email: email,
+          email: email.trim(),
           phoneNumber: phoneNumber,
           profilePicture: profilePicture,
         })

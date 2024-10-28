@@ -30,32 +30,30 @@ export default function AddMember() {
         querySnapshot.forEach((documentSnapshot) => {
           if (i == documentSnapshot.data().memberNumber) {
             i = documentSnapshot.data().memberNumber + 1;
-            console.log(i);
+            //console.log(i);
           }
         });
         //setMemberNumber(minNumber.toString());
         minNumber = i;
-        console.log(minNumber);
       });
   };
 
   const addMember = async () => {
     setLoading(true);
 
-    if (!memberNumber && !memberNumber.trim()) {
+    if (!memberNumber.trim()) {
       await assignMemberNumber();
     } else {
       minNumber = parseInt(memberNumber);
     }
-    console.log(memberNumber);
-    console.log(minNumber);
+
     try {
       firestore()
         .collection('users')
         .add({
-          name: name,
+          name: name.trim(),
           memberNumber: minNumber,
-          email: email,
+          email: email.trim(),
           phoneNumber: phoneNumber,
           addedDate: Timestamp.fromDate(new Date()),
           profilePicture: process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL,

@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
-import { parse } from '@babel/core';
 
 export default function AddMember() {
   const [loading, setLoading] = useState(false);
@@ -40,6 +39,12 @@ export default function AddMember() {
 
   const addMember = async () => {
     setLoading(true);
+
+    if (!name.trim()) {
+      alert('Name is mandatory!');
+      setLoading(false);
+      return;
+    }
 
     if (!memberNumber.trim()) {
       await assignMemberNumber();
@@ -78,7 +83,10 @@ export default function AddMember() {
     <View style={styles.container}>
       <KeyboardAvoidingView behavior='padding'>
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            { borderColor: !name.trim() ? '#ee1311' : '#000000' },
+          ]}
           value={name}
           onChangeText={setName}
           autoCapitalize='words'

@@ -133,7 +133,6 @@ export default function SearchMember() {
           }
         });
     }
-
     setLoading(false);
   };
 

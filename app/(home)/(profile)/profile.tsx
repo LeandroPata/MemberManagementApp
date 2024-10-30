@@ -109,6 +109,7 @@ export default function Profile() {
           const err = e as FirebaseError;
           alert('File deletion failed: ' + err.message);
           console.log('File deletion failed: ' + err.message);
+          setLoading(false);
         });
 
       // Upload picture to Firebase if it is different from the placeholder
@@ -121,10 +122,17 @@ export default function Profile() {
         );
       });
 
-      task.then(() => {
-        console.log('Image uploaded to the bucket!');
-        alert('Image uploaded to the bucket!');
-      });
+      task
+        .then(() => {
+          console.log('Image uploaded to the bucket!');
+          alert('Image uploaded to the bucket!');
+        })
+        .catch((e: any) => {
+          const err = e as FirebaseError;
+          alert('File upload failed: ' + err.message);
+          console.log('File upload failed: ' + err.message);
+          setLoading(false);
+        });
 
       //await reference.putFile(result.assets[0].uri);
       // Get download url
@@ -180,6 +188,7 @@ export default function Profile() {
       const err = e as FirebaseError;
       alert('Updating member failed: ' + err.message);
       console.log('Updating member failed: ' + err.message);
+      setLoading(false);
     } finally {
       setLoading(false);
     }

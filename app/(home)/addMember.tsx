@@ -75,6 +75,7 @@ export default function AddMember() {
       const err = e as FirebaseError;
       console.log('Adding member failed: ' + err.message);
       alert('Adding member failed: ' + err.message);
+      setLoading(false);
     } finally {
       setLoading(false);
     }

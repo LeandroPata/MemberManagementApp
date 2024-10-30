@@ -96,39 +96,69 @@ export default function Profile() {
 
   const uploadPicture = async () => {
     // Delete previous picture if it is different from the placeholder
-    reference
-      .delete()
-      .then(() => {
-        console.log('File deleted!');
-      })
-      .catch((e: any) => {
-        const err = e as FirebaseError;
-        console.log('File deletion failed: ' + err.message);
+    if (
+      profilePicture &&
+      profilePicture != process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL
+    ) {
+      reference
+        .delete()
+        .then(() => {
+          console.log('File deleted!');
+        })
+        .catch((e: any) => {
+          const err = e as FirebaseError;
+          console.log('File deletion failed: ' + err.message);
+        });
+
+      // Upload picture to Firebase if it is different from the placeholder
+
+      const task = reference.putFile(profilePicture);
+
+      task.on('state_changed', (taskSnapshot) => {
+        console.log(
+          `${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`
+        );
       });
 
-    // Upload picture to Firebase
-    const task = reference.putFile(profilePicture);
+      task.then(() => {
+        console.log('Image uploaded to the bucket!');
+      });
 
-    task.on('state_changed', (taskSnapshot) => {
-      console.log(
-        `${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`
-      );
-    });
+      //await reference.putFile(result.assets[0].uri);
+      // Get download url
+      const url = await reference.getDownloadURL();
+      setProfilePicture(url);
+    }
+  };
 
-    task.then(() => {
-      console.log('Image uploaded to the bucket!');
-    });
-
-    //await reference.putFile(result.assets[0].uri);
-    // Get download url
-    const url = await reference.getDownloadURL();
-    setProfilePicture(url);
+  const checkNumber = async () => {
+    let numberAvailable = true;
+    const snapshot = await firestore()
+      .collection('users')
+      .orderBy('memberNumber', 'asc')
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((documentSnapshot) => {
+          if (memberNumber == documentSnapshot.data().memberNumber) {
+            numberAvailable = false;
+            console.log('Number unavailable!');
+          }
+        });
+      });
+    //console.log('Result: ' + numberAvailable);
+    return numberAvailable;
   };
 
   const saveMember = async () => {
     setLoading(true);
-
     await uploadPicture();
+
+    const numberAvailable = await checkNumber();
+    if (!numberAvailable) {
+      alert('This member number is already attributed to another member!');
+      setLoading(false);
+      return;
+    }
 
     try {
       firestore()
@@ -136,7 +166,7 @@ export default function Profile() {
         .doc(profileID)
         .update({
           name: name.trim(),
-          memberNumber: memberNumber,
+          memberNumber: parseInt(memberNumber),
           email: email.trim(),
           phoneNumber: phoneNumber,
           profilePicture: profilePicture,

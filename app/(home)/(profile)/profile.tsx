@@ -107,6 +107,7 @@ export default function Profile() {
         })
         .catch((e: any) => {
           const err = e as FirebaseError;
+          alert('File deletion failed: ' + err.message);
           console.log('File deletion failed: ' + err.message);
         });
 
@@ -122,6 +123,7 @@ export default function Profile() {
 
       task.then(() => {
         console.log('Image uploaded to the bucket!');
+        alert('Image uploaded to the bucket!');
       });
 
       //await reference.putFile(result.assets[0].uri);
@@ -172,10 +174,11 @@ export default function Profile() {
           profilePicture: profilePicture,
         })
         .then(() => {
-          console.log('Member Updated');
+          alert('Member Updated!');
         });
     } catch (e: any) {
       const err = e as FirebaseError;
+      alert('Updating member failed: ' + err.message);
       console.log('Updating member failed: ' + err.message);
     } finally {
       setLoading(false);

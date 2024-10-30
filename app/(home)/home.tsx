@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     flex: 1,
     justifyContent: 'center',
+    padding: 10,
   },
   input: {
     marginVertical: 4,

@@ -113,7 +113,7 @@ export default function SearchMember() {
 
     if (!name.trim() && !memberNumber.trim()) {
       console.log('None');
-      const subscriber = firestore()
+      const snapshot = firestore()
         .collection('users')
         .orderBy('name', 'asc')
         .get()
@@ -129,7 +129,6 @@ export default function SearchMember() {
           //console.log(members);
         });
       setLoading(false);
-      return () => subscriber();
     } else if (name && name.trim() && memberNumber && memberNumber.trim()) {
       console.log('Both');
       const snapshot = await firestore()

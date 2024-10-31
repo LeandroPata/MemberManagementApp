@@ -100,7 +100,7 @@ export default function Profile() {
       profilePicture &&
       profilePicture != process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL
     ) {
-      reference
+      await reference
         .delete()
         .then(() => {
           console.log('File deleted!');
@@ -142,7 +142,7 @@ export default function Profile() {
   };
 
   const checkNumber = async () => {
-    let numberAvailable = true;
+    let numberAvailable = 1;
     const snapshot = await firestore()
       .collection('users')
       .orderBy('memberNumber', 'asc')
@@ -150,7 +150,7 @@ export default function Profile() {
       .then((querySnapshot) => {
         querySnapshot.forEach((documentSnapshot) => {
           if (memberNumber == documentSnapshot.data().memberNumber) {
-            numberAvailable = false;
+            numberAvailable++;
             console.log('Number unavailable!');
           }
         });
@@ -163,11 +163,13 @@ export default function Profile() {
     setLoading(true);
     await uploadPicture();
 
-    const numberAvailable = await checkNumber();
-    if (!numberAvailable) {
-      alert('This member number is already attributed to another member!');
-      setLoading(false);
-      return;
+    if (memberNumber != profile.memberNumber) {
+      const numberAvailable = await checkNumber();
+      if (numberAvailable > 1) {
+        alert('This member number is already attributed to another member!');
+        setLoading(false);
+        return;
+      }
     }
 
     try {
@@ -263,7 +265,9 @@ export default function Profile() {
       ) : (
         <View>
           {profilePicture ? (
-            <Image style={styles.picture} src={profilePicture} />
+            <>
+              <Image style={styles.picture} src={profilePicture} />
+            </>
           ) : null}
           <Text style={styles.title}>Name: {name}</Text>
           <Text style={styles.title}>Member Number: {memberNumber}</Text>

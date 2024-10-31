@@ -1,21 +1,26 @@
 import React, { useState } from 'react';
 import {
   View,
+  Text,
   StyleSheet,
   KeyboardAvoidingView,
   TextInput,
   Button,
   ActivityIndicator,
 } from 'react-native';
+import DatePicker from 'react-native-date-picker';
 import { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
 
 export default function AddMember() {
   const [loading, setLoading] = useState(false);
+  const [openDate, setOpenDate] = useState(false);
+
   const [name, setName] = useState('');
   const [memberNumber, setMemberNumber] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhone] = useState('');
+  const [endDate, setEndDate] = useState(new Date());
 
   let minNumber = 0;
 
@@ -61,6 +66,7 @@ export default function AddMember() {
           email: email.trim(),
           phoneNumber: phoneNumber,
           addedDate: Timestamp.fromDate(new Date()),
+          endDate: Timestamp.fromDate(endDate),
           profilePicture: process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL,
         })
         .then(() => {
@@ -70,6 +76,7 @@ export default function AddMember() {
           minNumber = 0;
           setEmail('');
           setPhone('');
+          setEndDate(new Date());
         });
     } catch (e: any) {
       const err = e as FirebaseError;
@@ -119,6 +126,22 @@ export default function AddMember() {
           inputMode='tel'
           keyboardType='phone-pad'
           placeholder='Phone Number'
+        />
+        <Text>{endDate.toLocaleDateString('pt-pt')}</Text>
+        <Button title='Set End Date' onPress={() => setOpenDate(true)} />
+        <DatePicker
+          modal
+          mode='date'
+          locale='pt-pt'
+          open={openDate}
+          date={endDate}
+          onConfirm={(endDate) => {
+            setOpenDate(false);
+            setEndDate(endDate);
+          }}
+          onCancel={() => {
+            setOpenDate(false);
+          }}
         />
         {loading ? (
           <ActivityIndicator size={'small'} style={{ margin: 28 }} />

@@ -222,10 +222,7 @@ export default function Profile() {
       >
         <View style={styles.container}>
           <View style={styles.modalContainer}>
-            <Button
-              title='Pick an image from camera roll'
-              onPress={pickImage}
-            />
+            <Button title='Pick an image from gallery' onPress={pickImage} />
             <Button title='Take Picture' onPress={takePicture} />
           </View>
         </View>

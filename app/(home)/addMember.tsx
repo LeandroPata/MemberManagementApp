@@ -11,8 +11,10 @@ import {
 import DatePicker from 'react-native-date-picker';
 import { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function AddMember() {
+  const insets = useSafeAreaInsets();
   const [loading, setLoading] = useState(false);
   const [dateModal, setDateModal] = useState(false);
 
@@ -89,7 +91,7 @@ export default function AddMember() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <KeyboardAvoidingView behavior='padding'>
         <TextInput
           style={[

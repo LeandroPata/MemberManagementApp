@@ -14,10 +14,13 @@ import {
 } from 'react-native';
 import firestore, { Filter } from '@react-native-firebase/firestore';
 import { router } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function SearchMember() {
   const [loading, setLoading] = useState(false);
   const [searchResults, setSearchResults] = useState(false);
+  const insets = useSafeAreaInsets();
+
   const [name, setName] = useState('');
   const [memberNumber, setMemberNumber] = useState('');
   const [members, setMembers] = useState([]);
@@ -127,6 +130,11 @@ export default function SearchMember() {
           });
           setMembers(members);
           //console.log(members);
+          if (members.length <= 0) {
+            console.log('No member found.');
+          } else {
+            setSearchResults(true);
+          }
         });
       setLoading(false);
     } else if (name && name.trim() && memberNumber && memberNumber.trim()) {
@@ -241,7 +249,7 @@ export default function SearchMember() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <KeyboardAvoidingView behavior='padding'>
         <TextInput
           style={styles.input}

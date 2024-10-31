@@ -2,11 +2,14 @@ import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { router } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Home() {
+  const insets = useSafeAreaInsets();
   const user = auth().currentUser;
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <Text>Welcome back {user?.email}</Text>
       <Button
         title='Add member'

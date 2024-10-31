@@ -98,7 +98,8 @@ export default function Profile() {
     // Delete previous picture if it is different from the placeholder
     if (
       profilePicture &&
-      profilePicture != process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL
+      profilePicture != process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL &&
+      profilePicture != profile.profilePicture
     ) {
       await reference
         .delete()
@@ -122,7 +123,7 @@ export default function Profile() {
         );
       });
 
-      task
+      await task
         .then(() => {
           console.log('Image uploaded to the bucket!');
           alert('Image uploaded to the bucket!');
@@ -137,39 +138,43 @@ export default function Profile() {
       //await reference.putFile(result.assets[0].uri);
       // Get download url
       const url = await reference.getDownloadURL();
+      console.log(url);
       setProfilePicture(url);
+      return url;
     }
+    return null;
   };
 
   const checkNumber = async () => {
     let numberAvailable = 1;
-    const snapshot = await firestore()
-      .collection('users')
-      .orderBy('memberNumber', 'asc')
-      .get()
-      .then((querySnapshot) => {
-        querySnapshot.forEach((documentSnapshot) => {
-          if (memberNumber == documentSnapshot.data().memberNumber) {
-            numberAvailable++;
-            console.log('Number unavailable!');
-          }
+    if (memberNumber != profile.memberNumber) {
+      const snapshot = await firestore()
+        .collection('users')
+        .orderBy('memberNumber', 'asc')
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((documentSnapshot) => {
+            if (memberNumber == documentSnapshot.data().memberNumber) {
+              numberAvailable++;
+              console.log('Number unavailable!');
+            }
+          });
         });
-      });
+    }
     //console.log('Result: ' + numberAvailable);
     return numberAvailable;
   };
 
   const saveMember = async () => {
     setLoading(true);
-    await uploadPicture();
 
-    if (memberNumber != profile.memberNumber) {
-      const numberAvailable = await checkNumber();
-      if (numberAvailable > 1) {
-        alert('This member number is already attributed to another member!');
-        setLoading(false);
-        return;
-      }
+    const url = await uploadPicture();
+
+    const numberAvailable = await checkNumber();
+    if (numberAvailable > 1) {
+      alert('This member number is already attributed to another member!');
+      setLoading(false);
+      return;
     }
 
     try {
@@ -181,7 +186,7 @@ export default function Profile() {
           memberNumber: parseInt(memberNumber),
           email: email.trim(),
           phoneNumber: phoneNumber,
-          profilePicture: profilePicture,
+          profilePicture: url ? url : profilePicture,
         })
         .then(() => {
           alert('Member Updated!');

@@ -14,7 +14,7 @@ import firestore, { Timestamp } from '@react-native-firebase/firestore';
 
 export default function AddMember() {
   const [loading, setLoading] = useState(false);
-  const [openDate, setOpenDate] = useState(false);
+  const [dateModal, setDateModal] = useState(false);
 
   const [name, setName] = useState('');
   const [memberNumber, setMemberNumber] = useState('');
@@ -128,19 +128,19 @@ export default function AddMember() {
           placeholder='Phone Number'
         />
         <Text>{endDate.toLocaleDateString('pt-pt')}</Text>
-        <Button title='Set End Date' onPress={() => setOpenDate(true)} />
+        <Button title='Set End Date' onPress={() => setDateModal(true)} />
         <DatePicker
           modal
           mode='date'
           locale='pt-pt'
-          open={openDate}
+          open={dateModal}
           date={endDate}
           onConfirm={(endDate) => {
-            setOpenDate(false);
+            setDateModal(false);
             setEndDate(endDate);
           }}
           onCancel={() => {
-            setOpenDate(false);
+            setDateModal(false);
           }}
         />
         {loading ? (

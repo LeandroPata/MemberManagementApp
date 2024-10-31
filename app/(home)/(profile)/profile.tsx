@@ -14,9 +14,10 @@ import React, { useEffect, useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FirebaseError } from 'firebase/app';
-import firestore from '@react-native-firebase/firestore';
+import firestore, { Timestamp } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
+import DatePicker from 'react-native-date-picker';
 
 export default function Profile() {
   const { profileID } = useLocalSearchParams();
@@ -26,11 +27,13 @@ export default function Profile() {
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false);
   const [pictureModal, setPictureModal] = useState(false);
+  const [dateModal, setDateModal] = useState(false);
 
   const [name, setName] = useState('');
   const [memberNumber, setMemberNumber] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhone] = useState('');
+  const [endDate, setEndDate] = useState(new Date());
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
 
   useEffect(() => {
@@ -40,18 +43,21 @@ export default function Profile() {
       .collection('users')
       .doc(profileID)
       .onSnapshot((documentSnapshot) => {
-        setProfile(documentSnapshot.data());
-        setName(documentSnapshot.data().name);
-        setMemberNumber(documentSnapshot.data().memberNumber);
-        setEmail(documentSnapshot.data().email);
-        setPhone(documentSnapshot.data().phoneNumber);
-        setProfilePicture(documentSnapshot.data().profilePicture);
+        if (documentSnapshot) {
+          setProfile(documentSnapshot.data());
+          setName(documentSnapshot.data().name);
+          setMemberNumber(documentSnapshot.data().memberNumber);
+          setEmail(documentSnapshot.data().email);
+          setPhone(documentSnapshot.data().phoneNumber);
+          setEndDate(new Date(documentSnapshot.data().endDate.toDate()));
+          setProfilePicture(documentSnapshot.data().profilePicture);
+        }
       });
     setLoading(false);
     return () => subscriber();
   }, []);
 
-  const reference = storage().ref(name + '.png');
+  const reference = storage().ref(name + '.jpg');
 
   const pickImage = async () => {
     setPictureModal(false);
@@ -61,6 +67,7 @@ export default function Profile() {
       allowsMultipleSelection: false,
       allowsEditing: true,
       quality: 0.5,
+      aspect: [3, 4],
     });
 
     console.log(result);
@@ -85,6 +92,7 @@ export default function Profile() {
       allowsMultipleSelection: false,
       allowsEditing: true,
       quality: 0.5,
+      aspect: [3, 4],
     });
 
     console.log(result);
@@ -186,6 +194,7 @@ export default function Profile() {
           memberNumber: parseInt(memberNumber),
           email: email.trim(),
           phoneNumber: phoneNumber,
+          endDate: Timestamp.fromDate(endDate),
           profilePicture: url ? url : profilePicture,
         })
         .then(() => {
@@ -265,6 +274,22 @@ export default function Profile() {
             keyboardType='phone-pad'
             placeholder='Phone Number'
           />
+          <Text>{endDate.toLocaleDateString('pt-pt')}</Text>
+          <Button title='Set End Date' onPress={() => setDateModal(true)} />
+          <DatePicker
+            modal
+            mode='date'
+            locale='pt-pt'
+            open={dateModal}
+            date={endDate}
+            onConfirm={(endDate) => {
+              setDateModal(false);
+              setEndDate(endDate);
+            }}
+            onCancel={() => {
+              setDateModal(false);
+            }}
+          />
           <Button onPress={saveMember} title='Save' />
         </KeyboardAvoidingView>
       ) : (
@@ -281,6 +306,9 @@ export default function Profile() {
           <Text style={styles.title}>
             Added Date:{' '}
             {new Date(profile.addedDate.toDate()).toLocaleDateString('pt-pt')}
+          </Text>
+          <Text style={styles.title}>
+            End Date: {endDate.toLocaleDateString('pt-pt')}
           </Text>
           <Button
             onPress={() => {

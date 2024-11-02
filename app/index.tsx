@@ -24,7 +24,6 @@ export default function Index() {
 
   const signUp = async () => {
     setLoading(true);
-    setConfirmModal(true);
 
     if (!email.trim() && !password.trim()) {
       alert('Email and password fields are empty!');
@@ -44,15 +43,7 @@ export default function Index() {
       return;
     }
 
-    try {
-      await auth().createUserWithEmailAndPassword(email, password);
-    } catch (e: any) {
-      const err = e as FirebaseError;
-      alert('Registration failed: ' + err.message);
-      console.log('Registration failed: ' + err.message);
-    } finally {
-      setLoading(false);
-    }
+    setConfirmModal(true);
   };
 
   const signIn = async () => {
@@ -86,33 +77,53 @@ export default function Index() {
     }
   };
 
+  const confirmSignUp = async () => {
+    if (!confirmPassword.trim()) {
+      alert('Confirm password field is empty!');
+      setLoading(false);
+      setConfirmModal(false);
+      return;
+    } else if (password != confirmPassword) {
+      alert('Passwords do not match!');
+      setLoading(false);
+      setConfirmModal(false);
+      return;
+    }
+
+    try {
+      await auth().createUserWithEmailAndPassword(email, password);
+    } catch (e: any) {
+      const err = e as FirebaseError;
+      alert('Registration failed: ' + err.message);
+      console.log('Registration failed: ' + err.message);
+    } finally {
+      setLoading(false);
+      setConfirmModal(false);
+    }
+  };
+
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
+      <Modal
+        animationType='fade'
+        transparent={true}
+        visible={confirmModal}
+        onRequestClose={() => {
+          setConfirmModal(false);
+        }}
+      >
+        <View style={styles.modalContainer}>
+          <TextInput
+            style={styles.inputModal}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry
+            placeholder='Confirm Password'
+          />
+          <Button title='Confirm' onPress={confirmSignUp} />
+        </View>
+      </Modal>
       <KeyboardAvoidingView behavior='padding'>
-        <Modal
-          animationType='fade'
-          transparent={true}
-          visible={confirmModal}
-          onRequestClose={() => {
-            setConfirmModal(false);
-          }}
-        >
-          <View style={styles.modalContainer}>
-            <TextInput
-              style={styles.input}
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              secureTextEntry
-              placeholder='Confirm Password'
-            />
-            <Button
-              title='Confirm'
-              onPress={() => {
-                setConfirmModal(false);
-              }}
-            />
-          </View>
-        </Modal>
         <TextInput
           style={styles.input}
           value={email}
@@ -120,6 +131,7 @@ export default function Index() {
           autoCapitalize='none'
           keyboardType='email-address'
           placeholder='Email'
+          returnKeyType='next'
         />
         <TextInput
           style={styles.input}
@@ -147,17 +159,35 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  modalContainer: {
-    flex: 1,
-    alignContent: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-    //alignSelf: 'center',
-    width: '75%',
-    height: '50%',
-  },
   input: {
     marginVertical: 4,
+    height: 50,
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+    backgroundColor: '#ffffff',
+  },
+  modalContainer: {
+    backgroundColor: '#ffffff',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 20,
+    marginVertical: 100,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  inputModal: {
+    //marginVertical: 4,
+
+    width: '75%',
     height: 50,
     borderWidth: 1,
     borderRadius: 10,

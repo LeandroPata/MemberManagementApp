@@ -1,21 +1,23 @@
 import { useState } from 'react';
 import {
-  View,
-  Text,
   StyleSheet,
   KeyboardAvoidingView,
+  ActivityIndicator,
+} from 'react-native';
+import {
+  PaperProvider,
+  Portal,
+  Modal,
   TextInput,
   Button,
-  ActivityIndicator,
-  Modal,
-} from 'react-native';
+} from 'react-native-paper';
 import { FirebaseError } from 'firebase/app';
 import auth from '@react-native-firebase/auth';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Index() {
   const [loading, setLoading] = useState(false);
-  const [confirmModal, setConfirmModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const insets = useSafeAreaInsets();
 
   const [email, setEmail] = useState('');
@@ -43,7 +45,7 @@ export default function Index() {
       return;
     }
 
-    setConfirmModal(true);
+    setShowModal(true);
   };
 
   const signIn = async () => {
@@ -81,12 +83,12 @@ export default function Index() {
     if (!confirmPassword.trim()) {
       alert('Confirm password field is empty!');
       setLoading(false);
-      setConfirmModal(false);
+      setShowModal(false);
       return;
     } else if (password != confirmPassword) {
       alert('Passwords do not match!');
       setLoading(false);
-      setConfirmModal(false);
+      setShowModal(false);
       return;
     }
 
@@ -98,58 +100,71 @@ export default function Index() {
       console.log('Registration failed: ' + err.message);
     } finally {
       setLoading(false);
-      setConfirmModal(false);
+      setShowModal(false);
     }
   };
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <Modal
-        animationType='fade'
-        transparent={true}
-        visible={confirmModal}
-        onRequestClose={() => {
-          setConfirmModal(false);
-        }}
-      >
-        <View style={styles.modalContainer}>
+    <PaperProvider>
+      <Portal>
+        <Modal
+          visible={showModal}
+          onDismiss={() => {
+            setLoading(false);
+            setShowModal(false);
+          }}
+          contentContainerStyle={styles.modalContainerTest}
+        >
           <TextInput
-            style={styles.inputModal}
+            style={styles.input}
+            label='Confirm Password'
             value={confirmPassword}
-            onChangeText={setConfirmPassword}
+            onChangeText={(confirmPassword) =>
+              setConfirmPassword(confirmPassword)
+            }
+            //error={true}
             secureTextEntry
-            placeholder='Confirm Password'
           />
           <Button title='Confirm' onPress={confirmSignUp} />
-        </View>
-      </Modal>
-      <KeyboardAvoidingView behavior='padding'>
+        </Modal>
+      </Portal>
+      <KeyboardAvoidingView style={styles.container} behavior='padding'>
         <TextInput
           style={styles.input}
+          label='Email'
           value={email}
-          onChangeText={setEmail}
+          onChangeText={(email) => setEmail(email)}
+          //error={true}
           autoCapitalize='none'
           keyboardType='email-address'
-          placeholder='Email'
           returnKeyType='next'
         />
         <TextInput
           style={styles.input}
+          label='Password'
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(password) => setPassword(password)}
+          //error={true}
           secureTextEntry
-          placeholder='Password'
         />
-        {loading ? (
-          <ActivityIndicator size={'small'} style={{ margin: 28 }} />
-        ) : (
-          <>
-            <Button onPress={signIn} title='Login' />
-            <Button onPress={signUp} title='Create Account' />
-          </>
-        )}
+        <Button
+          style={styles.button}
+          mode='elevated'
+          loading={loading}
+          onPress={signIn}
+        >
+          Login
+        </Button>
+        <Button
+          style={styles.button}
+          mode='elevated'
+          loading={loading}
+          onPress={signUp}
+        >
+          Create Account
+        </Button>
       </KeyboardAvoidingView>
-    </View>
+    </PaperProvider>
   );
 }
 
@@ -160,12 +175,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   input: {
-    marginVertical: 4,
-    height: 50,
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-    backgroundColor: '#ffffff',
+    marginVertical: 2,
+  },
+  button: {
+    marginVertical: 3,
   },
   modalContainer: {
     backgroundColor: '#ffffff',
@@ -184,9 +197,12 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  modalContainerTest: {
+    backgroundColor: '#ffffff',
+    padding: 15,
+  },
   inputModal: {
     //marginVertical: 4,
-
     width: '75%',
     height: 50,
     borderWidth: 1,

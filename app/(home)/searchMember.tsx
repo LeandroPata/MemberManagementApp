@@ -4,14 +4,12 @@ import {
   Text,
   StyleSheet,
   KeyboardAvoidingView,
-  TextInput,
-  Button,
-  ActivityIndicator,
   FlatList,
   Pressable,
   Image,
   Keyboard,
 } from 'react-native';
+import { Button, PaperProvider, TextInput } from 'react-native-paper';
 import firestore, { Filter } from '@react-native-firebase/firestore';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -249,70 +247,78 @@ export default function SearchMember() {
   };
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <KeyboardAvoidingView behavior='padding'>
-        <TextInput
-          style={styles.input}
-          value={name}
-          onChangeText={setName}
-          autoCapitalize='words'
-          keyboardType='default'
-          placeholder='Name'
-        />
-        <TextInput
-          style={styles.input}
-          value={memberNumber}
-          onChangeText={setMemberNumber}
-          autoCapitalize='none'
-          keyboardType='numeric'
-          placeholder='Member Number'
-        />
-
-        {loading ? (
-          <ActivityIndicator size={'small'} style={{ margin: 28 }} />
-        ) : (
-          <>
-            <Button onPress={searchMember} title='Search Member' />
-          </>
+    <PaperProvider>
+      <View style={[styles.container, { paddingTop: insets.top }]}>
+        <KeyboardAvoidingView behavior='padding'>
+          <TextInput
+            style={styles.input}
+            value={name}
+            onChangeText={setName}
+            autoCapitalize='words'
+            keyboardType='default'
+            label='Name'
+          />
+          <TextInput
+            style={styles.input}
+            value={memberNumber}
+            onChangeText={setMemberNumber}
+            autoCapitalize='none'
+            keyboardType='numeric'
+            label='Member Number'
+          />
+          <Button
+            style={styles.button}
+            mode='elevated'
+            loading={loading}
+            onPress={searchMember}
+          >
+            Search Member
+          </Button>
+        </KeyboardAvoidingView>
+        {!members ? null : (
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: 10,
+            }}
+          >
+            <View style={{ width: '48%' }}>
+              <Button
+                style={styles.button}
+                mode='elevated'
+                onPress={() => {
+                  console.log('Order by name');
+                  orderMembersName();
+                }}
+              >
+                Order by name
+              </Button>
+            </View>
+            <View style={{ width: '48%' }}>
+              <Button
+                style={styles.button}
+                mode='elevated'
+                onPress={() => {
+                  console.log('Order by member number');
+                  orderMembersNumber();
+                }}
+              >
+                Order by member number
+              </Button>
+            </View>
+          </View>
         )}
-      </KeyboardAvoidingView>
-      {!members ? null : (
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: 10,
-          }}
-        >
-          <View style={{ width: '45%' }}>
-            <Button
-              onPress={() => {
-                console.log('Order by name');
-                orderMembersName();
-              }}
-              title='Order by name'
-            />
-          </View>
-          <View style={{ width: '45%' }}>
-            <Button
-              onPress={() => {
-                console.log('Order by member number');
-                orderMembersNumber();
-              }}
-              title='Order by member number'
-            />
-          </View>
-        </View>
-      )}
-      <FlatList
-        data={members}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.key}
-        extraData={refreshFlatlist}
-        numColumns={2}
-      />
-    </View>
+        <FlatList
+          data={members}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.key}
+          extraData={refreshFlatlist}
+          numColumns={2}
+        />
+      </View>
+    </PaperProvider>
   );
 }
 
@@ -321,27 +327,21 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     flex: 1,
     justifyContent: 'center',
-    //flexDirection: 'row',
-    //flexWrap: 'wrap'
   },
   input: {
-    marginVertical: 4,
-    height: 50,
-    borderWidth: 1,
-    borderRadius: 1,
-    padding: 5,
-    backgroundColor: '#ffffff',
-    justifyContent: 'center',
-    alignContent: 'center',
+    marginVertical: 2,
+  },
+  button: {
+    marginVertical: 3,
   },
   item: {
     //padding: 15,
     paddingHorizontal: 15,
     paddingVertical: 5,
-    marginVertical: 8,
+    marginVertical: 5,
     marginHorizontal: 8,
     height: 150,
-    width: 175,
+    width: '45%',
     backgroundColor: '#0e8df2',
   },
   title: {

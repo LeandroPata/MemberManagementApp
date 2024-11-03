@@ -16,7 +16,9 @@ import auth from '@react-native-firebase/auth';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Index() {
-  const [loading, setLoading] = useState(false);
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [signupLoading, setSignupLoading] = useState(false);
+  const [confirmSignupLoading, setConfirmSignupLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const insets = useSafeAreaInsets();
 
@@ -25,69 +27,41 @@ export default function Index() {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const signUp = async () => {
-    setLoading(true);
+    setSignupLoading(true);
 
     if (!email.trim() && !password.trim()) {
       alert('Email and password fields are empty!');
-      setLoading(false);
+      setSignupLoading(false);
       return;
     } else if (!email.trim()) {
       alert('Email field is empty!');
-      setLoading(false);
+      setSignupLoading(false);
       return;
     } else if (!password.trim()) {
       alert('Password field is empty!');
-      setLoading(false);
+      setSignupLoading(false);
       return;
     } else if (!email.includes('@') || !email.includes('.')) {
       alert('Email is in the wrong format!');
-      setLoading(false);
+      setSignupLoading(false);
       return;
     }
 
     setShowModal(true);
   };
 
-  const signIn = async () => {
-    setLoading(true);
-    if (!email.trim() && !password.trim()) {
-      alert('Email and password fields are empty!');
-      setLoading(false);
-      return;
-    } else if (!email.trim()) {
-      alert('Email field is empty!');
-      setLoading(false);
-      return;
-    } else if (!password.trim()) {
-      alert('Password field is empty!');
-      setLoading(false);
-      return;
-    } else if (!email.includes('@') || !email.includes('.')) {
-      alert('Email is in the wrong format!');
-      setLoading(false);
-      return;
-    }
-
-    try {
-      await auth().signInWithEmailAndPassword(email, password);
-    } catch (e: any) {
-      const err = e as FirebaseError;
-      alert('Sign in failed: ' + err.message);
-      console.log('Sign in failed: ' + err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const confirmSignUp = async () => {
+    setConfirmSignupLoading(true);
     if (!confirmPassword.trim()) {
       alert('Confirm password field is empty!');
-      setLoading(false);
+      setSignupLoading(false);
+      setConfirmSignupLoading(false);
       setShowModal(false);
       return;
     } else if (password != confirmPassword) {
       alert('Passwords do not match!');
-      setLoading(false);
+      setSignupLoading(false);
+      setConfirmSignupLoading(false);
       setShowModal(false);
       return;
     }
@@ -99,8 +73,40 @@ export default function Index() {
       alert('Registration failed: ' + err.message);
       console.log('Registration failed: ' + err.message);
     } finally {
-      setLoading(false);
+      setSignupLoading(false);
+      setConfirmSignupLoading(false);
       setShowModal(false);
+    }
+  };
+
+  const signIn = async () => {
+    setLoginLoading(true);
+    if (!email.trim() && !password.trim()) {
+      alert('Email and password fields are empty!');
+      setLoginLoading(false);
+      return;
+    } else if (!email.trim()) {
+      alert('Email field is empty!');
+      setLoginLoading(false);
+      return;
+    } else if (!password.trim()) {
+      alert('Password field is empty!');
+      setLoginLoading(false);
+      return;
+    } else if (!email.includes('@') || !email.includes('.')) {
+      alert('Email is in the wrong format!');
+      setLoginLoading(false);
+      return;
+    }
+
+    try {
+      await auth().signInWithEmailAndPassword(email, password);
+    } catch (e: any) {
+      const err = e as FirebaseError;
+      alert('Sign in failed: ' + err.message);
+      console.log('Sign in failed: ' + err.message);
+    } finally {
+      setLoginLoading(false);
     }
   };
 
@@ -110,7 +116,8 @@ export default function Index() {
         <Modal
           visible={showModal}
           onDismiss={() => {
-            setLoading(false);
+            setSignupLoading(false);
+            setLoginLoading(false);
             setShowModal(false);
           }}
           contentContainerStyle={styles.modalContainerTest}
@@ -125,7 +132,14 @@ export default function Index() {
             //error={true}
             secureTextEntry
           />
-          <Button title='Confirm' onPress={confirmSignUp} />
+          <Button
+            style={styles.button}
+            mode='elevated'
+            loading={confirmSignupLoading}
+            onPress={confirmSignUp}
+          >
+            Confirm Password
+          </Button>
         </Modal>
       </Portal>
       <KeyboardAvoidingView style={styles.container} behavior='padding'>
@@ -150,7 +164,7 @@ export default function Index() {
         <Button
           style={styles.button}
           mode='elevated'
-          loading={loading}
+          loading={loginLoading}
           onPress={signIn}
         >
           Login
@@ -158,7 +172,7 @@ export default function Index() {
         <Button
           style={styles.button}
           mode='elevated'
-          loading={loading}
+          loading={signupLoading}
           onPress={signUp}
         >
           Create Account

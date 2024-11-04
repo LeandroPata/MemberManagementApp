@@ -1,23 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   KeyboardAvoidingView,
   FlatList,
-  Pressable,
-  Image,
   Keyboard,
 } from 'react-native';
-import { Button, PaperProvider, TextInput } from 'react-native-paper';
+import {
+  Avatar,
+  Button,
+  PaperProvider,
+  TextInput,
+  TouchableRipple,
+  Text,
+  useTheme,
+} from 'react-native-paper';
 import firestore, { Filter } from '@react-native-firebase/firestore';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function SearchMember() {
+  const insets = useSafeAreaInsets();
+  const theme = useTheme();
+
   const [loading, setLoading] = useState(false);
   const [searchResults, setSearchResults] = useState(false);
-  const insets = useSafeAreaInsets();
 
   const [name, setName] = useState('');
   const [memberNumber, setMemberNumber] = useState('');
@@ -228,8 +235,8 @@ export default function SearchMember() {
 
   const renderItem = ({ item }) => {
     return (
-      <Pressable
-        style={styles.item}
+      <TouchableRipple
+        style={[styles.item, { backgroundColor: '#26212a' }]}
         onPress={() => {
           router.push({
             pathname: '/(home)/(profile)/profile',
@@ -237,19 +244,37 @@ export default function SearchMember() {
           });
         }}
       >
-        {item.profilePicture ? (
-          <Image style={styles.picture} src={item.profilePicture} />
-        ) : null}
-        <Text style={styles.title}>Name: {item.name}</Text>
-        <Text style={styles.title}>Member Number: {item.memberNumber}</Text>
-      </Pressable>
+        <View>
+          {item.profilePicture ? (
+            <Avatar.Image
+              size={100}
+              style={{ alignSelf: 'center' }}
+              source={{ uri: item.profilePicture }}
+            />
+          ) : null}
+          <Text style={[styles.title, { color: '#c7b5f6' }]}>
+            Name: {item.name}
+          </Text>
+          <Text style={[styles.title, { color: '#c7b5f6' }]}>
+            Member Number: {item.memberNumber}
+          </Text>
+        </View>
+      </TouchableRipple>
     );
   };
 
   return (
     <PaperProvider>
-      <View style={[styles.container, { paddingTop: insets.top }]}>
-        <KeyboardAvoidingView behavior='padding'>
+      <View
+        style={[
+          styles.container,
+          { paddingTop: insets.top, backgroundColor: theme.colors.primary },
+        ]}
+      >
+        <KeyboardAvoidingView
+          style={{ marginHorizontal: 20 }}
+          behavior='padding'
+        >
           <TextInput
             style={styles.input}
             value={name}
@@ -278,6 +303,7 @@ export default function SearchMember() {
         {!members ? null : (
           <View
             style={{
+              marginHorizontal: 20,
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'center',
@@ -324,7 +350,6 @@ export default function SearchMember() {
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 20,
     flex: 1,
     justifyContent: 'center',
   },
@@ -333,20 +358,21 @@ const styles = StyleSheet.create({
   },
   button: {
     marginVertical: 3,
+    //paddingHorizontal: 2,
+    //paddingVertical: 0,
+    textAlign: 'center',
+    verticalAlign: 'middle',
   },
   item: {
-    //padding: 15,
-    paddingHorizontal: 15,
+    borderRadius: 10,
+    paddingHorizontal: 10,
     paddingVertical: 5,
-    marginVertical: 5,
-    marginHorizontal: 8,
-    height: 150,
-    width: '45%',
-    backgroundColor: '#0e8df2',
+    marginVertical: 3,
+    marginHorizontal: 5,
+    width: '48%',
   },
   title: {
     fontSize: 15,
-    color: 'white',
   },
   picture: {
     width: 100,

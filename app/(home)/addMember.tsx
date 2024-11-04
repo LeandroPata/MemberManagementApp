@@ -3,7 +3,6 @@ import {
   View,
   StyleSheet,
   KeyboardAvoidingView,
-  Text,
   Pressable,
 } from 'react-native';
 import {
@@ -12,8 +11,10 @@ import {
   Switch,
   PaperProvider,
   Avatar,
+  Text,
   Portal,
   Modal,
+  useTheme,
 } from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
 import { FirebaseError } from 'firebase/app';
@@ -24,6 +25,8 @@ import * as ImagePicker from 'expo-image-picker';
 
 export default function AddMember() {
   const insets = useSafeAreaInsets();
+  const theme = useTheme();
+
   const [loading, setLoading] = useState(false);
   const [autoNumber, setAutoNumber] = useState(true);
 
@@ -221,113 +224,119 @@ export default function AddMember() {
           </Button>
         </Modal>
       </Portal>
-      <KeyboardAvoidingView
-        style={[styles.container, { paddingTop: insets.top }]}
-        behavior='padding'
+      <View
+        style={[
+          styles.container,
+          { paddingTop: insets.top, backgroundColor: theme.colors.primary },
+        ]}
       >
-        <Pressable
-          onPress={() => {
-            setPictureModal(true);
-          }}
+        <KeyboardAvoidingView
+          style={{ marginHorizontal: 20 }}
+          behavior='padding'
         >
-          <Avatar.Image
-            size={200}
-            style={{ alignSelf: 'center' }}
-            source={{ uri: profilePicture }}
+          <Pressable
+            onPress={() => {
+              setPictureModal(true);
+            }}
+          >
+            <Avatar.Image
+              size={200}
+              style={{ alignSelf: 'center' }}
+              source={{ uri: profilePicture }}
+            />
+          </Pressable>
+          <TextInput
+            style={styles.input}
+            value={name}
+            onChangeText={setName}
+            autoCapitalize='words'
+            keyboardType='default'
+            label='Name'
           />
-        </Pressable>
-        <TextInput
-          style={styles.input}
-          value={name}
-          onChangeText={setName}
-          autoCapitalize='words'
-          keyboardType='default'
-          label='Name'
-        />
-        <TextInput
-          style={styles.input}
-          value={email}
-          onChangeText={setEmail}
-          autoCapitalize='none'
-          keyboardType='email-address'
-          label='Email'
-        />
-        <TextInput
-          style={styles.input}
-          value={phoneNumber}
-          onChangeText={setPhone}
-          autoCapitalize='none'
-          inputMode='tel'
-          keyboardType='phone-pad'
-          label='Phone Number'
-        />
-        <View
-          style={{
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            justifyContent: 'space-between',
-          }}
-        >
+          <TextInput
+            style={styles.input}
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize='none'
+            keyboardType='email-address'
+            label='Email'
+          />
+          <TextInput
+            style={styles.input}
+            value={phoneNumber}
+            onChangeText={setPhone}
+            autoCapitalize='none'
+            inputMode='tel'
+            keyboardType='phone-pad'
+            label='Phone Number'
+          />
           <View
             style={{
               flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              flex: 2,
+              flexWrap: 'wrap',
+              justifyContent: 'space-between',
             }}
           >
-            <Text>Auto Number</Text>
-            <Switch value={autoNumber} onValueChange={setAutoNumber} />
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                flex: 2,
+              }}
+            >
+              <Text>Auto Number</Text>
+              <Switch value={autoNumber} onValueChange={setAutoNumber} />
+            </View>
+            <TextInput
+              disabled={autoNumber}
+              style={[styles.input, { flex: 3 }]}
+              value={memberNumber}
+              onChangeText={setMemberNumber}
+              autoCapitalize='none'
+              keyboardType='numeric'
+              label='Member Number'
+              placeholder='(leave empty for automatic assignment)'
+            />
           </View>
-          <TextInput
-            disabled={autoNumber}
-            style={[styles.input, { flex: 3 }]}
-            value={memberNumber}
-            onChangeText={setMemberNumber}
-            autoCapitalize='none'
-            keyboardType='numeric'
-            label='Member Number'
-            placeholder='(leave empty for automatic assignment)'
+          <Button onPress={() => setDateModal(true)}>
+            End Date: {endDate.toLocaleDateString('pt-pt')}
+          </Button>
+          <DatePicker
+            modal
+            mode='date'
+            locale='pt-pt'
+            open={dateModal}
+            date={endDate}
+            onConfirm={(endDate) => {
+              setDateModal(false);
+              setEndDate(endDate);
+            }}
+            onCancel={() => {
+              setDateModal(false);
+            }}
           />
-        </View>
-        <Button onPress={() => setDateModal(true)}>
-          End Date: {endDate.toLocaleDateString('pt-pt')}
-        </Button>
-        <DatePicker
-          modal
-          mode='date'
-          locale='pt-pt'
-          open={dateModal}
-          date={endDate}
-          onConfirm={(endDate) => {
-            setDateModal(false);
-            setEndDate(endDate);
-          }}
-          onCancel={() => {
-            setDateModal(false);
-          }}
-        />
-        <Button
-          style={styles.button}
-          mode='elevated'
-          loading={loading}
-          onPress={addMember}
-        >
-          Add Member
-        </Button>
-      </KeyboardAvoidingView>
+          <Button
+            style={styles.button}
+            mode='elevated'
+            loading={loading}
+            onPress={addMember}
+          >
+            Add Member
+          </Button>
+        </KeyboardAvoidingView>
+      </View>
     </PaperProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 20,
     flex: 1,
     justifyContent: 'center',
   },
   modalContainer: {
-    backgroundColor: '#ffffff',
+    //backgroundColor: '#ffffff',
     padding: 15,
   },
   input: {

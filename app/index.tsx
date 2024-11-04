@@ -1,22 +1,25 @@
 import { useState } from 'react';
-import { StyleSheet, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, KeyboardAvoidingView, View } from 'react-native';
 import {
   PaperProvider,
   Portal,
   Modal,
   TextInput,
   Button,
+  useTheme,
 } from 'react-native-paper';
 import { FirebaseError } from 'firebase/app';
 import auth from '@react-native-firebase/auth';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Index() {
+  const insets = useSafeAreaInsets();
+  const theme = useTheme();
+
   const [loginLoading, setLoginLoading] = useState(false);
   const [signupLoading, setSignupLoading] = useState(false);
   const [confirmSignupLoading, setConfirmSignupLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const insets = useSafeAreaInsets();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -138,63 +141,71 @@ export default function Index() {
           </Button>
         </Modal>
       </Portal>
-      <KeyboardAvoidingView
-        style={[styles.container, { paddingTop: insets.top }]}
-        behavior='padding'
+      <View
+        style={[
+          styles.container,
+          { paddingTop: insets.top, backgroundColor: theme.colors.primary },
+        ]}
       >
-        <TextInput
-          style={styles.input}
-          label='Email'
-          value={email}
-          onChangeText={(email) => setEmail(email)}
-          //error={true}
-          autoCapitalize='none'
-          keyboardType='email-address'
-          returnKeyType='next'
-        />
-        <TextInput
-          style={styles.input}
-          label='Password'
-          value={password}
-          onChangeText={(password) => setPassword(password)}
-          //error={true}
-          secureTextEntry
-        />
-        <Button
-          style={styles.button}
-          mode='elevated'
-          loading={loginLoading}
-          onPress={signIn}
+        <KeyboardAvoidingView
+          style={{ marginHorizontal: 20 }}
+          behavior='padding'
         >
-          Login
-        </Button>
-        <Button
-          style={styles.button}
-          mode='elevated'
-          loading={signupLoading}
-          onPress={signUp}
-        >
-          Create Account
-        </Button>
-      </KeyboardAvoidingView>
+          <TextInput
+            style={styles.input}
+            label='Email'
+            value={email}
+            onChangeText={(email) => setEmail(email)}
+            //error={true}
+            autoCapitalize='none'
+            keyboardType='email-address'
+            returnKeyType='next'
+          />
+          <TextInput
+            style={styles.input}
+            label='Password'
+            value={password}
+            onChangeText={(password) => setPassword(password)}
+            //error={true}
+            secureTextEntry
+          />
+          <Button
+            style={styles.button}
+            mode='elevated'
+            loading={loginLoading}
+            onPress={signIn}
+          >
+            Login
+          </Button>
+          <Button
+            style={styles.button}
+            mode='elevated'
+            loading={signupLoading}
+            onPress={signUp}
+          >
+            Create Account
+          </Button>
+        </KeyboardAvoidingView>
+      </View>
     </PaperProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 20,
     flex: 1,
     justifyContent: 'center',
+    //alignItems: 'center',
   },
   input: {
     marginVertical: 2,
+    //width: '80%',
   },
   button: {
     marginVertical: 3,
   },
   modalContainer: {
-    backgroundColor: '#ffffff',
+    //backgroundColor: '#ffffff',
     padding: 15,
   },
   inputModal: {
@@ -204,6 +215,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     padding: 10,
-    backgroundColor: '#ffffff',
+    //backgroundColor: '#ffffff',
   },
 });

@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Button } from 'react-native-paper';
+import { View, StyleSheet } from 'react-native';
+import { Button, useTheme } from 'react-native-paper';
 import auth from '@react-native-firebase/auth';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -8,35 +8,42 @@ import { PaperProvider } from 'react-native-paper';
 
 export default function Home() {
   const insets = useSafeAreaInsets();
-  const user = auth().currentUser;
+  const theme = useTheme();
 
   return (
     <PaperProvider>
-      <View style={[styles.container, { paddingTop: insets.top }]}>
-        <Button
-          style={styles.button}
-          mode='elevated'
-          //loading={loginLoading}
-          onPress={() => router.push('/(home)/addMember')}
-        >
-          Add Member
-        </Button>
-        <Button
-          style={styles.button}
-          mode='elevated'
-          //loading={loginLoading}
-          onPress={() => router.push('/(home)/searchMember')}
-        >
-          Search Member
-        </Button>
-        <Button
-          style={styles.button}
-          mode='elevated'
-          //loading={loginLoading}
-          onPress={() => auth().signOut()}
-        >
-          Sign Out
-        </Button>
+      <View
+        style={[
+          styles.container,
+          { paddingTop: insets.top, backgroundColor: theme.colors.primary },
+        ]}
+      >
+        <View style={{ marginHorizontal: 20 }}>
+          <Button
+            style={styles.button}
+            mode='elevated'
+            //loading={loginLoading}
+            onPress={() => router.push('/(home)/addMember')}
+          >
+            Add Member
+          </Button>
+          <Button
+            style={styles.button}
+            mode='elevated'
+            //loading={loginLoading}
+            onPress={() => router.push('/(home)/searchMember')}
+          >
+            Search Member
+          </Button>
+          <Button
+            style={styles.button}
+            mode='elevated'
+            //loading={loginLoading}
+            onPress={() => auth().signOut()}
+          >
+            Sign Out
+          </Button>
+        </View>
       </View>
     </PaperProvider>
   );
@@ -44,10 +51,8 @@ export default function Home() {
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 20,
     flex: 1,
     justifyContent: 'center',
-    //padding: 10,
   },
   input: {
     marginVertical: 4,
@@ -55,7 +60,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 1,
     padding: 5,
-    backgroundColor: '#ffffff',
+    //backgroundColor: '#ffffff',
   },
   button: {
     marginVertical: 3,

@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
-  Image,
   ActivityIndicator,
   KeyboardAvoidingView,
   Pressable,
@@ -16,6 +14,8 @@ import {
   TextInput,
   Switch,
   Avatar,
+  Text,
+  useTheme,
 } from 'react-native-paper';
 import { useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -28,6 +28,7 @@ import DatePicker from 'react-native-date-picker';
 export default function Profile() {
   const { profileID } = useLocalSearchParams();
   const insets = useSafeAreaInsets();
+  const theme = useTheme();
 
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -236,146 +237,152 @@ export default function Profile() {
           </Button>
         </Modal>
       </Portal>
-      {loading || !profile ? (
-        <ActivityIndicator size={'large'} style={{ margin: 28 }} />
-      ) : editing ? (
-        <KeyboardAvoidingView
-          style={[styles.container, { paddingTop: insets.top }]}
-          behavior='padding'
-        >
-          <Pressable
-            onPress={() => {
-              setPictureModal(true);
-            }}
+      <View
+        style={[
+          styles.container,
+          { paddingTop: insets.top, backgroundColor: theme.colors.primary },
+        ]}
+      >
+        {loading || !profile ? (
+          <ActivityIndicator size={'large'} style={{ margin: 28 }} />
+        ) : editing ? (
+          <KeyboardAvoidingView
+            style={{ marginHorizontal: 20 }}
+            behavior='padding'
           >
-            <Avatar.Image
-              size={200}
-              style={{ alignSelf: 'center' }}
-              source={{ uri: profilePicture }}
-            />
-          </Pressable>
-
-          <TextInput
-            style={styles.input}
-            value={name}
-            onChangeText={setName}
-            autoCapitalize='words'
-            keyboardType='default'
-            label='Name'
-          />
-          <TextInput
-            style={styles.input}
-            value={email}
-            onChangeText={setEmail}
-            autoCapitalize='none'
-            keyboardType='email-address'
-            label='Email'
-          />
-          <TextInput
-            style={styles.input}
-            value={phoneNumber}
-            onChangeText={setPhone}
-            autoCapitalize='none'
-            inputMode='tel'
-            keyboardType='phone-pad'
-            label='Phone Number'
-          />
-          <View
-            style={{
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              justifyContent: 'space-between',
-            }}
-          >
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                flex: 2,
+            <Pressable
+              onPress={() => {
+                setPictureModal(true);
               }}
             >
-              <Text>Auto Number</Text>
-              <Switch value={autoNumber} onValueChange={setAutoNumber} />
-            </View>
-            <TextInput
-              disabled={autoNumber}
-              style={[styles.input, { flex: 3 }]}
-              value={memberNumber}
-              onChangeText={setMemberNumber}
-              autoCapitalize='none'
-              keyboardType='numeric'
-              label='Member Number'
-              placeholder='(leave empty for automatic assignment)'
-            />
-          </View>
-          <Button onPress={() => setDateModal(true)}>
-            End Date: {endDate.toLocaleDateString('pt-pt')}
-          </Button>
-          <DatePicker
-            modal
-            mode='date'
-            locale='pt-pt'
-            open={dateModal}
-            date={endDate}
-            onConfirm={(endDate) => {
-              setDateModal(false);
-              setEndDate(endDate);
-            }}
-            onCancel={() => {
-              setDateModal(false);
-            }}
-          />
-          <Button style={styles.button} mode='elevated' onPress={saveMember}>
-            Save
-          </Button>
-        </KeyboardAvoidingView>
-      ) : (
-        <View style={[styles.container, { paddingTop: insets.top }]}>
-          {profilePicture ? (
-            <>
               <Avatar.Image
-                size={250}
+                size={200}
                 style={{ alignSelf: 'center' }}
                 source={{ uri: profilePicture }}
               />
-            </>
-          ) : null}
-          <Text style={styles.title}>Name: {name}</Text>
-          <Text style={styles.title}>Member Number: {memberNumber}</Text>
-          <Text style={styles.title}>Email: {email}</Text>
-          <Text style={styles.title}>Phone Number: {phoneNumber}</Text>
-          <Text style={styles.title}>
-            Added Date:{' '}
-            {new Date(profile.addedDate.toDate()).toLocaleDateString('pt-pt')}
-          </Text>
-          <Text style={styles.title}>
-            End Date: {endDate.toLocaleDateString('pt-pt')}
-          </Text>
-          <Button
-            style={styles.button}
-            mode='elevated'
-            onPress={() => {
-              setEditing(true);
-            }}
-          >
-            Edit Member
-          </Button>
-        </View>
-      )}
+            </Pressable>
+
+            <TextInput
+              style={styles.input}
+              value={name}
+              onChangeText={setName}
+              autoCapitalize='words'
+              keyboardType='default'
+              label='Name'
+            />
+            <TextInput
+              style={styles.input}
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize='none'
+              keyboardType='email-address'
+              label='Email'
+            />
+            <TextInput
+              style={styles.input}
+              value={phoneNumber}
+              onChangeText={setPhone}
+              autoCapitalize='none'
+              inputMode='tel'
+              keyboardType='phone-pad'
+              label='Phone Number'
+            />
+            <View
+              style={{
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                justifyContent: 'space-between',
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flex: 2,
+                }}
+              >
+                <Text>Auto Number</Text>
+                <Switch value={autoNumber} onValueChange={setAutoNumber} />
+              </View>
+              <TextInput
+                disabled={autoNumber}
+                style={[styles.input, { flex: 3 }]}
+                value={memberNumber}
+                onChangeText={setMemberNumber}
+                autoCapitalize='none'
+                keyboardType='numeric'
+                label='Member Number'
+                placeholder='(leave empty for automatic assignment)'
+              />
+            </View>
+            <Button onPress={() => setDateModal(true)}>
+              End Date: {endDate.toLocaleDateString('pt-pt')}
+            </Button>
+            <DatePicker
+              modal
+              mode='date'
+              locale='pt-pt'
+              open={dateModal}
+              date={endDate}
+              onConfirm={(endDate) => {
+                setDateModal(false);
+                setEndDate(endDate);
+              }}
+              onCancel={() => {
+                setDateModal(false);
+              }}
+            />
+            <Button style={styles.button} mode='elevated' onPress={saveMember}>
+              Save
+            </Button>
+          </KeyboardAvoidingView>
+        ) : (
+          <View style={{ marginHorizontal: 20 }}>
+            {profilePicture ? (
+              <>
+                <Avatar.Image
+                  size={250}
+                  style={{ alignSelf: 'center' }}
+                  source={{ uri: profilePicture }}
+                />
+              </>
+            ) : null}
+            <Text style={styles.title}>Name: {name}</Text>
+            <Text style={styles.title}>Member Number: {memberNumber}</Text>
+            <Text style={styles.title}>Email: {email}</Text>
+            <Text style={styles.title}>Phone Number: {phoneNumber}</Text>
+            <Text style={styles.title}>
+              Added Date:{' '}
+              {new Date(profile.addedDate.toDate()).toLocaleDateString('pt-pt')}
+            </Text>
+            <Text style={styles.title}>
+              End Date: {endDate.toLocaleDateString('pt-pt')}
+            </Text>
+            <Button
+              style={styles.button}
+              mode='elevated'
+              onPress={() => {
+                setEditing(true);
+              }}
+            >
+              Edit Member
+            </Button>
+          </View>
+        )}
+      </View>
     </PaperProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 20,
     flex: 1,
     justifyContent: 'center',
     //alignItems: 'center',
   },
   modalContainer: {
-    backgroundColor: '#ffffff',
+    //backgroundColor: '#ffffff',
     padding: 15,
   },
   input: {

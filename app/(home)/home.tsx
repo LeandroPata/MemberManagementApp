@@ -13,7 +13,6 @@ export default function Home() {
   return (
     <PaperProvider>
       <View style={[styles.container, { paddingTop: insets.top }]}>
-        <Text>Welcome back {user?.email}</Text>
         <Button
           style={styles.button}
           mode='elevated'

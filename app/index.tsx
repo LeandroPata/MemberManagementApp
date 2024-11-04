@@ -1,9 +1,5 @@
 import { useState } from 'react';
-import {
-  StyleSheet,
-  KeyboardAvoidingView,
-  ActivityIndicator,
-} from 'react-native';
+import { StyleSheet, KeyboardAvoidingView } from 'react-native';
 import {
   PaperProvider,
   Portal,
@@ -120,7 +116,7 @@ export default function Index() {
             setLoginLoading(false);
             setShowModal(false);
           }}
-          contentContainerStyle={styles.modalContainerTest}
+          contentContainerStyle={styles.modalContainer}
         >
           <TextInput
             style={styles.input}
@@ -142,7 +138,10 @@ export default function Index() {
           </Button>
         </Modal>
       </Portal>
-      <KeyboardAvoidingView style={styles.container} behavior='padding'>
+      <KeyboardAvoidingView
+        style={[styles.container, { paddingTop: insets.top }]}
+        behavior='padding'
+      >
         <TextInput
           style={styles.input}
           label='Email'
@@ -195,23 +194,6 @@ const styles = StyleSheet.create({
     marginVertical: 3,
   },
   modalContainer: {
-    backgroundColor: '#ffffff',
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 20,
-    marginVertical: 100,
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalContainerTest: {
     backgroundColor: '#ffffff',
     padding: 15,
   },

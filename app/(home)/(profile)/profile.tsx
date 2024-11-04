@@ -1,16 +1,22 @@
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   Image,
   ActivityIndicator,
-  Button,
-  TextInput,
   KeyboardAvoidingView,
   Pressable,
-  Modal,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import {
+  Button,
+  Modal,
+  PaperProvider,
+  Portal,
+  TextInput,
+  Switch,
+  Avatar,
+} from 'react-native-paper';
 import { useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FirebaseError } from 'firebase/app';
@@ -26,6 +32,8 @@ export default function Profile() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [autoNumber, setAutoNumber] = useState(true);
+
   const [pictureModal, setPictureModal] = useState(false);
   const [dateModal, setDateModal] = useState(false);
 
@@ -211,48 +219,49 @@ export default function Profile() {
   };
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <Modal
-        animationType='fade'
-        transparent={true}
-        visible={pictureModal}
-        onRequestClose={() => {
-          setPictureModal(false);
-        }}
-      >
-        <View style={styles.container}>
-          <View style={styles.modalContainer}>
-            <Button title='Pick an image from gallery' onPress={pickImage} />
-            <Button title='Take Picture' onPress={takePicture} />
-          </View>
-        </View>
-      </Modal>
+    <PaperProvider>
+      <Portal>
+        <Modal
+          visible={pictureModal}
+          onDismiss={() => {
+            setPictureModal(false);
+          }}
+          contentContainerStyle={styles.modalContainer}
+        >
+          <Button style={styles.button} mode='elevated' onPress={pickImage}>
+            Pick an image from gallery
+          </Button>
+          <Button style={styles.button} mode='elevated' onPress={takePicture}>
+            Take Picture
+          </Button>
+        </Modal>
+      </Portal>
       {loading || !profile ? (
         <ActivityIndicator size={'large'} style={{ margin: 28 }} />
       ) : editing ? (
-        <KeyboardAvoidingView behavior='padding'>
+        <KeyboardAvoidingView
+          style={[styles.container, { paddingTop: insets.top }]}
+          behavior='padding'
+        >
           <Pressable
             onPress={() => {
               setPictureModal(true);
             }}
           >
-            <Image style={styles.picture} src={profilePicture} />
+            <Avatar.Image
+              size={200}
+              style={{ alignSelf: 'center' }}
+              source={{ uri: profilePicture }}
+            />
           </Pressable>
+
           <TextInput
             style={styles.input}
             value={name}
             onChangeText={setName}
             autoCapitalize='words'
             keyboardType='default'
-            placeholder='Name'
-          />
-          <TextInput
-            style={styles.input}
-            value={memberNumber.toString()}
-            onChangeText={setMemberNumber}
-            autoCapitalize='none'
-            keyboardType='numeric'
-            placeholder='Member Number (leave empty for automatic assignment)'
+            label='Name'
           />
           <TextInput
             style={styles.input}
@@ -260,7 +269,7 @@ export default function Profile() {
             onChangeText={setEmail}
             autoCapitalize='none'
             keyboardType='email-address'
-            placeholder='Email'
+            label='Email'
           />
           <TextInput
             style={styles.input}
@@ -269,10 +278,40 @@ export default function Profile() {
             autoCapitalize='none'
             inputMode='tel'
             keyboardType='phone-pad'
-            placeholder='Phone Number'
+            label='Phone Number'
           />
-          <Text>{endDate.toLocaleDateString('pt-pt')}</Text>
-          <Button title='Set End Date' onPress={() => setDateModal(true)} />
+          <View
+            style={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              justifyContent: 'space-between',
+            }}
+          >
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                flex: 2,
+              }}
+            >
+              <Text>Auto Number</Text>
+              <Switch value={autoNumber} onValueChange={setAutoNumber} />
+            </View>
+            <TextInput
+              disabled={autoNumber}
+              style={[styles.input, { flex: 3 }]}
+              value={memberNumber}
+              onChangeText={setMemberNumber}
+              autoCapitalize='none'
+              keyboardType='numeric'
+              label='Member Number'
+              placeholder='(leave empty for automatic assignment)'
+            />
+          </View>
+          <Button onPress={() => setDateModal(true)}>
+            End Date: {endDate.toLocaleDateString('pt-pt')}
+          </Button>
           <DatePicker
             modal
             mode='date'
@@ -287,13 +326,19 @@ export default function Profile() {
               setDateModal(false);
             }}
           />
-          <Button onPress={saveMember} title='Save' />
+          <Button style={styles.button} mode='elevated' onPress={saveMember}>
+            Save
+          </Button>
         </KeyboardAvoidingView>
       ) : (
-        <View>
+        <View style={[styles.container, { paddingTop: insets.top }]}>
           {profilePicture ? (
             <>
-              <Image style={styles.picture} src={profilePicture} />
+              <Avatar.Image
+                size={250}
+                style={{ alignSelf: 'center' }}
+                source={{ uri: profilePicture }}
+              />
             </>
           ) : null}
           <Text style={styles.title}>Name: {name}</Text>
@@ -308,46 +353,33 @@ export default function Profile() {
             End Date: {endDate.toLocaleDateString('pt-pt')}
           </Text>
           <Button
+            style={styles.button}
+            mode='elevated'
             onPress={() => {
               setEditing(true);
             }}
-            title='Edit Member'
-          />
+          >
+            Edit Member
+          </Button>
         </View>
       )}
-    </View>
+    </PaperProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    //marginHorizontal: 20,
+    marginHorizontal: 20,
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    //alignItems: 'center',
   },
   modalContainer: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    backgroundColor: '#ffffff',
+    padding: 15,
   },
   input: {
-    marginVertical: 4,
-    height: 50,
-    borderWidth: 1,
-    borderRadius: 1,
-    padding: 5,
-    backgroundColor: '#ffffff',
+    marginVertical: 2,
   },
   picture: {
     width: 100,
@@ -357,5 +389,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 15,
+  },
+  button: {
+    marginVertical: 3,
   },
 });

@@ -105,23 +105,10 @@ export default function AddMember() {
   };
 
   const uploadPicture = async () => {
-    // Delete previous picture if it is different from the placeholder
     if (
       profilePicture &&
       profilePicture != process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL
     ) {
-      await reference
-        .delete()
-        .then(() => {
-          console.log('File deleted!');
-        })
-        .catch((e: any) => {
-          const err = e as FirebaseError;
-          alert('File deletion failed: ' + err.message);
-          console.log('File deletion failed: ' + err.message);
-          setLoading(false);
-        });
-
       // Upload picture to Firebase if it is different from the placeholder
 
       const task = reference.putFile(profilePicture);

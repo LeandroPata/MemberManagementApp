@@ -4,10 +4,11 @@ import { Stack, useRouter, useSegments } from 'expo-router';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 
 export default function RootLayout() {
-  const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
   const router = useRouter();
   const segments = useSegments();
+
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
 
   const onAuthStateChanged = (user: FirebaseAuthTypes.User | null) => {
     //console.log('onAuthStateChanged', user);
@@ -46,7 +47,7 @@ export default function RootLayout() {
 
   return (
     <Stack>
-      <Stack.Screen name='index' />
+      <Stack.Screen name='index' options={{ headerShown: false }} />
       <Stack.Screen name='(home)' options={{ headerShown: false }} />
     </Stack>
   );

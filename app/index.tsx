@@ -1,13 +1,6 @@
 import { useState } from 'react';
 import { StyleSheet, KeyboardAvoidingView, View } from 'react-native';
-import {
-  PaperProvider,
-  Portal,
-  Modal,
-  TextInput,
-  Button,
-  useTheme,
-} from 'react-native-paper';
+import { Portal, Modal, TextInput, Button, useTheme } from 'react-native-paper';
 import { FirebaseError } from 'firebase/app';
 import auth from '@react-native-firebase/auth';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -110,7 +103,7 @@ export default function Index() {
   };
 
   return (
-    <PaperProvider>
+    <>
       <Portal>
         <Modal
           visible={showModal}
@@ -144,7 +137,7 @@ export default function Index() {
       <View
         style={[
           styles.container,
-          { paddingTop: insets.top, backgroundColor: theme.colors.primary },
+          { paddingTop: insets.top, backgroundColor: theme.colors.background },
         ]}
       >
         <KeyboardAvoidingView
@@ -169,6 +162,8 @@ export default function Index() {
             //error={true}
             secureTextEntry
           />
+        </KeyboardAvoidingView>
+        <View style={{ marginHorizontal: 20 }}>
           <Button
             style={styles.button}
             mode='elevated'
@@ -185,9 +180,9 @@ export default function Index() {
           >
             Create Account
           </Button>
-        </KeyboardAvoidingView>
+        </View>
       </View>
-    </PaperProvider>
+    </>
   );
 }
 
@@ -205,8 +200,10 @@ const styles = StyleSheet.create({
     marginVertical: 3,
   },
   modalContainer: {
-    //backgroundColor: '#ffffff',
+    backgroundColor: '#ffffff',
     padding: 15,
+    marginHorizontal: 20,
+    borderRadius: 10,
   },
   inputModal: {
     //marginVertical: 4,

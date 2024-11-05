@@ -9,7 +9,6 @@ import {
 import {
   Avatar,
   Button,
-  PaperProvider,
   TextInput,
   TouchableRipple,
   Text,
@@ -264,87 +263,82 @@ export default function SearchMember() {
   };
 
   return (
-    <PaperProvider>
-      <View
-        style={[
-          styles.container,
-          { paddingTop: insets.top, backgroundColor: theme.colors.primary },
-        ]}
-      >
-        <KeyboardAvoidingView
-          style={{ marginHorizontal: 20 }}
-          behavior='padding'
-        >
-          <TextInput
-            style={styles.input}
-            value={name}
-            onChangeText={setName}
-            autoCapitalize='words'
-            keyboardType='default'
-            label='Name'
-          />
-          <TextInput
-            style={styles.input}
-            value={memberNumber}
-            onChangeText={setMemberNumber}
-            autoCapitalize='none'
-            keyboardType='numeric'
-            label='Member Number'
-          />
-          <Button
-            style={styles.button}
-            mode='elevated'
-            loading={loading}
-            onPress={searchMember}
-          >
-            Search Member
-          </Button>
-        </KeyboardAvoidingView>
-        {!members ? null : (
-          <View
-            style={{
-              marginHorizontal: 20,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              padding: 10,
-            }}
-          >
-            <View style={{ width: '48%' }}>
-              <Button
-                style={styles.button}
-                mode='elevated'
-                onPress={() => {
-                  console.log('Order by name');
-                  orderMembersName();
-                }}
-              >
-                Order by name
-              </Button>
-            </View>
-            <View style={{ width: '48%' }}>
-              <Button
-                style={styles.button}
-                mode='elevated'
-                onPress={() => {
-                  console.log('Order by member number');
-                  orderMembersNumber();
-                }}
-              >
-                Order by member number
-              </Button>
-            </View>
-          </View>
-        )}
-        <FlatList
-          data={members}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.key}
-          extraData={refreshFlatlist}
-          numColumns={2}
+    <View
+      style={[
+        styles.container,
+        { paddingTop: insets.top, backgroundColor: theme.colors.background },
+      ]}
+    >
+      <KeyboardAvoidingView style={{ marginHorizontal: 20 }} behavior='padding'>
+        <TextInput
+          style={styles.input}
+          value={name}
+          onChangeText={setName}
+          autoCapitalize='words'
+          keyboardType='default'
+          label='Name'
         />
-      </View>
-    </PaperProvider>
+        <TextInput
+          style={styles.input}
+          value={memberNumber}
+          onChangeText={setMemberNumber}
+          autoCapitalize='none'
+          keyboardType='numeric'
+          label='Member Number'
+        />
+        <Button
+          style={styles.button}
+          mode='elevated'
+          loading={loading}
+          onPress={searchMember}
+        >
+          Search Member
+        </Button>
+      </KeyboardAvoidingView>
+      {!members ? null : (
+        <View
+          style={{
+            marginHorizontal: 20,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: 10,
+          }}
+        >
+          <View style={{ width: '48%' }}>
+            <Button
+              style={styles.button}
+              mode='elevated'
+              onPress={() => {
+                console.log('Order by name');
+                orderMembersName();
+              }}
+            >
+              Order by name
+            </Button>
+          </View>
+          <View style={{ width: '48%' }}>
+            <Button
+              style={styles.button}
+              mode='elevated'
+              onPress={() => {
+                console.log('Order by member number');
+                orderMembersNumber();
+              }}
+            >
+              Order by member number
+            </Button>
+          </View>
+        </View>
+      )}
+      <FlatList
+        data={members}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.key}
+        extraData={refreshFlatlist}
+        numColumns={2}
+      />
+    </View>
   );
 }
 

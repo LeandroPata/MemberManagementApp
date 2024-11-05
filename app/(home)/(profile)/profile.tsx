@@ -9,7 +9,6 @@ import {
 import {
   Button,
   Modal,
-  PaperProvider,
   Portal,
   TextInput,
   Switch,
@@ -220,7 +219,7 @@ export default function Profile() {
   };
 
   return (
-    <PaperProvider>
+    <>
       <Portal>
         <Modal
           visible={pictureModal}
@@ -240,7 +239,7 @@ export default function Profile() {
       <View
         style={[
           styles.container,
-          { paddingTop: insets.top, backgroundColor: theme.colors.primary },
+          { paddingTop: insets.top, backgroundColor: theme.colors.background },
         ]}
       >
         {loading || !profile ? (
@@ -371,7 +370,7 @@ export default function Profile() {
           </View>
         )}
       </View>
-    </PaperProvider>
+    </>
   );
 }
 
@@ -382,8 +381,10 @@ const styles = StyleSheet.create({
     //alignItems: 'center',
   },
   modalContainer: {
-    //backgroundColor: '#ffffff',
+    backgroundColor: '#ffffff',
     padding: 15,
+    marginHorizontal: 20,
+    borderRadius: 10,
   },
   input: {
     marginVertical: 2,

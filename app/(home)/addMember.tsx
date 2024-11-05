@@ -9,7 +9,6 @@ import {
   Button,
   TextInput,
   Switch,
-  PaperProvider,
   Avatar,
   Text,
   Portal,
@@ -207,7 +206,7 @@ export default function AddMember() {
   };
 
   return (
-    <PaperProvider>
+    <>
       <Portal>
         <Modal
           visible={pictureModal}
@@ -227,7 +226,7 @@ export default function AddMember() {
       <View
         style={[
           styles.container,
-          { paddingTop: insets.top, backgroundColor: theme.colors.primary },
+          { paddingTop: insets.top, backgroundColor: theme.colors.background },
         ]}
       >
         <KeyboardAvoidingView
@@ -316,6 +315,8 @@ export default function AddMember() {
               setDateModal(false);
             }}
           />
+        </KeyboardAvoidingView>
+        <View style={{ marginHorizontal: 20 }}>
           <Button
             style={styles.button}
             mode='elevated'
@@ -324,9 +325,9 @@ export default function AddMember() {
           >
             Add Member
           </Button>
-        </KeyboardAvoidingView>
+        </View>
       </View>
-    </PaperProvider>
+    </>
   );
 }
 
@@ -336,8 +337,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   modalContainer: {
-    //backgroundColor: '#ffffff',
+    backgroundColor: '#ffffff',
     padding: 15,
+    marginHorizontal: 20,
+    borderRadius: 10,
   },
   input: {
     marginVertical: 2,

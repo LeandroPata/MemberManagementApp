@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import { PaperProvider, Portal } from 'react-native-paper';
 
 export default function RootLayout() {
   const router = useRouter();
@@ -18,6 +19,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber;
   }, []);
 
   useEffect(() => {
@@ -46,9 +48,13 @@ export default function RootLayout() {
     );
 
   return (
-    <Stack>
-      <Stack.Screen name='index' options={{ headerShown: false }} />
-      <Stack.Screen name='(home)' options={{ headerShown: false }} />
-    </Stack>
+    <PaperProvider>
+      <Portal.Host>
+        <Stack>
+          <Stack.Screen name='index' options={{ headerShown: false }} />
+          <Stack.Screen name='(home)' options={{ headerShown: false }} />
+        </Stack>
+      </Portal.Host>
+    </PaperProvider>
   );
 }

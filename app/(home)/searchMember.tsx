@@ -14,9 +14,9 @@ import {
   Text,
   useTheme,
 } from 'react-native-paper';
-import firestore, { Filter } from '@react-native-firebase/firestore';
-import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
+import firestore, { Filter } from '@react-native-firebase/firestore';
 
 export default function SearchMember() {
   const insets = useSafeAreaInsets();
@@ -235,7 +235,7 @@ export default function SearchMember() {
   const renderItem = ({ item }) => {
     return (
       <TouchableRipple
-        style={[styles.item, { backgroundColor: '#26212a' }]}
+        style={[styles.item, { backgroundColor: theme.colors.primary }]}
         onPress={() => {
           router.push({
             pathname: '/(home)/(profile)/profile',
@@ -251,10 +251,10 @@ export default function SearchMember() {
               source={{ uri: item.profilePicture }}
             />
           ) : null}
-          <Text style={[styles.title, { color: '#c7b5f6' }]}>
+          <Text style={[styles.title, { color: theme.colors.onPrimary }]}>
             Name: {item.name}
           </Text>
-          <Text style={[styles.title, { color: '#c7b5f6' }]}>
+          <Text style={[styles.title, { color: theme.colors.onPrimary }]}>
             Member Number: {item.memberNumber}
           </Text>
         </View>
@@ -263,12 +263,7 @@ export default function SearchMember() {
   };
 
   return (
-    <View
-      style={[
-        styles.container,
-        { paddingTop: insets.top, backgroundColor: theme.colors.background },
-      ]}
-    >
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <KeyboardAvoidingView style={{ marginHorizontal: 20 }} behavior='padding'>
         <TextInput
           style={styles.input}

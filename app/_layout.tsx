@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
+import { PaperProvider, Portal, useTheme } from 'react-native-paper';
 import { Stack, useRouter, useSegments } from 'expo-router';
+import * as SystemUI from 'expo-system-ui';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
-import { PaperProvider, Portal } from 'react-native-paper';
 
 export default function RootLayout() {
   const router = useRouter();
   const segments = useSegments();
+  const theme = useTheme();
 
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
@@ -33,6 +35,10 @@ export default function RootLayout() {
       router.replace('/');
     }
   }, [user, initializing]);
+
+  useEffect(() => {
+    SystemUI.setBackgroundColorAsync(theme.colors.background);
+  }, [theme.colors.background]);
 
   if (initializing)
     return (

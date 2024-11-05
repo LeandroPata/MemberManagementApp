@@ -15,12 +15,12 @@ import {
   Modal,
   useTheme,
 } from 'react-native-paper';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DatePicker from 'react-native-date-picker';
+import * as ImagePicker from 'expo-image-picker';
 import { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import storage from '@react-native-firebase/storage';
-import * as ImagePicker from 'expo-image-picker';
 
 export default function AddMember() {
   const insets = useSafeAreaInsets();
@@ -223,12 +223,7 @@ export default function AddMember() {
           </Button>
         </Modal>
       </Portal>
-      <View
-        style={[
-          styles.container,
-          { paddingTop: insets.top, backgroundColor: theme.colors.background },
-        ]}
-      >
+      <View style={[styles.container, { paddingTop: insets.top }]}>
         <KeyboardAvoidingView
           style={{ marginHorizontal: 20 }}
           behavior='padding'

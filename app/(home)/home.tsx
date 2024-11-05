@@ -1,21 +1,16 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Button, useTheme } from 'react-native-paper';
-import auth from '@react-native-firebase/auth';
-import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
+import auth from '@react-native-firebase/auth';
 
 export default function Home() {
   const insets = useSafeAreaInsets();
   const theme = useTheme();
 
   return (
-    <View
-      style={[
-        styles.container,
-        { paddingTop: insets.top, backgroundColor: theme.colors.background },
-      ]}
-    >
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={{ marginHorizontal: 20 }}>
         <Button
           style={styles.button}

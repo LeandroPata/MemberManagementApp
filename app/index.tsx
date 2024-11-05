@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { StyleSheet, KeyboardAvoidingView, View } from 'react-native';
 import { Portal, Modal, TextInput, Button, useTheme } from 'react-native-paper';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FirebaseError } from 'firebase/app';
 import auth from '@react-native-firebase/auth';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Index() {
   const insets = useSafeAreaInsets();
@@ -134,12 +134,7 @@ export default function Index() {
           </Button>
         </Modal>
       </Portal>
-      <View
-        style={[
-          styles.container,
-          { paddingTop: insets.top, backgroundColor: theme.colors.background },
-        ]}
-      >
+      <View style={[styles.container, { paddingTop: insets.top }]}>
         <KeyboardAvoidingView
           style={{ marginHorizontal: 20 }}
           behavior='padding'

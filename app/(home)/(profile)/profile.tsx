@@ -16,13 +16,13 @@ import {
   Text,
   useTheme,
 } from 'react-native-paper';
-import { useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import DatePicker from 'react-native-date-picker';
+import { useLocalSearchParams } from 'expo-router';
+import * as ImagePicker from 'expo-image-picker';
 import { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
-import * as ImagePicker from 'expo-image-picker';
-import DatePicker from 'react-native-date-picker';
 
 export default function Profile() {
   const { profileID } = useLocalSearchParams();
@@ -236,12 +236,7 @@ export default function Profile() {
           </Button>
         </Modal>
       </Portal>
-      <View
-        style={[
-          styles.container,
-          { paddingTop: insets.top, backgroundColor: theme.colors.background },
-        ]}
-      >
+      <View style={[styles.container, { paddingTop: insets.top }]}>
         {loading || !profile ? (
           <ActivityIndicator size={'large'} style={{ margin: 28 }} />
         ) : editing ? (

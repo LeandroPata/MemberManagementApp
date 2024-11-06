@@ -18,7 +18,7 @@ import {
 } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DatePicker from 'react-native-date-picker';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
@@ -31,10 +31,13 @@ export default function Profile() {
 
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [loadingEdit, setLoadingEdit] = useState(false);
+  const [loadingDelete, setLoadingDelete] = useState(false);
   const [editing, setEditing] = useState(false);
   const [autoNumber, setAutoNumber] = useState(true);
 
   const [pictureModal, setPictureModal] = useState(false);
+  const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
   const [dateModal, setDateModal] = useState(false);
 
   const [name, setName] = useState('');
@@ -126,7 +129,7 @@ export default function Profile() {
           const err = e as FirebaseError;
           alert('File deletion failed: ' + err.message);
           console.log('File deletion failed: ' + err.message);
-          setLoading(false);
+          //setLoadingEdit(false);
         });
 
       // Upload picture to Firebase if it is different from the placeholder
@@ -148,7 +151,7 @@ export default function Profile() {
           const err = e as FirebaseError;
           alert('File upload failed: ' + err.message);
           console.log('File upload failed: ' + err.message);
-          setLoading(false);
+          //setLoadingEdit(false);
         });
 
       //await reference.putFile(result.assets[0].uri);
@@ -159,6 +162,25 @@ export default function Profile() {
       return url;
     }
     return null;
+  };
+
+  const deletePicture = async () => {
+    if (
+      profilePicture &&
+      profilePicture != process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL
+    ) {
+      await reference
+        .delete()
+        .then(() => {
+          console.log('File deleted!');
+        })
+        .catch((e: any) => {
+          const err = e as FirebaseError;
+          alert('File deletion failed: ' + err.message);
+          console.log('File deletion failed: ' + err.message);
+          //setLoadingDelete(false);
+        });
+    }
   };
 
   const checkNumber = async () => {
@@ -182,14 +204,14 @@ export default function Profile() {
   };
 
   const saveMember = async () => {
-    setLoading(true);
+    setLoadingEdit(true);
 
     const url = await uploadPicture();
 
     const numberAvailable = await checkNumber();
     if (numberAvailable > 1) {
       alert('This member number is already attributed to another member!');
-      setLoading(false);
+      setLoadingEdit(false);
       return;
     }
 
@@ -212,10 +234,37 @@ export default function Profile() {
       const err = e as FirebaseError;
       alert('Updating member failed: ' + err.message);
       console.log('Updating member failed: ' + err.message);
-      setLoading(false);
+      setLoadingEdit(false);
     } finally {
-      setLoading(false);
+      setLoadingEdit(false);
     }
+  };
+
+  const deleteMember = async () => {
+    setLoadingDelete(true);
+
+    await deletePicture();
+
+    try {
+      firestore()
+        .collection('users')
+        .doc(profileID)
+        .delete()
+        .then(() => {
+          alert('Member Deleted!');
+        });
+    } catch (e: any) {
+      const err = e as FirebaseError;
+      alert('Deleting member failed: ' + err.message);
+      console.log('Deleting member failed: ' + err.message);
+      setLoadingDelete(false);
+    } finally {
+      setLoadingDelete(false);
+    }
+
+    setLoadingDelete(false);
+    setConfirmDeleteModal(false);
+    router.back();
   };
 
   return (
@@ -234,6 +283,41 @@ export default function Profile() {
           <Button style={styles.button} mode='elevated' onPress={takePicture}>
             Take Picture
           </Button>
+        </Modal>
+      </Portal>
+      <Portal>
+        <Modal
+          visible={confirmDeleteModal}
+          onDismiss={() => {
+            setConfirmDeleteModal(false);
+          }}
+          contentContainerStyle={styles.modalContainer}
+        >
+          <Text style={{ alignSelf: 'center', marginBottom: 10 }}>
+            Are you sure you want to delete this member?
+          </Text>
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+          >
+            <Button
+              style={[styles.button, { width: '45%' }]}
+              mode='elevated'
+              onPress={() => {
+                deleteMember();
+              }}
+            >
+              Yes
+            </Button>
+            <Button
+              style={[styles.button, { width: '45%' }]}
+              mode='elevated'
+              onPress={() => {
+                setConfirmDeleteModal(false);
+              }}
+            >
+              No
+            </Button>
+          </View>
         </Modal>
       </Portal>
       <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -356,11 +440,22 @@ export default function Profile() {
             <Button
               style={styles.button}
               mode='elevated'
+              loading={loadingEdit}
               onPress={() => {
                 setEditing(true);
               }}
             >
               Edit Member
+            </Button>
+            <Button
+              style={styles.button}
+              mode='elevated'
+              loading={loadingDelete}
+              onPress={() => {
+                setConfirmDeleteModal(true);
+              }}
+            >
+              Delete Member
             </Button>
           </View>
         )}

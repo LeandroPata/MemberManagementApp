@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     marginVertical: 3,
   },
   modalContainer: {
-    backgroundColor: '#ffffff',
+    //backgroundColor: '#ffffff',
     padding: 15,
     marginHorizontal: 20,
     borderRadius: 10,

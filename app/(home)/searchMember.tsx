@@ -165,6 +165,7 @@ export default function SearchMember() {
             setSearchResults(true);
           }
         });
+      setLoading(false);
     } else if (name && name.trim() && !memberNumber.trim()) {
       console.log('Name');
       const snapshot = await firestore()
@@ -188,6 +189,7 @@ export default function SearchMember() {
             setSearchResults(true);
           }
         });
+      setLoading(false);
     } else if (memberNumber && memberNumber.trim() && !name.trim()) {
       console.log('Number');
       const snapshot = await firestore()

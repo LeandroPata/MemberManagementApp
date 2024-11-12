@@ -1,3 +1,4 @@
+import '../components/gesture-handler';
 import { useState } from 'react';
 import { StyleSheet, KeyboardAvoidingView, View } from 'react-native';
 import { Portal, Modal, TextInput, Button, useTheme } from 'react-native-paper';
@@ -122,6 +123,7 @@ export default function Index() {
               setConfirmPassword(confirmPassword)
             }
             //error={true}
+            autoCapitalize='none'
             secureTextEntry
           />
           <Button
@@ -155,6 +157,7 @@ export default function Index() {
             value={password}
             onChangeText={(password) => setPassword(password)}
             //error={true}
+            autoCapitalize='none'
             secureTextEntry
           />
         </KeyboardAvoidingView>

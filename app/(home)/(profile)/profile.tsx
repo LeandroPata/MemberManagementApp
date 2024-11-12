@@ -320,7 +320,7 @@ export default function Profile() {
           </View>
         </Modal>
       </Portal>
-      <View style={[styles.container, { paddingTop: insets.top }]}>
+      <View style={styles.container}>
         {loading || !profile ? (
           <ActivityIndicator size={'large'} style={{ margin: 28 }} />
         ) : editing ? (

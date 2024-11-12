@@ -10,7 +10,7 @@ export default function Home() {
   const theme = useTheme();
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <View style={styles.container}>
       <View style={{ marginHorizontal: 20 }}>
         <Button
           style={styles.button}

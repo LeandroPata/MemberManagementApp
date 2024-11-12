@@ -262,7 +262,7 @@ export default function SearchMember() {
   };
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <View style={styles.container}>
       <KeyboardAvoidingView style={{ marginHorizontal: 20 }} behavior='padding'>
         <TextInput
           style={styles.input}

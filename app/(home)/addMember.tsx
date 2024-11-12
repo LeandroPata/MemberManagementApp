@@ -223,7 +223,7 @@ export default function AddMember() {
           </Button>
         </Modal>
       </Portal>
-      <View style={[styles.container, { paddingTop: insets.top }]}>
+      <View style={styles.container}>
         <KeyboardAvoidingView
           style={{ marginHorizontal: 20 }}
           behavior='padding'

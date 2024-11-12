@@ -17,8 +17,10 @@ const HomeLayout = () => {
           backgroundColor: theme.colors.background,
         },
         drawerStyle: { backgroundColor: theme.colors.background },
-        drawerLabelStyle: { color: theme.colors.onBackground },
         drawerActiveTintColor: theme.colors.primary,
+        drawerInactiveTintColor: theme.colors.onBackground,
+        drawerInactiveBackgroundColor: 'transparent',
+        drawerLabelStyle: { marginLeft: -20 },
         headerStyle: {
           backgroundColor: theme.colors.background,
         },
@@ -43,15 +45,33 @@ const HomeLayout = () => {
     >
       <Drawer.Screen
         name='home'
-        options={{ drawerLabel: 'Home', title: 'Home' }}
+        options={{
+          drawerLabel: 'Home',
+          title: 'Home',
+          drawerIcon: ({ size, color }) => (
+            <Ionicons name='home' size={size} color={color} />
+          ),
+        }}
       />
       <Drawer.Screen
         name='addMember'
-        options={{ drawerLabel: 'Add Member', title: 'Add Member' }}
+        options={{
+          drawerLabel: 'Add Member',
+          title: 'Add Member',
+          drawerIcon: ({ size, color }) => (
+            <Ionicons name='person-add' size={size} color={color} />
+          ),
+        }}
       />
       <Drawer.Screen
         name='searchMember'
-        options={{ drawerLabel: 'Search Member', title: 'Search Member' }}
+        options={{
+          drawerLabel: 'Search Member',
+          title: 'Search Member',
+          drawerIcon: ({ size, color }) => (
+            <Ionicons name='search' size={size} color={color} />
+          ),
+        }}
       />
       <Drawer.Screen
         name='(profile)'

@@ -36,14 +36,13 @@ const HomeLayout = () => {
             </TouchableOpacity>
           </View>
         ),
-        sceneContainerStyle: {
+        sceneStyle: {
           backgroundColor: theme.colors.background,
         },
         drawerStyle: { backgroundColor: theme.colors.background },
         drawerActiveTintColor: theme.colors.primary,
         drawerInactiveTintColor: theme.colors.onBackground,
         drawerInactiveBackgroundColor: 'transparent',
-        drawerLabelStyle: { marginLeft: -20 },
       }}
     >
       <Drawer.Screen

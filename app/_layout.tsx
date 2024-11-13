@@ -3,12 +3,12 @@ import { ActivityIndicator, useColorScheme, View } from 'react-native';
 import {
   PaperProvider,
   Portal,
-  useTheme,
   MD3LightTheme as DefaultLightTheme,
   MD3DarkTheme as DefaultDarkTheme,
 } from 'react-native-paper';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SystemUI from 'expo-system-ui';
+import { StatusBar } from 'expo-status-bar';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 
 export default function RootLayout() {
@@ -163,6 +163,7 @@ export default function RootLayout() {
           <Stack.Screen name='index' options={{ headerShown: false }} />
           <Stack.Screen name='(home)' options={{ headerShown: false }} />
         </Stack>
+        <StatusBar style='auto' />
       </Portal.Host>
     </PaperProvider>
   );

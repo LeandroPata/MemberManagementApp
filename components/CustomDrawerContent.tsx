@@ -32,7 +32,6 @@ export default function CustomDrawerContent(props: any) {
           inactiveTintColor={theme.colors.onBackground}
           activeTintColor={theme.colors.primary}
           inactiveBackgroundColor='transparent'
-          labelStyle={{ marginLeft: -20 }}
           onPress={() => auth().signOut()}
         />
       </View>

@@ -23,6 +23,7 @@ export default function SearchMember() {
   const theme = useTheme();
 
   const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState(false);
 
   const [name, setName] = useState('');
   const [memberNumber, setMemberNumber] = useState('');
@@ -31,84 +32,85 @@ export default function SearchMember() {
   const [refreshFlatlist, setRefreshFlatlist] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
+    if (search) {
+      setLoading(true);
 
-    if (!name.trim() && !memberNumber.trim()) {
-      const subscriber = firestore()
-        .collection('users')
-        .orderBy('name', 'asc')
-        .onSnapshot((querySnapshot) => {
-          const members = [];
-          querySnapshot.forEach((documentSnapshot) => {
-            members.push({
-              key: documentSnapshot.id,
-              ...documentSnapshot.data(),
+      if (!name.trim() && !memberNumber.trim()) {
+        const subscriber = firestore()
+          .collection('users')
+          .orderBy('name', 'asc')
+          .onSnapshot((querySnapshot) => {
+            const members = [];
+            querySnapshot.forEach((documentSnapshot) => {
+              members.push({
+                key: documentSnapshot.id,
+                ...documentSnapshot.data(),
+              });
             });
+            setMembers(members);
+            //console.log(members);
           });
-          setMembers(members);
-          //console.log(members);
-        });
-      setLoading(false);
-      return () => subscriber();
-    } else if (name && name.trim() && memberNumber && memberNumber.trim()) {
-      const subscriber = firestore()
-        .collection('users')
-        .where(
-          Filter.and(
-            Filter('name', '==', name),
-            Filter('memberNumber', '==', parseInt(memberNumber))
-          )
-        )
-        .onSnapshot((querySnapshot) => {
-          const members = [];
-          querySnapshot.forEach((documentSnapshot) => {
-            members.push({
-              key: documentSnapshot.id,
-              ...documentSnapshot.data(),
+        setLoading(false);
+        return () => subscriber();
+      } else if (name && name.trim() && memberNumber && memberNumber.trim()) {
+        const subscriber = firestore()
+          .collection('users')
+          .where('memberNumber', '==', parseInt(memberNumber))
+          .onSnapshot((querySnapshot) => {
+            const members = [];
+            querySnapshot.forEach((documentSnapshot) => {
+              if (documentSnapshot.data().name.includes(name)) {
+                members.push({
+                  key: documentSnapshot.id,
+                  ...documentSnapshot.data(),
+                });
+              }
             });
+            setMembers(members);
+            //console.log(members);
           });
-          setMembers(members);
-          //console.log(members);
-        });
-      setLoading(false);
-      return () => subscriber();
-    } else if (name && name.trim() && !memberNumber.trim()) {
-      const subscriber = firestore()
-        .collection('users')
-        .orderBy('name', 'asc')
-        .where(Filter('name', '==', name))
-        .onSnapshot((querySnapshot) => {
-          const members = [];
-          querySnapshot.forEach((documentSnapshot) => {
-            members.push({
-              key: documentSnapshot.id,
-              ...documentSnapshot.data(),
+        setLoading(false);
+        return () => subscriber();
+      } else if (name && name.trim() && !memberNumber.trim()) {
+        const subscriber = firestore()
+          .collection('users')
+          .orderBy('name', 'asc')
+          .onSnapshot((querySnapshot) => {
+            const members = [];
+            querySnapshot.forEach((documentSnapshot) => {
+              if (documentSnapshot.data().name.includes(name)) {
+                members.push({
+                  key: documentSnapshot.id,
+                  ...documentSnapshot.data(),
+                });
+              }
             });
+            setMembers(members);
+            //console.log(members);
           });
-          setMembers(members);
-          //console.log(members);
-        });
-      setLoading(false);
-      return () => subscriber();
-    } else if (memberNumber && memberNumber.trim() && !name.trim()) {
-      const subscriber = firestore()
-        .collection('users')
-        .orderBy('memberNumber', 'asc')
-        .where(Filter('memberNumber', '==', parseInt(memberNumber)))
-        .onSnapshot((querySnapshot) => {
-          const members = [];
-          querySnapshot.forEach((documentSnapshot) => {
-            members.push({
-              key: documentSnapshot.id,
-              ...documentSnapshot.data(),
+        setLoading(false);
+        return () => subscriber();
+      } else if (memberNumber && memberNumber.trim() && !name.trim()) {
+        const subscriber = firestore()
+          .collection('users')
+          .orderBy('memberNumber', 'asc')
+          .where('memberNumber', '==', parseInt(memberNumber))
+          .onSnapshot((querySnapshot) => {
+            const members = [];
+            querySnapshot.forEach((documentSnapshot) => {
+              members.push({
+                key: documentSnapshot.id,
+                ...documentSnapshot.data(),
+              });
             });
+            setMembers(members);
+            //console.log(members);
           });
-          setMembers(members);
-          //console.log(members);
-        });
-      setLoading(false);
-      return () => subscriber();
+        setLoading(false);
+        return () => subscriber();
+      }
     }
+    setLoading(false);
   }, []);
 
   const searchMember = async () => {
@@ -134,7 +136,7 @@ export default function SearchMember() {
           if (members.length <= 0) {
             console.log('No member found.');
           } else {
-            setSearchResults(true);
+            setSearch(true);
           }
         });
       setLoading(false);
@@ -142,27 +144,24 @@ export default function SearchMember() {
       console.log('Both');
       const snapshot = await firestore()
         .collection('users')
-        .where(
-          Filter.and(
-            Filter('name', '==', name),
-            Filter('memberNumber', '==', parseInt(memberNumber))
-          )
-        )
+        .where('memberNumber', '==', parseInt(memberNumber))
         .get()
         .then((querySnapshot) => {
           const members = [];
           querySnapshot.forEach((documentSnapshot) => {
-            members.push({
-              key: documentSnapshot.id,
-              ...documentSnapshot.data(),
-            });
+            if (documentSnapshot.data().name.includes(name)) {
+              members.push({
+                key: documentSnapshot.id,
+                ...documentSnapshot.data(),
+              });
+            }
           });
           setMembers(members);
           //console.log(members);
           if (members.length <= 0) {
             console.log('No member found.');
           } else {
-            setSearchResults(true);
+            setSearch(true);
           }
         });
       setLoading(false);
@@ -171,22 +170,23 @@ export default function SearchMember() {
       const snapshot = await firestore()
         .collection('users')
         .orderBy('name', 'asc')
-        .where(Filter('name', '==', name))
         .get()
         .then((querySnapshot) => {
           const members = [];
           querySnapshot.forEach((documentSnapshot) => {
-            members.push({
-              key: documentSnapshot.id,
-              ...documentSnapshot.data(),
-            });
+            if (documentSnapshot.data().name.includes(name)) {
+              members.push({
+                key: documentSnapshot.id,
+                ...documentSnapshot.data(),
+              });
+            }
           });
           setMembers(members);
           //console.log(members);
           if (members.length <= 0) {
             console.log('No member found.');
           } else {
-            setSearchResults(true);
+            setSearch(true);
           }
         });
       setLoading(false);
@@ -195,7 +195,7 @@ export default function SearchMember() {
       const snapshot = await firestore()
         .collection('users')
         .orderBy('memberNumber', 'asc')
-        .where(Filter('memberNumber', '==', parseInt(memberNumber)))
+        .where('memberNumber', '==', parseInt(memberNumber))
         .get()
         .then((querySnapshot) => {
           const members = [];
@@ -210,7 +210,7 @@ export default function SearchMember() {
           if (members.length <= 0) {
             console.log('No member found.');
           } else {
-            setSearchResults(true);
+            setSearch(true);
           }
         });
     }
@@ -346,8 +346,6 @@ const styles = StyleSheet.create({
   },
   button: {
     marginVertical: 3,
-    //paddingHorizontal: 2,
-    //paddingVertical: 0,
     textAlign: 'center',
     verticalAlign: 'middle',
   },

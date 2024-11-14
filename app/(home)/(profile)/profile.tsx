@@ -46,6 +46,8 @@ export default function Profile() {
   const [memberNumber, setMemberNumber] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+  const [zipCode, setZipCode] = useState('');
   const [endDate, setEndDate] = useState(new Date());
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
 
@@ -62,6 +64,8 @@ export default function Profile() {
           setMemberNumber(documentSnapshot.data().memberNumber);
           setEmail(documentSnapshot.data().email);
           setPhone(documentSnapshot.data().phoneNumber);
+          setAddress(documentSnapshot.data().address);
+          setZipCode(documentSnapshot.data().zipCode);
           setEndDate(new Date(documentSnapshot.data().endDate.toDate()));
           setProfilePicture(documentSnapshot.data().profilePicture);
         }
@@ -340,6 +344,7 @@ export default function Profile() {
             behavior='padding'
           >
             <Pressable
+              style={{ marginBottom: 15 }}
               onPress={() => {
                 setPictureModal(true);
               }}
@@ -375,6 +380,34 @@ export default function Profile() {
               inputMode='tel'
               keyboardType='phone-pad'
               label='Phone Number'
+            />
+            <TextInput
+              style={styles.input}
+              value={address}
+              onChangeText={setAddress}
+              autoCapitalize='sentences'
+              inputMode='text'
+              keyboardType='default'
+              label='Address'
+            />
+            <TextInput
+              style={styles.input}
+              value={zipCode}
+              onChangeText={(text) => {
+                setZipCode(text);
+                if (text.length >= 4 && !text.includes('-')) {
+                  let a = text.substring(0, 4);
+                  let b = text.substring(4);
+                  a = a.concat('-');
+                  text = a.concat(b);
+                  setZipCode(text);
+                }
+              }}
+              maxLength={8}
+              autoCapitalize='none'
+              inputMode='numeric'
+              keyboardType='number-pad'
+              label='Zip Code'
             />
             <View
               style={{
@@ -432,7 +465,7 @@ export default function Profile() {
               <>
                 <Avatar.Image
                   size={250}
-                  style={{ alignSelf: 'center' }}
+                  style={{ alignSelf: 'center', marginBottom: 15 }}
                   source={{ uri: profilePicture }}
                 />
               </>
@@ -441,6 +474,8 @@ export default function Profile() {
             <Text style={styles.title}>Member Number: {memberNumber}</Text>
             <Text style={styles.title}>Email: {email}</Text>
             <Text style={styles.title}>Phone Number: {phoneNumber}</Text>
+            <Text style={styles.title}>Address: {address}</Text>
+            <Text style={styles.title}>Zip Code: {zipCode}</Text>
             <Text style={styles.title}>
               Added Date:{' '}
               {new Date(profile.addedDate.toDate()).toLocaleDateString('pt-pt')}

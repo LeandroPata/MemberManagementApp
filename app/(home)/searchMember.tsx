@@ -111,7 +111,7 @@ export default function SearchMember() {
       }
     }
     setLoading(false);
-  }, []);
+  }, [search, refreshFlatlist]);
 
   const searchMember = async () => {
     Keyboard.dismiss();
@@ -237,7 +237,7 @@ export default function SearchMember() {
         style={[styles.item, { backgroundColor: theme.colors.primary }]}
         onPress={() => {
           router.push({
-            pathname: '/(home)/(profile)/profile',
+            pathname: '/profile',
             params: { profileID: item.key },
           });
         }}

@@ -22,7 +22,12 @@ const HomeLayout = () => {
         headerTitleStyle: { color: theme.colors.onBackground },
         headerShadowVisible: false,
         header: ({ navigation }) => (
-          <View style={{ paddingTop: insets.top, paddingHorizontal: 5 }}>
+          <View
+            style={{
+              paddingTop: insets.top,
+              paddingHorizontal: 5,
+            }}
+          >
             <TouchableOpacity
               onPress={() => navigation.toggleDrawer()}
               style={{ maxWidth: 36 }}
@@ -88,8 +93,10 @@ const HomeLayout = () => {
         }}
       />
       <Drawer.Screen
-        name='(profile)'
-        options={{ drawerItemStyle: { display: 'none' } }}
+        name='(profile)/profile'
+        options={{
+          drawerItemStyle: { display: 'none' },
+        }}
       />
     </Drawer>
   );

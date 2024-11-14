@@ -20,12 +20,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DatePicker from 'react-native-date-picker';
 import { router, useLocalSearchParams } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
+import { useBackHandler } from '@react-native-community/hooks';
 import { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 
 export default function Profile() {
   const { profileID } = useLocalSearchParams();
+  //console.log(profileID);
   const insets = useSafeAreaInsets();
   const theme = useTheme();
 
@@ -66,7 +68,16 @@ export default function Profile() {
       });
     setLoading(false);
     return () => subscriber();
-  }, []);
+  }, [profileID]);
+
+  useBackHandler(() => {
+    if (editing) {
+      setEditing(false);
+    } else {
+      router.replace('/(home)/searchMember');
+    }
+    return true;
+  });
 
   const reference = storage().ref(name + '.jpg');
 
@@ -264,7 +275,7 @@ export default function Profile() {
 
     setLoadingDelete(false);
     setConfirmDeleteModal(false);
-    router.back();
+    router.replace('/(home)/searchMember');
   };
 
   return (

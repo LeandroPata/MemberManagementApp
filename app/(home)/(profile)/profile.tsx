@@ -244,6 +244,7 @@ export default function Profile() {
         })
         .then(() => {
           alert('Member Updated!');
+          setEditing(false);
         });
     } catch (e: any) {
       const err = e as FirebaseError;
@@ -290,7 +291,10 @@ export default function Profile() {
           onDismiss={() => {
             setPictureModal(false);
           }}
-          contentContainerStyle={styles.modalContainer}
+          contentContainerStyle={[
+            styles.modalContainer,
+            { backgroundColor: theme.colors.primaryContainer },
+          ]}
         >
           <Button style={styles.button} mode='elevated' onPress={pickImage}>
             Pick an image from gallery
@@ -306,9 +310,18 @@ export default function Profile() {
           onDismiss={() => {
             setConfirmDeleteModal(false);
           }}
-          contentContainerStyle={styles.modalContainer}
+          contentContainerStyle={[
+            styles.modalContainer,
+            { backgroundColor: theme.colors.primaryContainer },
+          ]}
         >
-          <Text style={{ alignSelf: 'center', marginBottom: 10 }}>
+          <Text
+            style={{
+              alignSelf: 'center',
+              marginBottom: 10,
+              color: theme.colors.onPrimaryContainer,
+            }}
+          >
             Are you sure you want to delete this member?
           </Text>
           <View
@@ -517,10 +530,11 @@ const styles = StyleSheet.create({
     //alignItems: 'center',
   },
   modalContainer: {
-    backgroundColor: '#ffffff',
     padding: 15,
     marginHorizontal: 20,
     borderRadius: 10,
+    maxWidth: '80%',
+    alignSelf: 'center',
   },
   input: {
     marginVertical: 2,

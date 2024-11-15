@@ -113,7 +113,11 @@ export default function Index() {
             setLoginLoading(false);
             setShowModal(false);
           }}
-          contentContainerStyle={styles.modalContainer}
+          style={styles.modalContainer}
+          contentContainerStyle={[
+            styles.modalContentContainer,
+            { backgroundColor: theme.colors.primaryContainer },
+          ]}
         >
           <TextInput
             style={styles.input}
@@ -198,10 +202,12 @@ const styles = StyleSheet.create({
     marginVertical: 3,
   },
   modalContainer: {
-    //backgroundColor: '#ffffff',
+    marginHorizontal: 30,
+    alignItems: 'center',
+  },
+  modalContentContainer: {
     padding: 15,
-    marginHorizontal: 20,
-    borderRadius: 10,
+    borderRadius: 20,
   },
   inputModal: {
     //marginVertical: 4,

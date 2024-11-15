@@ -291,8 +291,9 @@ export default function Profile() {
           onDismiss={() => {
             setPictureModal(false);
           }}
+          style={styles.modalContainer}
           contentContainerStyle={[
-            styles.modalContainer,
+            styles.modalContentContainer,
             { backgroundColor: theme.colors.primaryContainer },
           ]}
         >
@@ -530,11 +531,12 @@ const styles = StyleSheet.create({
     //alignItems: 'center',
   },
   modalContainer: {
+    marginHorizontal: 30,
+    alignItems: 'center',
+  },
+  modalContentContainer: {
     padding: 15,
-    marginHorizontal: 20,
-    borderRadius: 10,
-    maxWidth: '80%',
-    alignSelf: 'center',
+    borderRadius: 20,
   },
   input: {
     marginVertical: 2,

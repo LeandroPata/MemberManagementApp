@@ -219,7 +219,11 @@ export default function AddMember() {
           onDismiss={() => {
             setPictureModal(false);
           }}
-          contentContainerStyle={styles.modalContainer}
+          style={styles.modalContainer}
+          contentContainerStyle={[
+            styles.modalContentContainer,
+            { backgroundColor: theme.colors.primaryContainer },
+          ]}
         >
           <Button style={styles.button} mode='elevated' onPress={pickImage}>
             Pick an image from gallery
@@ -367,10 +371,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   modalContainer: {
-    backgroundColor: '#ffffff',
+    marginHorizontal: 30,
+    alignItems: 'center',
+  },
+  modalContentContainer: {
     padding: 15,
-    marginHorizontal: 20,
-    borderRadius: 10,
+    borderRadius: 20,
   },
   input: {
     marginVertical: 2,

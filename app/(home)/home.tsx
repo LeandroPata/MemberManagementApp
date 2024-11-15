@@ -11,9 +11,12 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
-      <View style={{ marginHorizontal: 20 }}>
+      <View style={styles.buttonContainer}>
         <Button
           style={styles.button}
+          contentStyle={styles.buttonContent}
+          labelStyle={styles.buttonText}
+          icon='account-plus'
           mode='elevated'
           //loading={loginLoading}
           onPress={() => router.push('/(home)/addMember')}
@@ -22,6 +25,9 @@ export default function Home() {
         </Button>
         <Button
           style={styles.button}
+          contentStyle={styles.buttonContent}
+          labelStyle={styles.buttonText}
+          icon='account-search'
           mode='elevated'
           //loading={loginLoading}
           onPress={() => router.push('/(home)/searchMember')}
@@ -30,6 +36,9 @@ export default function Home() {
         </Button>
         <Button
           style={styles.button}
+          contentStyle={styles.buttonContent}
+          labelStyle={styles.buttonText}
+          icon='logout'
           mode='elevated'
           //loading={loginLoading}
           onPress={() => auth().signOut()}
@@ -46,15 +55,26 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
+  buttonContainer: {
+    marginHorizontal: 20,
+    alignItems: 'center',
+  },
   input: {
     marginVertical: 4,
     height: 50,
     borderWidth: 1,
     borderRadius: 1,
     padding: 5,
-    //backgroundColor: '#ffffff',
   },
   button: {
-    marginVertical: 3,
+    marginVertical: 8,
+    justifyContent: 'center',
+  },
+  buttonContent: { minWidth: 280, minHeight: 80 },
+  buttonText: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    overflow: 'visible',
+    paddingTop: 10,
   },
 });

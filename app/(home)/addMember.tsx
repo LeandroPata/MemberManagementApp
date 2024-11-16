@@ -225,10 +225,24 @@ export default function AddMember() {
             { backgroundColor: theme.colors.primaryContainer },
           ]}
         >
-          <Button style={styles.button} mode='elevated' onPress={pickImage}>
-            Pick an image from gallery
+          <Button
+            style={styles.button}
+            contentStyle={styles.buttonContent}
+            labelStyle={styles.buttonText}
+            icon='file-image'
+            mode='elevated'
+            onPress={pickImage}
+          >
+            From gallery
           </Button>
-          <Button style={styles.button} mode='elevated' onPress={takePicture}>
+          <Button
+            style={styles.button}
+            contentStyle={styles.buttonContent}
+            labelStyle={styles.buttonText}
+            icon='camera'
+            mode='elevated'
+            onPress={takePicture}
+          >
             Take Picture
           </Button>
         </Modal>
@@ -350,9 +364,12 @@ export default function AddMember() {
             }}
           />
         </KeyboardAvoidingView>
-        <View style={{ marginHorizontal: 20 }}>
+        <View style={styles.buttonContainer}>
           <Button
             style={styles.button}
+            contentStyle={styles.buttonContent}
+            labelStyle={styles.buttonText}
+            icon='account-plus'
             mode='elevated'
             loading={loading}
             onPress={addMember}
@@ -378,10 +395,22 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 20,
   },
-  input: {
-    marginVertical: 2,
+  buttonContainer: {
+    marginHorizontal: 20,
+    alignItems: 'center',
   },
   button: {
-    marginVertical: 3,
+    marginVertical: 8,
+    justifyContent: 'center',
+  },
+  buttonContent: { minWidth: 280, minHeight: 80 },
+  buttonText: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    overflow: 'visible',
+    paddingTop: 10,
+  },
+  input: {
+    marginVertical: 2,
   },
 });

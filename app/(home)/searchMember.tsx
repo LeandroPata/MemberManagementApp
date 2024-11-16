@@ -111,7 +111,7 @@ export default function SearchMember() {
       }
     }
     setLoading(false);
-  }, [search, refreshFlatlist]);
+  }, [search]);
 
   const searchMember = async () => {
     Keyboard.dismiss();
@@ -246,7 +246,7 @@ export default function SearchMember() {
           {item.profilePicture ? (
             <Avatar.Image
               size={100}
-              style={{ alignSelf: 'center' }}
+              style={{ alignSelf: 'center', marginBottom: 10 }}
               source={{ uri: item.profilePicture }}
             />
           ) : null}
@@ -280,14 +280,19 @@ export default function SearchMember() {
           keyboardType='numeric'
           label='Member Number'
         />
-        <Button
-          style={styles.button}
-          mode='elevated'
-          loading={loading}
-          onPress={searchMember}
-        >
-          Search Member
-        </Button>
+        <View style={styles.buttonContainer}>
+          <Button
+            style={[styles.button, { marginTop: 8 }]}
+            contentStyle={styles.buttonContent}
+            labelStyle={styles.buttonText}
+            icon='account-search'
+            mode='elevated'
+            loading={loading}
+            onPress={searchMember}
+          >
+            Search Member
+          </Button>
+        </View>
       </KeyboardAvoidingView>
       {!members ? null : (
         <View
@@ -302,6 +307,7 @@ export default function SearchMember() {
           <View style={{ width: '48%' }}>
             <Button
               style={styles.button}
+              labelStyle={[styles.buttonText, { fontSize: 15, paddingTop: 0 }]}
               mode='elevated'
               onPress={() => {
                 console.log('Order by name');
@@ -314,13 +320,14 @@ export default function SearchMember() {
           <View style={{ width: '48%' }}>
             <Button
               style={styles.button}
+              labelStyle={[styles.buttonText, { fontSize: 15, paddingTop: 0 }]}
               mode='elevated'
               onPress={() => {
                 console.log('Order by member number');
                 orderMembersNumber();
               }}
             >
-              Order by member number
+              Order by number
             </Button>
           </View>
         </View>
@@ -341,13 +348,23 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  input: {
-    marginVertical: 2,
+  buttonContainer: {
+    marginHorizontal: 20,
+    alignItems: 'center',
   },
   button: {
-    marginVertical: 3,
-    textAlign: 'center',
-    verticalAlign: 'middle',
+    //marginVertical: 8,
+    justifyContent: 'center',
+  },
+  buttonContent: { minWidth: 250, minHeight: 50 },
+  buttonText: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    overflow: 'visible',
+    paddingTop: 10,
+  },
+  input: {
+    marginVertical: 2,
   },
   item: {
     borderRadius: 10,
@@ -359,6 +376,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 15,
+    fontWeight: 'bold',
   },
   picture: {
     width: 100,

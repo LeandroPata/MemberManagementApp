@@ -130,14 +130,23 @@ export default function Index() {
             autoCapitalize='none'
             secureTextEntry
           />
-          <Button
-            style={styles.button}
-            mode='elevated'
-            loading={confirmSignupLoading}
-            onPress={confirmSignUp}
-          >
-            Confirm Password
-          </Button>
+          <View style={[styles.buttonContainer, { marginTop: 15 }]}>
+            <Button
+              style={styles.button}
+              contentStyle={{ minWidth: 150, minHeight: 30 }}
+              labelStyle={{
+                fontSize: 15,
+                fontWeight: 'bold',
+                overflow: 'visible',
+              }}
+              icon='check'
+              mode='elevated'
+              loading={confirmSignupLoading}
+              onPress={confirmSignUp}
+            >
+              Confirm Password
+            </Button>
+          </View>
         </Modal>
       </Portal>
       <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -165,9 +174,12 @@ export default function Index() {
             secureTextEntry
           />
         </KeyboardAvoidingView>
-        <View style={{ marginHorizontal: 20 }}>
+        <View style={[styles.buttonContainer, { marginTop: 50 }]}>
           <Button
             style={styles.button}
+            contentStyle={styles.buttonContent}
+            labelStyle={styles.buttonText}
+            icon='login'
             mode='elevated'
             loading={loginLoading}
             onPress={signIn}
@@ -176,6 +188,9 @@ export default function Index() {
           </Button>
           <Button
             style={styles.button}
+            contentStyle={styles.buttonContent}
+            labelStyle={styles.buttonText}
+            icon='briefcase-plus'
             mode='elevated'
             loading={signupLoading}
             onPress={signUp}
@@ -194,28 +209,36 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     //alignItems: 'center',
   },
-  input: {
-    marginVertical: 2,
-    //width: '80%',
-  },
-  button: {
-    marginVertical: 3,
+  buttonContainer: {
+    marginHorizontal: 20,
+    alignItems: 'center',
   },
   modalContainer: {
     marginHorizontal: 30,
-    alignItems: 'center',
   },
   modalContentContainer: {
     padding: 15,
     borderRadius: 20,
   },
   inputModal: {
-    //marginVertical: 4,
     width: '75%',
     height: 50,
     borderWidth: 1,
     borderRadius: 10,
     padding: 10,
-    //backgroundColor: '#ffffff',
+  },
+  input: {
+    marginVertical: 2,
+  },
+  button: {
+    marginVertical: 8,
+    justifyContent: 'center',
+  },
+  buttonContent: { minWidth: 250, minHeight: 80 },
+  buttonText: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    overflow: 'visible',
+    paddingTop: 10,
   },
 });

@@ -214,10 +214,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContainer: {
+    padding: 10,
     marginHorizontal: 30,
   },
   modalContentContainer: {
-    padding: 15,
     borderRadius: 20,
   },
   inputModal: {

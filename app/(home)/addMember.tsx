@@ -249,11 +249,11 @@ export default function AddMember() {
       </Portal>
       <View style={styles.container}>
         <KeyboardAvoidingView
-          style={{ marginHorizontal: 20 }}
+          style={{ paddingHorizontal: 10 }}
           behavior='padding'
         >
           <Pressable
-            style={{ marginBottom: 15 }}
+            style={styles.pictureButton}
             onPress={() => {
               setPictureModal(true);
             }}
@@ -388,11 +388,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   modalContainer: {
+    padding: 10,
     marginHorizontal: 30,
     alignItems: 'center',
   },
   modalContentContainer: {
-    padding: 15,
     borderRadius: 20,
   },
   buttonContainer: {
@@ -413,4 +413,5 @@ const styles = StyleSheet.create({
   input: {
     marginVertical: 2,
   },
+  pictureButton: { padding: 15, alignSelf: 'center' },
 });

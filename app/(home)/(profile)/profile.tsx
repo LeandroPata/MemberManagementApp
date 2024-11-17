@@ -73,7 +73,7 @@ export default function Profile() {
       });
     setLoading(false);
     return () => subscriber();
-  }, [profileID, profile]);
+  }, [profileID]);
 
   useBackHandler(() => {
     if (editing) {
@@ -240,6 +240,8 @@ export default function Profile() {
           memberNumber: parseInt(memberNumber),
           email: email.trim(),
           phoneNumber: phoneNumber,
+          address: address.trim(),
+          zipCode: zipCode.trim(),
           endDate: Timestamp.fromDate(endDate),
           profilePicture: url ? url : profilePicture,
         })

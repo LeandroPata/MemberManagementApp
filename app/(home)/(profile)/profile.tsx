@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Pressable,
+  ScrollView,
 } from 'react-native';
 import {
   Button,
@@ -58,7 +59,7 @@ export default function Profile() {
       .collection('users')
       .doc(profileID)
       .onSnapshot((documentSnapshot) => {
-        if (documentSnapshot) {
+        if (documentSnapshot && documentSnapshot.data()) {
           setProfile(documentSnapshot.data());
           setName(documentSnapshot.data().name);
           setMemberNumber(documentSnapshot.data().memberNumber);
@@ -72,7 +73,7 @@ export default function Profile() {
       });
     setLoading(false);
     return () => subscriber();
-  }, [profileID]);
+  }, [profileID, profile]);
 
   useBackHandler(() => {
     if (editing) {
@@ -297,12 +298,28 @@ export default function Profile() {
             { backgroundColor: theme.colors.primaryContainer },
           ]}
         >
-          <Button style={styles.button} mode='elevated' onPress={pickImage}>
-            Pick an image from gallery
-          </Button>
-          <Button style={styles.button} mode='elevated' onPress={takePicture}>
-            Take Picture
-          </Button>
+          <View style={styles.buttonContainer}>
+            <Button
+              style={styles.button}
+              contentStyle={styles.buttonContent}
+              labelStyle={styles.buttonText}
+              icon='file-image'
+              mode='elevated'
+              onPress={pickImage}
+            >
+              From gallery
+            </Button>
+            <Button
+              style={styles.button}
+              contentStyle={styles.buttonContent}
+              labelStyle={styles.buttonText}
+              icon='camera'
+              mode='elevated'
+              onPress={takePicture}
+            >
+              Take Picture
+            </Button>
+          </View>
         </Modal>
       </Portal>
       <Portal>
@@ -317,19 +334,28 @@ export default function Profile() {
           ]}
         >
           <Text
-            style={{
-              alignSelf: 'center',
-              marginBottom: 10,
-              color: theme.colors.onPrimaryContainer,
-            }}
+            style={[
+              styles.title,
+              {
+                fontSize: 25,
+                textAlign: 'center',
+                marginBottom: 10,
+                color: theme.colors.onPrimaryContainer,
+              },
+            ]}
           >
             Are you sure you want to delete this member?
           </Text>
           <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+            style={[
+              styles.buttonContainer,
+              { flexDirection: 'row', justifyContent: 'space-between' },
+            ]}
           >
             <Button
-              style={[styles.button, { width: '45%' }]}
+              style={[styles.button, { width: '45%', marginHorizontal: 8 }]}
+              contentStyle={{ minHeight: 50 }}
+              labelStyle={styles.buttonText}
               mode='elevated'
               onPress={() => {
                 deleteMember();
@@ -338,7 +364,9 @@ export default function Profile() {
               Yes
             </Button>
             <Button
-              style={[styles.button, { width: '45%' }]}
+              style={[styles.button, { width: '45%', marginHorizontal: 8 }]}
+              contentStyle={{ minHeight: 50 }}
+              labelStyle={styles.buttonText}
               mode='elevated'
               onPress={() => {
                 setConfirmDeleteModal(false);
@@ -358,7 +386,7 @@ export default function Profile() {
             behavior='padding'
           >
             <Pressable
-              style={{ marginBottom: 15 }}
+              style={styles.pictureButton}
               onPress={() => {
                 setPictureModal(true);
               }}
@@ -469,12 +497,18 @@ export default function Profile() {
                 setDateModal(false);
               }}
             />
-            <Button style={styles.button} mode='elevated' onPress={saveMember}>
-              Save
-            </Button>
+            <View style={styles.buttonContainer}>
+              <Button
+                style={styles.button}
+                mode='elevated'
+                onPress={saveMember}
+              >
+                Save
+              </Button>
+            </View>
           </KeyboardAvoidingView>
         ) : (
-          <View style={{ marginHorizontal: 20 }}>
+          <ScrollView style={{ paddingHorizontal: 10 }}>
             {profilePicture ? (
               <>
                 <Avatar.Image
@@ -484,40 +518,85 @@ export default function Profile() {
                 />
               </>
             ) : null}
-            <Text style={styles.title}>Name: {name}</Text>
-            <Text style={styles.title}>Member Number: {memberNumber}</Text>
-            <Text style={styles.title}>Email: {email}</Text>
-            <Text style={styles.title}>Phone Number: {phoneNumber}</Text>
-            <Text style={styles.title}>Address: {address}</Text>
-            <Text style={styles.title}>Zip Code: {zipCode}</Text>
+            <Text style={styles.title}>
+              Name:{' '}
+              <Text style={[styles.title, { fontWeight: 'normal' }]}>
+                {name}
+              </Text>
+            </Text>
+            <Text style={styles.title}>
+              Member Number:{' '}
+              <Text style={[styles.title, { fontWeight: 'normal' }]}>
+                {memberNumber}
+              </Text>
+            </Text>
+            <Text style={styles.title}>
+              Email:{' '}
+              <Text style={[styles.title, { fontWeight: 'normal' }]}>
+                {email}
+              </Text>
+            </Text>
+            <Text style={styles.title}>
+              Phone Number:{' '}
+              <Text style={[styles.title, { fontWeight: 'normal' }]}>
+                {phoneNumber}
+              </Text>
+            </Text>
+            <Text style={styles.title}>
+              Address:{' '}
+              <Text style={[styles.title, { fontWeight: 'normal' }]}>
+                {address}
+              </Text>
+            </Text>
+            <Text style={styles.title}>
+              Zip Code:{' '}
+              <Text style={[styles.title, { fontWeight: 'normal' }]}>
+                {zipCode}
+              </Text>
+            </Text>
             <Text style={styles.title}>
               Added Date:{' '}
-              {new Date(profile.addedDate.toDate()).toLocaleDateString('pt-pt')}
+              <Text style={[styles.title, { fontWeight: 'normal' }]}>
+                {new Date(profile.addedDate.toDate()).toLocaleDateString(
+                  'pt-pt'
+                )}
+              </Text>
             </Text>
             <Text style={styles.title}>
-              End Date: {endDate.toLocaleDateString('pt-pt')}
+              End Date:{' '}
+              <Text style={[styles.title, { fontWeight: 'normal' }]}>
+                {endDate.toLocaleDateString('pt-pt')}
+              </Text>
             </Text>
-            <Button
-              style={styles.button}
-              mode='elevated'
-              loading={loadingEdit}
-              onPress={() => {
-                setEditing(true);
-              }}
-            >
-              Edit Member
-            </Button>
-            <Button
-              style={styles.button}
-              mode='elevated'
-              loading={loadingDelete}
-              onPress={() => {
-                setConfirmDeleteModal(true);
-              }}
-            >
-              Delete Member
-            </Button>
-          </View>
+            <View style={styles.buttonContainer}>
+              <Button
+                style={styles.button}
+                contentStyle={styles.buttonContent}
+                labelStyle={styles.buttonText}
+                icon='account-edit'
+                mode='elevated'
+                loading={loadingEdit}
+                onPress={() => {
+                  setEditing(true);
+                }}
+              >
+                Edit Member
+              </Button>
+              <Button
+                style={styles.button}
+                contentStyle={styles.buttonContent}
+                labelStyle={styles.buttonText}
+                icon='account-remove'
+                mode='elevated'
+                loading={loadingDelete}
+                onPress={() => {
+                  setConfirmDeleteModal(true);
+                }}
+              >
+                Delete Member
+              </Button>
+            </View>
+          </ScrollView>
         )}
       </View>
     </>
@@ -531,6 +610,8 @@ const styles = StyleSheet.create({
     //alignItems: 'center',
   },
   modalContainer: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     marginHorizontal: 30,
     alignItems: 'center',
   },
@@ -538,9 +619,25 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 20,
   },
+  buttonContainer: {
+    marginHorizontal: 20,
+    alignItems: 'center',
+  },
+  button: {
+    marginVertical: 8,
+    justifyContent: 'center',
+  },
+  buttonContent: { minWidth: 280, minHeight: 80 },
+  buttonText: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    overflow: 'visible',
+    paddingTop: 10,
+  },
   input: {
     marginVertical: 2,
   },
+  pictureButton: { padding: 15, alignSelf: 'center' },
   picture: {
     width: 100,
     height: 100,
@@ -548,9 +645,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   title: {
-    fontSize: 15,
-  },
-  button: {
+    fontSize: 20,
+    fontWeight: 'bold',
     marginVertical: 3,
   },
 });

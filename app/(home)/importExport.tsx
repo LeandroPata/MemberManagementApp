@@ -2,23 +2,30 @@ import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Button } from 'react-native-paper';
 import { router } from 'expo-router';
-import { File, Paths } from 'expo-file-system/next';
-import * as Sharing from 'expo-sharing';
+import * as FileSystem from 'expo-file-system';
 import { FirebaseError } from 'firebase/app';
+import { utils } from '@react-native-firebase/app';
 import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 import * as XLSX from 'xlsx';
 
 export default function importExport() {
   const [importLoading, setImportLoading] = useState(false);
   const [exportLoading, setExportLoading] = useState(false);
 
+  const reference = storage().ref('membersData.xlsx');
+
   const importMembers = () => {};
+
+  const exportSheet = () => {};
+
+  const uploadSheet = () => {};
 
   const exportMembers = async () => {
     setExportLoading(true);
 
     try {
-      /* const snapshot = await firestore()
+      const snapshot = await firestore()
         .collection('users')
         .orderBy('name', 'asc')
         .get();
@@ -37,7 +44,7 @@ export default function importExport() {
         bookType: 'xlsx',
       });
 
-      const filePath = FileSystem.documentDirectory + 'membersData.xlsx';
+      const filePath = FileSystem.cacheDirectory + 'membersData.xlsx';
       console.log(filePath);
 
       await FileSystem.writeAsStringAsync(filePath, xlsxFile, {
@@ -45,22 +52,50 @@ export default function importExport() {
       });
 
       alert('Exporting successfull!');
-      console.log('Exporting successfull!'); */
+      console.log('Exporting successfull!');
 
-      const file = new File(Paths.document, 'test.txt');
-      if (file.exists) {
-        file.delete();
-      }
-      file.create();
-      file.write('Testing');
-      console.log(file.exists + ' : ' + file.text());
-      console.log(file.uri);
+      const task = reference.putFile(filePath);
 
-      console.log(await Sharing.isAvailableAsync());
-      if (await Sharing.isAvailableAsync()) {
-        Sharing.shareAsync(file.uri);
-      }
-      console.log('Test successfull!');
+      task.on('state_changed', (taskSnapshot) => {
+        console.log(
+          `${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`
+        );
+      });
+
+      await task
+        .then(() => {
+          console.log('Data uploaded to the bucket!');
+          alert('Data uploaded to the bucket!');
+        })
+        .catch((e: any) => {
+          const err = e as FirebaseError;
+          alert('File upload failed: ' + err.message);
+          console.log('File upload failed: ' + err.message);
+          setExportLoading(false);
+        });
+
+      const downloadTask = reference.writeToFile(
+        utils.FilePath.EXTERNAL_STORAGE_DIRECTORY +
+          '/Documents/membersData.xlsx'
+      );
+
+      downloadTask.on('state_changed', (taskSnapshot) => {
+        console.log(
+          `${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`
+        );
+      });
+
+      await downloadTask
+        .then(() => {
+          console.log('Data downloaded!');
+          alert('Data downloaded!');
+        })
+        .catch((e: any) => {
+          const err = e as FirebaseError;
+          alert('Data download failed: ' + err.message);
+          console.log('Data download failed: ' + err.message);
+          setExportLoading(false);
+        });
     } catch (e: any) {
       const err = e as FirebaseError;
       console.log('Exporting members failed: ' + err.message);

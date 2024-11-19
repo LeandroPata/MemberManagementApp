@@ -38,6 +38,17 @@ export default function Home() {
           style={styles.button}
           contentStyle={styles.buttonContent}
           labelStyle={styles.buttonText}
+          icon='database'
+          mode='elevated'
+          //loading={loginLoading}
+          onPress={() => router.push('/(home)/importExport')}
+        >
+          Import/Export
+        </Button>
+        <Button
+          style={styles.button}
+          contentStyle={styles.buttonContent}
+          labelStyle={styles.buttonText}
           icon='logout'
           mode='elevated'
           //loading={loginLoading}

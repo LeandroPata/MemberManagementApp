@@ -93,6 +93,20 @@ const HomeLayout = () => {
         }}
       />
       <Drawer.Screen
+        name='importExport'
+        options={{
+          drawerLabel: 'Import/Export',
+          title: 'Import/Export',
+          drawerIcon: ({ focused, size, color }) => (
+            <Ionicons
+              name={focused ? 'server' : 'server-outline'}
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Drawer.Screen
         name='(profile)/profile'
         options={{
           drawerItemStyle: { display: 'none' },

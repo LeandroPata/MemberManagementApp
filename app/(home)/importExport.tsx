@@ -7,19 +7,84 @@ import { FirebaseError } from 'firebase/app';
 import { utils } from '@react-native-firebase/app';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
-import * as XLSX from 'xlsx';
+import DocumentPicker from 'react-native-document-picker';
 
 export default function importExport() {
   const [importLoading, setImportLoading] = useState(false);
   const [exportLoading, setExportLoading] = useState(false);
 
-  const reference = storage().ref('membersData.xlsx');
+  const reference = storage().ref('membersData.csv');
 
-  const importMembers = () => {};
+  const formatDataOrder = (data) => {
+    const orderedKeys = [
+      'name',
+      'memberNumber',
+      'email',
+      'phoneNumber',
+      'address',
+      'zipCode',
+      'addedDate',
+      'endDate',
+    ];
 
-  const exportSheet = () => {};
+    return data.map((doc) => {
+      const orderedDoc = {};
+      orderedKeys.forEach((key) => {
+        if (key == 'addedDate' || key == 'endDate') {
+          const timestamp = new Date(doc[key].toDate()).toLocaleDateString(
+            'pt-pt'
+          );
+          orderedDoc[key] = timestamp || '';
+        } else {
+          orderedDoc[key] = doc[key] || '';
+        }
+      });
+      Object.keys(doc).forEach((key) => {
+        if (!orderedKeys.includes(key) && key != 'profilePicture') {
+          orderedDoc[key] = doc[key];
+        }
+      });
+      return orderedDoc;
+    });
+  };
 
-  const uploadSheet = () => {};
+  const convertCSVtoJSON = (data) => {};
+
+  const convertJSONToCSV = (data) => {
+    const headers = Object.keys(data[0]).join(',');
+    const rows = data
+      .map((row) =>
+        Object.values(row)
+          .map((value) => `"${value}"`)
+          .join(',')
+      )
+      .join('\n');
+    return `${headers}\n${rows}`;
+  };
+
+  const importMembers = async () => {};
+
+  const uploadFile = async (filePath) => {
+    const task = reference.putFile(filePath);
+
+    task.on('state_changed', (taskSnapshot) => {
+      console.log(
+        `${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`
+      );
+    });
+
+    await task
+      .then(() => {
+        console.log('Data uploaded to the bucket!');
+        alert('Data uploaded to the bucket!');
+      })
+      .catch((e: any) => {
+        const err = e as FirebaseError;
+        alert('File upload failed: ' + err.message);
+        console.log('File upload failed: ' + err.message);
+        setExportLoading(false);
+      });
+  };
 
   const exportMembers = async () => {
     setExportLoading(true);
@@ -30,31 +95,27 @@ export default function importExport() {
         .orderBy('name', 'asc')
         .get();
 
-      const membersData = snapshot.docs.map((doc) => doc.data());
-      console.log(membersData);
+      const rawData = snapshot.docs.map((doc) => doc.data());
+      //console.log(rawData);
 
-      const worksheet = XLSX.utils.json_to_sheet(membersData);
-      console.log(worksheet);
-      const workbook = XLSX.utils.book_new();
-      console.log(workbook);
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'Members');
+      const membersData = formatDataOrder(rawData);
 
-      const xlsxFile = XLSX.write(workbook, {
-        type: 'base64',
-        bookType: 'xlsx',
-      });
+      const file = convertJSONToCSV(membersData);
+      console.log(file);
 
-      const filePath = FileSystem.cacheDirectory + 'membersData.xlsx';
-      console.log(filePath);
+      const filePath = FileSystem.cacheDirectory + 'membersData.csv';
+      //console.log(filePath);
 
-      await FileSystem.writeAsStringAsync(filePath, xlsxFile, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
+      await FileSystem.writeAsStringAsync(filePath, file);
 
       alert('Exporting successfull!');
       console.log('Exporting successfull!');
 
-      const task = reference.putFile(filePath);
+      await uploadFile(filePath);
+
+      const task = reference.writeToFile(
+        utils.FilePath.EXTERNAL_STORAGE_DIRECTORY + '/Documents/membersData.csv'
+      );
 
       task.on('state_changed', (taskSnapshot) => {
         console.log(
@@ -63,29 +124,6 @@ export default function importExport() {
       });
 
       await task
-        .then(() => {
-          console.log('Data uploaded to the bucket!');
-          alert('Data uploaded to the bucket!');
-        })
-        .catch((e: any) => {
-          const err = e as FirebaseError;
-          alert('File upload failed: ' + err.message);
-          console.log('File upload failed: ' + err.message);
-          setExportLoading(false);
-        });
-
-      const downloadTask = reference.writeToFile(
-        utils.FilePath.EXTERNAL_STORAGE_DIRECTORY +
-          '/Documents/membersData.xlsx'
-      );
-
-      downloadTask.on('state_changed', (taskSnapshot) => {
-        console.log(
-          `${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`
-        );
-      });
-
-      await downloadTask
         .then(() => {
           console.log('Data downloaded!');
           alert('Data downloaded!');
@@ -115,7 +153,7 @@ export default function importExport() {
           labelStyle={styles.buttonText}
           icon='database-import'
           mode='elevated'
-          onPress={() => {}}
+          onPress={importMembers}
         >
           Import Members
         </Button>
@@ -125,7 +163,7 @@ export default function importExport() {
           labelStyle={styles.buttonText}
           icon='database-export'
           mode='elevated'
-          onPress={() => exportMembers()}
+          onPress={exportMembers}
         >
           Export Members
         </Button>

@@ -90,7 +90,7 @@ export default function Profile() {
     setPictureModal(false);
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: 'images',
       allowsMultipleSelection: false,
       allowsEditing: true,
       quality: 0.5,
@@ -115,7 +115,7 @@ export default function Profile() {
     }
 
     const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: 'images',
       allowsMultipleSelection: false,
       allowsEditing: true,
       quality: 0.5,
@@ -143,9 +143,8 @@ export default function Profile() {
         })
         .catch((e: any) => {
           const err = e as FirebaseError;
-          alert('File deletion failed: ' + err.message);
+          //alert('File deletion failed: ' + err.message);
           console.log('File deletion failed: ' + err.message);
-          //setLoadingEdit(false);
         });
 
       // Upload picture to Firebase if it is different from the placeholder
@@ -165,7 +164,7 @@ export default function Profile() {
         })
         .catch((e: any) => {
           const err = e as FirebaseError;
-          alert('File upload failed: ' + err.message);
+          //alert('File upload failed: ' + err.message);
           console.log('File upload failed: ' + err.message);
           //setLoadingEdit(false);
         });
@@ -192,7 +191,7 @@ export default function Profile() {
         })
         .catch((e: any) => {
           const err = e as FirebaseError;
-          alert('File deletion failed: ' + err.message);
+          //alert('File deletion failed: ' + err.message);
           console.log('File deletion failed: ' + err.message);
           //setLoadingDelete(false);
         });

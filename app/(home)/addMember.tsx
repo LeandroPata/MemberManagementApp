@@ -69,7 +69,7 @@ export default function AddMember() {
     setPictureModal(false);
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: 'images',
       allowsMultipleSelection: false,
       allowsEditing: true,
       quality: 0.5,
@@ -94,7 +94,7 @@ export default function AddMember() {
     }
 
     const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: 'images',
       allowsMultipleSelection: false,
       allowsEditing: true,
       quality: 0.5,

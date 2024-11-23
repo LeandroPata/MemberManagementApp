@@ -65,6 +65,24 @@ export default function AddMember() {
       });
   };
 
+  const checkNumber = async () => {
+    let numberAvailable = 1;
+    const snapshot = await firestore()
+      .collection('users')
+      .orderBy('memberNumber', 'asc')
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((documentSnapshot) => {
+          if (memberNumber == documentSnapshot.data().memberNumber) {
+            numberAvailable++;
+            console.log('Number unavailable!');
+          }
+        });
+      });
+    //console.log('Result: ' + numberAvailable);
+    return numberAvailable;
+  };
+
   const pickImage = async () => {
     setPictureModal(false);
     // No permissions request is necessary for launching the image library
@@ -172,6 +190,12 @@ export default function AddMember() {
       setLoading(false);
       return;
     } else {
+      const numberAvailable = await checkNumber();
+      if (numberAvailable > 1) {
+        alert('This member number is already attributed to another member!');
+        setLoading(false);
+        return;
+      }
       minNumber = parseInt(memberNumber);
     }
 
@@ -343,7 +367,6 @@ export default function AddMember() {
               autoCapitalize='none'
               keyboardType='numeric'
               label='Member Number'
-              placeholder='(leave empty for automatic assignment)'
             />
           </View>
           <Button onPress={() => setDateModal(true)}>

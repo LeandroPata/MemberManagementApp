@@ -5,9 +5,10 @@ import { router } from 'expo-router';
 import * as FileSystem from 'expo-file-system';
 import { FirebaseError } from 'firebase/app';
 import { utils } from '@react-native-firebase/app';
-import firestore from '@react-native-firebase/firestore';
+import firestore, { Timestamp } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import DocumentPicker from 'react-native-document-picker';
+import RNFS from 'react-native-fs';
 
 export default function importExport() {
   const [importLoading, setImportLoading] = useState(false);
@@ -15,7 +16,7 @@ export default function importExport() {
 
   const reference = storage().ref('membersData.csv');
 
-  const formatDataOrder = (data) => {
+  const formatDataOrder = (data, readableDate: boolean) => {
     const orderedKeys = [
       'name',
       'memberNumber',
@@ -31,10 +32,17 @@ export default function importExport() {
       const orderedDoc = {};
       orderedKeys.forEach((key) => {
         if (key == 'addedDate' || key == 'endDate') {
-          const timestamp = new Date(doc[key].toDate()).toLocaleDateString(
-            'pt-pt'
-          );
-          orderedDoc[key] = timestamp || '';
+          if (readableDate) {
+            const timestamp = new Date(doc[key].toDate()).toLocaleDateString(
+              'pt-pt'
+            );
+            orderedDoc[key] = timestamp || '';
+          } else {
+            const timestamp = convertDate(doc[key]);
+            orderedDoc[key] = timestamp || '';
+          }
+        } else if (key == 'memberNumber' && !readableDate) {
+          orderedDoc[key] = Number(doc[key]) || '';
         } else {
           orderedDoc[key] = doc[key] || '';
         }
@@ -44,25 +52,51 @@ export default function importExport() {
           orderedDoc[key] = doc[key];
         }
       });
+      //console.log(orderedDoc);
       return orderedDoc;
     });
   };
 
-  const convertCSVtoJSON = (data) => {};
+  // converts date format from pt-PT locale (23/01/2024) to ISO date format (2024-01-23T00:00:00.000Z)
+  // and then converts to Firestore Timestamp format
+  const convertDate = (date) => {
+    const [day, month, year] = date.split('/').map(Number);
+    const convertedDate = new Date(year, month - 1, day);
+    console.log(
+      date + ' : ' + Timestamp.fromDate(new Date(convertedDate.toISOString()))
+    );
+    return Timestamp.fromDate(new Date(convertedDate.toISOString()));
+  };
+
+  const convertCSVtoJSON = (fileContent) => {
+    const rows = fileContent.split('\n').filter((row) => row.trim() !== '');
+    //console.log(rows);
+    const headers = rows[0].split(',').map((header) => header.trim());
+    //console.log(headers);
+
+    const data = rows.slice(1).map((row) => {
+      const values = row.split(',').map((value) => value.trim());
+      const doc = {};
+      headers.forEach((header, index) => {
+        doc[header] = values[index];
+      });
+      //console.log(doc);
+      return doc;
+    });
+    return data;
+  };
 
   const convertJSONToCSV = (data) => {
     const headers = Object.keys(data[0]).join(',');
     const rows = data
       .map((row) =>
         Object.values(row)
-          .map((value) => `"${value}"`)
+          .map((value) => `${value}`)
           .join(',')
       )
       .join('\n');
     return `${headers}\n${rows}`;
   };
-
-  const importMembers = async () => {};
 
   const uploadFile = async (filePath) => {
     const task = reference.putFile(filePath);
@@ -86,6 +120,67 @@ export default function importExport() {
       });
   };
 
+  const pickFile = async () => {
+    let doc = null;
+    try {
+      doc = await DocumentPicker.pickSingle({
+        type: DocumentPicker.types.csv,
+      });
+    } catch (e: any) {
+      const err = e as FirebaseError;
+      alert('File not chosen: ' + err.message);
+      console.log('File not chosen: ' + err.message);
+    } finally {
+      return doc;
+    }
+  };
+
+  const readFile = async (fileUri) => {
+    try {
+      const fileContent = await RNFS.readFile(fileUri, 'utf8');
+      return fileContent;
+    } catch (e: any) {
+      const err = e as FirebaseError;
+      alert("Couldn't read file: " + err.message);
+      console.log("Couldn't read file: " + err.message);
+      return null;
+    }
+  };
+
+  const importMembers = async () => {
+    const file = await pickFile();
+    if (!file) {
+      return;
+    }
+    //console.log(file);
+
+    const fileContent = await readFile(file.uri);
+    //console.log(fileContent);
+
+    const data = await convertCSVtoJSON(fileContent);
+    console.log(data);
+
+    //false so that the dates are exported in the Firestore Timestamp format
+    const membersData = formatDataOrder(data, false);
+    console.log(membersData);
+
+    try {
+      const batch = firestore().batch();
+      membersData.forEach((member) => {
+        if (member.email) {
+          const memberRef = firestore().collection('users').doc();
+          batch.set(memberRef, member);
+        }
+      });
+      await batch.commit();
+      console.log('Importing Successfull');
+    } catch (e: any) {
+      const err = e as FirebaseError;
+      alert('Error importing: ' + err.message);
+      console.log('Error importing: ' + err.message);
+    }
+  };
+
   const exportMembers = async () => {
     setExportLoading(true);
 
@@ -98,7 +193,8 @@ export default function importExport() {
       const rawData = snapshot.docs.map((doc) => doc.data());
       //console.log(rawData);
 
-      const membersData = formatDataOrder(rawData);
+      //true so that the dates are exported in a readable state
+      const membersData = formatDataOrder(rawData, true);
 
       const file = convertJSONToCSV(membersData);
       console.log(file);
@@ -153,6 +249,7 @@ export default function importExport() {
           labelStyle={styles.buttonText}
           icon='database-import'
           mode='elevated'
+          loading={importLoading}
           onPress={importMembers}
         >
           Import Members
@@ -163,6 +260,7 @@ export default function importExport() {
           labelStyle={styles.buttonText}
           icon='database-export'
           mode='elevated'
+          loading={exportLoading}
           onPress={exportMembers}
         >
           Export Members

@@ -62,9 +62,9 @@ export default function importExport() {
   const convertDate = (date) => {
     const [day, month, year] = date.split('/').map(Number);
     const convertedDate = new Date(year, month - 1, day);
-    console.log(
+    /* console.log(
       date + ' : ' + Timestamp.fromDate(new Date(convertedDate.toISOString()))
-    );
+    ); */
     return Timestamp.fromDate(new Date(convertedDate.toISOString()));
   };
 
@@ -147,6 +147,19 @@ export default function importExport() {
     }
   };
 
+  const checkMember = async (memberData) => {
+    await firestore()
+      .collection('users')
+      .where('memberNumber', '==', memberData.memberNumber)
+      .get()
+      .then((querySnapshot) => {
+        if (querySnapshot.empty) {
+          return false;
+        }
+      });
+    return true;
+  };
+
   const importMembers = async () => {
     const file = await pickFile();
     if (!file) {
@@ -158,26 +171,30 @@ export default function importExport() {
     //console.log(fileContent);
 
     const data = await convertCSVtoJSON(fileContent);
-    console.log(data);
+    //console.log(data);
 
     //false so that the dates are exported in the Firestore Timestamp format
-    const membersData = formatDataOrder(data, false);
-    console.log(membersData);
+    const membersData = await formatDataOrder(data, false);
+    //console.log(membersData);
+
+    const batch = firestore().batch();
 
     try {
-      const batch = firestore().batch();
-      membersData.forEach((member) => {
-        if (member.email) {
+      for (const member of membersData) {
+        const check = await checkMember(member);
+        console.log('Check: ' + check);
+        if (!check) {
           const memberRef = firestore().collection('users').doc();
           batch.set(memberRef, member);
         }
-      });
-      await batch.commit();
-      console.log('Importing Successfull');
+      }
     } catch (e: any) {
       const err = e as FirebaseError;
       alert('Error importing: ' + err.message);
       console.log('Error importing: ' + err.message);
+    } finally {
+      await batch.commit();
+      console.log('Importing Successfull');
     }
   };
 

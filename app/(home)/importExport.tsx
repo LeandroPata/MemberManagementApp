@@ -148,16 +148,17 @@ export default function importExport() {
   };
 
   const checkMember = async (memberData) => {
+    let check = 0;
     await firestore()
       .collection('users')
       .where('memberNumber', '==', memberData.memberNumber)
       .get()
       .then((querySnapshot) => {
-        if (querySnapshot.empty) {
-          return false;
+        if (!querySnapshot.empty) {
+          check = 1;
         }
       });
-    return true;
+    return check;
   };
 
   const importMembers = async () => {
@@ -180,11 +181,24 @@ export default function importExport() {
     const batch = firestore().batch();
 
     try {
-      for (const member of membersData) {
+      for (let member of membersData) {
         const check = await checkMember(member);
-        console.log('Check: ' + check);
         if (!check) {
+          console.log('check');
           const memberRef = firestore().collection('users').doc();
+
+          //set profilePicture to field to an existing picture if it exists
+          //or the default one if it doesn't
+          //which I now realize it will never happen,
+          //because the document ID is completely new, oh well
+          /* const url = await storage()
+            .ref('profilePicture/' + memberRef + '.jpg')
+            .getDownloadURL();
+          console.log(url); */
+
+          member['profilePicture'] =
+            process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL;
+
           batch.set(memberRef, member);
         }
       }

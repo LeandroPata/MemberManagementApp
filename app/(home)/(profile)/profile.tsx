@@ -84,7 +84,7 @@ export default function Profile() {
     return true;
   });
 
-  const reference = storage().ref(name + '.jpg');
+  const reference = storage().ref(name + memberNumber + '.jpg');
 
   const pickImage = async () => {
     setPictureModal(false);

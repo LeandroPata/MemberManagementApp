@@ -45,8 +45,6 @@ export default function AddMember() {
 
   let minNumber = 0;
 
-  const reference = storage().ref(name + '.jpg');
-
   const assignMemberNumber = async () => {
     await firestore()
       .collection('users')
@@ -133,6 +131,11 @@ export default function AddMember() {
     ) {
       // Upload picture to Firebase if it is different from the placeholder
 
+      console.log(name);
+      console.log(minNumber);
+
+      const reference = storage().ref(name + minNumber + '.jpg');
+
       const task = reference.putFile(profilePicture);
 
       task.on('state_changed', (taskSnapshot) => {
@@ -181,8 +184,6 @@ export default function AddMember() {
       return;
     }
 
-    const url = await uploadPicture();
-
     if (autoNumber) {
       await assignMemberNumber();
     } else if (!memberNumber.trim()) {
@@ -198,6 +199,8 @@ export default function AddMember() {
       }
       minNumber = parseInt(memberNumber);
     }
+
+    const url = await uploadPicture();
 
     try {
       firestore()

@@ -52,6 +52,8 @@ export default function Profile() {
   const [endDate, setEndDate] = useState(new Date());
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
 
+  let minNumber = 0;
+
   useEffect(() => {
     setLoading(true);
 
@@ -198,6 +200,24 @@ export default function Profile() {
     }
   };
 
+  const assignMemberNumber = async () => {
+    await firestore()
+      .collection('users')
+      .orderBy('memberNumber', 'asc')
+      .get()
+      .then((querySnapshot) => {
+        let i = 1;
+        querySnapshot.forEach((documentSnapshot) => {
+          if (i == documentSnapshot.data().memberNumber) {
+            i = documentSnapshot.data().memberNumber + 1;
+            //console.log(i);
+          }
+        });
+        //setMemberNumber(minNumber.toString());
+        minNumber = i;
+      });
+  };
+
   const checkNumber = async () => {
     let numberAvailable = 1;
     if (memberNumber != profile.memberNumber) {
@@ -221,6 +241,22 @@ export default function Profile() {
   const saveMember = async () => {
     setLoadingEdit(true);
 
+    if (autoNumber) {
+      await assignMemberNumber();
+    } else if (!memberNumber.trim()) {
+      alert('Member number is mandatory!');
+      setLoading(false);
+      return;
+    } else {
+      const numberAvailable = await checkNumber();
+      if (numberAvailable > 1) {
+        alert('This member number is already attributed to another member!');
+        setLoading(false);
+        return;
+      }
+      minNumber = parseInt(memberNumber);
+    }
+
     const url = await uploadPicture();
 
     const numberAvailable = await checkNumber();
@@ -236,7 +272,7 @@ export default function Profile() {
         .doc(profileID)
         .update({
           name: name.trim(),
-          memberNumber: parseInt(memberNumber),
+          memberNumber: minNumber,
           email: email.trim(),
           phoneNumber: phoneNumber,
           address: address.trim(),

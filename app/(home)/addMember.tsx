@@ -134,7 +134,7 @@ export default function AddMember() {
     ) {
       // Upload picture to Firebase if it is different from the placeholder
 
-      const reference = storage().ref(docID + '.jpg');
+      const reference = storage().ref('profilePicture/' + docID + '.jpg');
 
       const task = reference.putFile(profilePicture);
 

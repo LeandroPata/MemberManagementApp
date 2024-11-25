@@ -53,7 +53,7 @@ export default function Profile() {
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
 
   let minNumber = 0;
-  const reference = storage().ref(profileID + '.jpg');
+  const reference = storage().ref('profilePicture/' + profileID + '.jpg');
 
   useEffect(() => {
     setLoading(true);

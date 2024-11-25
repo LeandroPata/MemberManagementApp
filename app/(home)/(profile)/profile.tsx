@@ -53,6 +53,7 @@ export default function Profile() {
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
 
   let minNumber = 0;
+  const reference = storage().ref(profileID + '.jpg');
 
   useEffect(() => {
     setLoading(true);
@@ -85,8 +86,6 @@ export default function Profile() {
     }
     return true;
   });
-
-  const reference = storage().ref(name + memberNumber + '.jpg');
 
   const pickImage = async () => {
     setPictureModal(false);
@@ -208,13 +207,17 @@ export default function Profile() {
       .then((querySnapshot) => {
         let i = 1;
         querySnapshot.forEach((documentSnapshot) => {
-          if (i == documentSnapshot.data().memberNumber) {
+          if (i == parseInt(memberNumber)) {
+            minNumber = i;
+          } else if (i == documentSnapshot.data().memberNumber) {
             i = documentSnapshot.data().memberNumber + 1;
             //console.log(i);
           }
         });
-        //setMemberNumber(minNumber.toString());
-        minNumber = i;
+        if (!minNumber) {
+          minNumber = i;
+        }
+        setMemberNumber(minNumber.toString());
       });
   };
 
@@ -258,13 +261,6 @@ export default function Profile() {
     }
 
     const url = await uploadPicture();
-
-    const numberAvailable = await checkNumber();
-    if (numberAvailable > 1) {
-      alert('This member number is already attributed to another member!');
-      setLoadingEdit(false);
-      return;
-    }
 
     try {
       firestore()
@@ -514,7 +510,6 @@ export default function Profile() {
                 autoCapitalize='none'
                 keyboardType='numeric'
                 label='Member Number'
-                placeholder='(leave empty for automatic assignment)'
               />
             </View>
             <Button onPress={() => setDateModal(true)}>

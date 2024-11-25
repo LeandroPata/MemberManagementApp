@@ -53,13 +53,16 @@ export default function AddMember() {
       .then((querySnapshot) => {
         let i = 1;
         querySnapshot.forEach((documentSnapshot) => {
-          if (i == documentSnapshot.data().memberNumber) {
+          if (i == parseInt(memberNumber)) {
+            minNumber = i;
+          } else if (i == documentSnapshot.data().memberNumber) {
             i = documentSnapshot.data().memberNumber + 1;
-            //console.log(i);
           }
         });
-        //setMemberNumber(minNumber.toString());
-        minNumber = i;
+        if (!minNumber) {
+          minNumber = i;
+        }
+        setMemberNumber(minNumber.toString());
       });
   };
 
@@ -124,17 +127,14 @@ export default function AddMember() {
     }
   };
 
-  const uploadPicture = async () => {
+  const uploadPicture = async (docID) => {
     if (
       profilePicture &&
       profilePicture != process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL
     ) {
       // Upload picture to Firebase if it is different from the placeholder
 
-      console.log(name);
-      console.log(minNumber);
-
-      const reference = storage().ref(name + minNumber + '.jpg');
+      const reference = storage().ref(docID + '.jpg');
 
       const task = reference.putFile(profilePicture);
 
@@ -198,14 +198,16 @@ export default function AddMember() {
         return;
       }
       minNumber = parseInt(memberNumber);
+      setMemberNumber(minNumber.toString());
     }
 
-    const url = await uploadPicture();
+    const docRef = firestore().collection('users').doc();
+
+    const url = await uploadPicture(docRef.id);
 
     try {
-      firestore()
-        .collection('users')
-        .add({
+      docRef
+        .set({
           name: name.trim(),
           memberNumber: minNumber,
           email: email.trim(),
@@ -220,7 +222,6 @@ export default function AddMember() {
           console.log('Added');
           setName('');
           setMemberNumber('');
-          minNumber = 0;
           setEmail('');
           setPhone('');
           setAddress('');

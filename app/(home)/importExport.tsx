@@ -110,11 +110,11 @@ export default function importExport() {
     await task
       .then(() => {
         console.log('Data uploaded to the bucket!');
-        alert('Data uploaded to the bucket!');
+        //alert('Data uploaded to the bucket!');
       })
       .catch((e: any) => {
         const err = e as FirebaseError;
-        alert('File upload failed: ' + err.message);
+        //alert('File upload failed: ' + err.message);
         console.log('File upload failed: ' + err.message);
         setExportLoading(false);
       });
@@ -128,7 +128,7 @@ export default function importExport() {
       });
     } catch (e: any) {
       const err = e as FirebaseError;
-      alert('File not chosen: ' + err.message);
+      //alert('File not chosen: ' + err.message);
       console.log('File not chosen: ' + err.message);
     } finally {
       return doc;
@@ -141,7 +141,7 @@ export default function importExport() {
       return fileContent;
     } catch (e: any) {
       const err = e as FirebaseError;
-      alert("Couldn't read file: " + err.message);
+      //alert("Couldn't read file: " + err.message);
       console.log("Couldn't read file: " + err.message);
       return null;
     }
@@ -180,6 +180,8 @@ export default function importExport() {
 
     const batch = firestore().batch();
 
+    const existingMembers = [];
+
     try {
       for (let member of membersData) {
         const check = await checkMember(member);
@@ -189,7 +191,7 @@ export default function importExport() {
 
           //set profilePicture to field to an existing picture if it exists
           //or the default one if it doesn't
-          //which I now realize it will never happen,
+          //which I now realize will never happen and will always be the default,
           //because the document ID is completely new, oh well
           /* const url = await storage()
             .ref('profilePicture/' + memberRef + '.jpg')
@@ -200,14 +202,21 @@ export default function importExport() {
             process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL;
 
           batch.set(memberRef, member);
+        } else {
+          existingMembers.push(member.memberNumber);
         }
       }
     } catch (e: any) {
       const err = e as FirebaseError;
-      alert('Error importing: ' + err.message);
+      //alert('Error importing: ' + err.message);
       console.log('Error importing: ' + err.message);
     } finally {
       await batch.commit();
+      console.log(existingMembers);
+      alert(
+        'Importing Successfull!\nThe following member numbers already existed in the database and were not imported:' +
+          existingMembers.toString()
+      );
       console.log('Importing Successfull');
     }
   };
@@ -218,7 +227,7 @@ export default function importExport() {
     try {
       const snapshot = await firestore()
         .collection('members')
-        .orderBy('name', 'asc')
+        .orderBy('memberNumber', 'asc')
         .get();
 
       const rawData = snapshot.docs.map((doc) => doc.data());
@@ -253,18 +262,18 @@ export default function importExport() {
       await task
         .then(() => {
           console.log('Data downloaded!');
-          alert('Data downloaded!');
+          //alert('Data downloaded!');
         })
         .catch((e: any) => {
           const err = e as FirebaseError;
-          alert('Data download failed: ' + err.message);
+          //alert('Data download failed: ' + err.message);
           console.log('Data download failed: ' + err.message);
           setExportLoading(false);
         });
     } catch (e: any) {
       const err = e as FirebaseError;
       console.log('Exporting members failed: ' + err.message);
-      alert('Exporting members failed: ' + err.message);
+      //alert('Exporting members failed: ' + err.message);
       setExportLoading(false);
     } finally {
       setExportLoading(false);

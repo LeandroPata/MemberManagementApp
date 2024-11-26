@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -19,7 +19,7 @@ import {
 } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DatePicker from 'react-native-date-picker';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { useBackHandler } from '@react-native-community/hooks';
 import { FirebaseError } from 'firebase/app';
@@ -86,6 +86,28 @@ export default function Profile() {
     }
     return true;
   });
+
+  useFocusEffect(
+    useCallback(() => {
+      // Check if current screen is unfocused
+      return () => {
+        console.log('This route is now unfocused.');
+        setProfile(null);
+        setName('');
+        setMemberNumber('');
+        setEmail('');
+        setPhone('');
+        setAddress('');
+        setZipCode('');
+        setEndDate(new Date());
+        setProfilePicture('');
+        setEditing(false);
+        setPictureModal(false);
+        setConfirmDeleteModal(false);
+        setDateModal(false);
+      };
+    }, [])
+  );
 
   const pickImage = async () => {
     setPictureModal(false);
@@ -361,18 +383,18 @@ export default function Profile() {
           onDismiss={() => {
             setConfirmDeleteModal(false);
           }}
+          style={styles.modalContainer}
           contentContainerStyle={[
-            styles.modalContainer,
+            styles.modalContentContainer,
             { backgroundColor: theme.colors.primaryContainer },
           ]}
         >
           <Text
             style={[
-              styles.title,
+              styles.buttonText,
               {
-                fontSize: 25,
+                paddingTop: 0,
                 textAlign: 'center',
-                marginBottom: 10,
                 color: theme.colors.onPrimaryContainer,
               },
             ]}
@@ -470,7 +492,7 @@ export default function Profile() {
               value={zipCode}
               onChangeText={(text) => {
                 setZipCode(text);
-                if (text.length >= 4 && !text.includes('-')) {
+                if (text.length > 4 && !text.includes('-')) {
                   let a = text.substring(0, 4);
                   let b = text.substring(4);
                   a = a.concat('-');
@@ -553,37 +575,37 @@ export default function Profile() {
             <Text style={styles.title}>
               Name:{' '}
               <Text style={[styles.title, { fontWeight: 'normal' }]}>
-                {name}
+                {profile.name}
               </Text>
             </Text>
             <Text style={styles.title}>
               Member Number:{' '}
               <Text style={[styles.title, { fontWeight: 'normal' }]}>
-                {memberNumber}
+                {profile.memberNumber}
               </Text>
             </Text>
             <Text style={styles.title}>
               Email:{' '}
               <Text style={[styles.title, { fontWeight: 'normal' }]}>
-                {email}
+                {profile.email}
               </Text>
             </Text>
             <Text style={styles.title}>
               Phone Number:{' '}
               <Text style={[styles.title, { fontWeight: 'normal' }]}>
-                {phoneNumber}
+                {profile.phoneNumber}
               </Text>
             </Text>
             <Text style={styles.title}>
               Address:{' '}
               <Text style={[styles.title, { fontWeight: 'normal' }]}>
-                {address}
+                {profile.address}
               </Text>
             </Text>
             <Text style={styles.title}>
               Zip Code:{' '}
               <Text style={[styles.title, { fontWeight: 'normal' }]}>
-                {zipCode}
+                {profile.zipCode}
               </Text>
             </Text>
             <Text style={styles.title}>
@@ -597,7 +619,7 @@ export default function Profile() {
             <Text style={styles.title}>
               End Date:{' '}
               <Text style={[styles.title, { fontWeight: 'normal' }]}>
-                {endDate.toLocaleDateString('pt-pt')}
+                {new Date(profile.endDate.toDate()).toLocaleDateString('pt-pt')}
               </Text>
             </Text>
             <View style={styles.buttonContainer}>
@@ -642,11 +664,12 @@ const styles = StyleSheet.create({
     //alignItems: 'center',
   },
   modalContainer: {
-    padding: 10,
     marginHorizontal: 30,
     alignItems: 'center',
   },
   modalContentContainer: {
+    //paddingVertical: 10,
+    //paddingHorizontal: 15,
     borderRadius: 20,
   },
   buttonContainer: {

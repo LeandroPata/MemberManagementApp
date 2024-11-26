@@ -331,7 +331,7 @@ export default function AddMember() {
             value={zipCode}
             onChangeText={(text) => {
               setZipCode(text);
-              if (text.length >= 4 && !text.includes('-')) {
+              if (text.length > 4 && !text.includes('-')) {
                 let a = text.substring(0, 4);
                 let b = text.substring(4);
                 a = a.concat('-');
@@ -415,11 +415,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   modalContainer: {
-    padding: 10,
     marginHorizontal: 30,
     alignItems: 'center',
   },
   modalContentContainer: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
     borderRadius: 20,
   },
   buttonContainer: {

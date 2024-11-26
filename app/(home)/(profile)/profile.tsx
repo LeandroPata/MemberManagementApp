@@ -34,7 +34,7 @@ export default function Profile() {
 
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [loadingEdit, setLoadingEdit] = useState(false);
+  const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [editing, setEditing] = useState(false);
   const [autoNumber, setAutoNumber] = useState(true);
@@ -91,7 +91,7 @@ export default function Profile() {
     useCallback(() => {
       // Check if current screen is unfocused
       return () => {
-        console.log('This route is now unfocused.');
+        //console.log('This route is now unfocused.');
         setProfile(null);
         setName('');
         setMemberNumber('');
@@ -189,7 +189,7 @@ export default function Profile() {
           const err = e as FirebaseError;
           //alert('File upload failed: ' + err.message);
           console.log('File upload failed: ' + err.message);
-          //setLoadingEdit(false);
+          //setLoadingSave(false);
         });
 
       //await reference.putFile(result.assets[0].uri);
@@ -264,7 +264,7 @@ export default function Profile() {
   };
 
   const saveMember = async () => {
-    setLoadingEdit(true);
+    setLoadingSave(true);
 
     if (autoNumber) {
       await assignMemberNumber();
@@ -306,9 +306,9 @@ export default function Profile() {
       const err = e as FirebaseError;
       //alert('Updating member failed: ' + err.message);
       console.log('Updating member failed: ' + err.message);
-      setLoadingEdit(false);
+      setLoadingSave(false);
     } finally {
-      setLoadingEdit(false);
+      setLoadingSave(false);
     }
   };
 
@@ -353,28 +353,26 @@ export default function Profile() {
             { backgroundColor: theme.colors.primaryContainer },
           ]}
         >
-          <View style={styles.buttonContainer}>
-            <Button
-              style={styles.button}
-              contentStyle={styles.buttonContent}
-              labelStyle={styles.buttonText}
-              icon='file-image'
-              mode='elevated'
-              onPress={pickImage}
-            >
-              From gallery
-            </Button>
-            <Button
-              style={styles.button}
-              contentStyle={styles.buttonContent}
-              labelStyle={styles.buttonText}
-              icon='camera'
-              mode='elevated'
-              onPress={takePicture}
-            >
-              Take Picture
-            </Button>
-          </View>
+          <Button
+            style={styles.button}
+            contentStyle={styles.buttonContent}
+            labelStyle={styles.buttonText}
+            icon='file-image'
+            mode='elevated'
+            onPress={pickImage}
+          >
+            From gallery
+          </Button>
+          <Button
+            style={styles.button}
+            contentStyle={styles.buttonContent}
+            labelStyle={styles.buttonText}
+            icon='camera'
+            mode='elevated'
+            onPress={takePicture}
+          >
+            Take Picture
+          </Button>
         </Modal>
       </Portal>
       <Portal>
@@ -554,7 +552,11 @@ export default function Profile() {
             <View style={styles.buttonContainer}>
               <Button
                 style={styles.button}
+                contentStyle={styles.buttonContent}
+                labelStyle={styles.buttonText}
+                icon='content-save'
                 mode='elevated'
+                loading={loadingSave}
                 onPress={saveMember}
               >
                 Save
@@ -629,7 +631,7 @@ export default function Profile() {
                 labelStyle={styles.buttonText}
                 icon='account-edit'
                 mode='elevated'
-                loading={loadingEdit}
+                loading={loadingSave}
                 onPress={() => {
                   setEditing(true);
                 }}
@@ -668,8 +670,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContentContainer: {
-    //paddingVertical: 10,
-    //paddingHorizontal: 15,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
     borderRadius: 20,
   },
   buttonContainer: {

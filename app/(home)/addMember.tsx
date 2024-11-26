@@ -47,7 +47,7 @@ export default function AddMember() {
 
   const assignMemberNumber = async () => {
     await firestore()
-      .collection('users')
+      .collection('members')
       .orderBy('memberNumber', 'asc')
       .get()
       .then((querySnapshot) => {
@@ -69,7 +69,7 @@ export default function AddMember() {
   const checkNumber = async () => {
     let numberAvailable = 1;
     const snapshot = await firestore()
-      .collection('users')
+      .collection('members')
       .orderBy('memberNumber', 'asc')
       .get()
       .then((querySnapshot) => {
@@ -201,7 +201,7 @@ export default function AddMember() {
       setMemberNumber(minNumber.toString());
     }
 
-    const docRef = firestore().collection('users').doc();
+    const docRef = firestore().collection('members').doc();
 
     const url = await uploadPicture(docRef.id);
 

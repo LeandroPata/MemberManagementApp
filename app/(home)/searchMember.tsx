@@ -16,7 +16,7 @@ import {
 } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import firestore, { Filter } from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
 
 export default function SearchMember() {
   const insets = useSafeAreaInsets();
@@ -37,7 +37,7 @@ export default function SearchMember() {
 
       if (!name.trim() && !memberNumber.trim()) {
         const subscriber = firestore()
-          .collection('users')
+          .collection('members')
           .orderBy('name', 'asc')
           .onSnapshot((querySnapshot) => {
             const members = [];
@@ -54,7 +54,7 @@ export default function SearchMember() {
         return () => subscriber();
       } else if (name && name.trim() && memberNumber && memberNumber.trim()) {
         const subscriber = firestore()
-          .collection('users')
+          .collection('members')
           .where('memberNumber', '==', parseInt(memberNumber))
           .onSnapshot((querySnapshot) => {
             const members = [];
@@ -73,7 +73,7 @@ export default function SearchMember() {
         return () => subscriber();
       } else if (name && name.trim() && !memberNumber.trim()) {
         const subscriber = firestore()
-          .collection('users')
+          .collection('members')
           .orderBy('name', 'asc')
           .onSnapshot((querySnapshot) => {
             const members = [];
@@ -92,7 +92,7 @@ export default function SearchMember() {
         return () => subscriber();
       } else if (memberNumber && memberNumber.trim() && !name.trim()) {
         const subscriber = firestore()
-          .collection('users')
+          .collection('members')
           .orderBy('memberNumber', 'asc')
           .where('memberNumber', '==', parseInt(memberNumber))
           .onSnapshot((querySnapshot) => {
@@ -120,7 +120,7 @@ export default function SearchMember() {
     if (!name.trim() && !memberNumber.trim()) {
       console.log('None');
       const snapshot = firestore()
-        .collection('users')
+        .collection('members')
         .orderBy('name', 'asc')
         .get()
         .then((querySnapshot) => {
@@ -143,7 +143,7 @@ export default function SearchMember() {
     } else if (name && name.trim() && memberNumber && memberNumber.trim()) {
       console.log('Both');
       const snapshot = await firestore()
-        .collection('users')
+        .collection('members')
         .where('memberNumber', '==', parseInt(memberNumber))
         .get()
         .then((querySnapshot) => {
@@ -168,7 +168,7 @@ export default function SearchMember() {
     } else if (name && name.trim() && !memberNumber.trim()) {
       console.log('Name');
       const snapshot = await firestore()
-        .collection('users')
+        .collection('members')
         .orderBy('name', 'asc')
         .get()
         .then((querySnapshot) => {
@@ -193,7 +193,7 @@ export default function SearchMember() {
     } else if (memberNumber && memberNumber.trim() && !name.trim()) {
       console.log('Number');
       const snapshot = await firestore()
-        .collection('users')
+        .collection('members')
         .orderBy('memberNumber', 'asc')
         .where('memberNumber', '==', parseInt(memberNumber))
         .get()

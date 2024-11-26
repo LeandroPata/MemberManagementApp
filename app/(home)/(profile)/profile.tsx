@@ -59,7 +59,7 @@ export default function Profile() {
     setLoading(true);
 
     const subscriber = firestore()
-      .collection('users')
+      .collection('members')
       .doc(profileID)
       .onSnapshot((documentSnapshot) => {
         if (documentSnapshot && documentSnapshot.data()) {
@@ -201,7 +201,7 @@ export default function Profile() {
 
   const assignMemberNumber = async () => {
     await firestore()
-      .collection('users')
+      .collection('members')
       .orderBy('memberNumber', 'asc')
       .get()
       .then((querySnapshot) => {
@@ -225,7 +225,7 @@ export default function Profile() {
     let numberAvailable = 1;
     if (memberNumber != profile.memberNumber) {
       const snapshot = await firestore()
-        .collection('users')
+        .collection('members')
         .orderBy('memberNumber', 'asc')
         .get()
         .then((querySnapshot) => {
@@ -264,7 +264,7 @@ export default function Profile() {
 
     try {
       firestore()
-        .collection('users')
+        .collection('members')
         .doc(profileID)
         .update({
           name: name.trim(),
@@ -297,7 +297,7 @@ export default function Profile() {
 
     try {
       firestore()
-        .collection('users')
+        .collection('members')
         .doc(profileID)
         .delete()
         .then(() => {

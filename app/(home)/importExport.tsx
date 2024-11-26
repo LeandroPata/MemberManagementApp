@@ -150,7 +150,7 @@ export default function importExport() {
   const checkMember = async (memberData) => {
     let check = 0;
     await firestore()
-      .collection('users')
+      .collection('members')
       .where('memberNumber', '==', memberData.memberNumber)
       .get()
       .then((querySnapshot) => {
@@ -185,7 +185,7 @@ export default function importExport() {
         const check = await checkMember(member);
         if (!check) {
           console.log('check');
-          const memberRef = firestore().collection('users').doc();
+          const memberRef = firestore().collection('members').doc();
 
           //set profilePicture to field to an existing picture if it exists
           //or the default one if it doesn't
@@ -217,7 +217,7 @@ export default function importExport() {
 
     try {
       const snapshot = await firestore()
-        .collection('users')
+        .collection('members')
         .orderBy('name', 'asc')
         .get();
 

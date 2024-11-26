@@ -162,8 +162,10 @@ export default function importExport() {
   };
 
   const importMembers = async () => {
+    setImportLoading(true);
     const file = await pickFile();
     if (!file) {
+      setImportLoading(false);
       return;
     }
     //console.log(file);
@@ -210,6 +212,7 @@ export default function importExport() {
       const err = e as FirebaseError;
       //alert('Error importing: ' + err.message);
       console.log('Error importing: ' + err.message);
+      setImportLoading(false);
     } finally {
       await batch.commit();
       console.log(existingMembers);
@@ -218,6 +221,7 @@ export default function importExport() {
           existingMembers.toString()
       );
       console.log('Importing Successfull');
+      setImportLoading(false);
     }
   };
 

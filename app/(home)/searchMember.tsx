@@ -38,7 +38,7 @@ export default function SearchMember() {
       if (!name.trim() && !memberNumber.trim()) {
         const subscriber = firestore()
           .collection('members')
-          .orderBy('name', 'asc')
+          .orderBy('memberNumber', 'asc')
           .onSnapshot((querySnapshot) => {
             const members = [];
             querySnapshot.forEach((documentSnapshot) => {
@@ -121,7 +121,7 @@ export default function SearchMember() {
       console.log('None');
       const snapshot = firestore()
         .collection('members')
-        .orderBy('name', 'asc')
+        .orderBy('memberNumber', 'asc')
         .get()
         .then((querySnapshot) => {
           const members = [];

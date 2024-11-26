@@ -161,7 +161,7 @@ export default function Profile() {
       await task
         .then(() => {
           console.log('Image uploaded to the bucket!');
-          alert('Image uploaded to the bucket!');
+          //alert('Image uploaded to the bucket!');
         })
         .catch((e: any) => {
           const err = e as FirebaseError;
@@ -282,7 +282,7 @@ export default function Profile() {
         });
     } catch (e: any) {
       const err = e as FirebaseError;
-      alert('Updating member failed: ' + err.message);
+      //alert('Updating member failed: ' + err.message);
       console.log('Updating member failed: ' + err.message);
       setLoadingEdit(false);
     } finally {
@@ -305,7 +305,7 @@ export default function Profile() {
         });
     } catch (e: any) {
       const err = e as FirebaseError;
-      alert('Deleting member failed: ' + err.message);
+      //alert('Deleting member failed: ' + err.message);
       console.log('Deleting member failed: ' + err.message);
       setLoadingDelete(false);
     } finally {

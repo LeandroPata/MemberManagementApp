@@ -147,11 +147,11 @@ export default function AddMember() {
       await task
         .then(() => {
           console.log('Image uploaded to the bucket!');
-          alert('Image uploaded to the bucket!');
+          //alert('Image uploaded to the bucket!');
         })
         .catch((e: any) => {
           const err = e as FirebaseError;
-          alert('File upload failed: ' + err.message);
+          //alert('File upload failed: ' + err.message);
           console.log('File upload failed: ' + err.message);
           setLoading(false);
         });
@@ -232,7 +232,7 @@ export default function AddMember() {
     } catch (e: any) {
       const err = e as FirebaseError;
       console.log('Adding member failed: ' + err.message);
-      alert('Adding member failed: ' + err.message);
+      //alert('Adding member failed: ' + err.message);
       setLoading(false);
     } finally {
       setLoading(false);

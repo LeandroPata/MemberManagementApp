@@ -63,7 +63,7 @@ export default function Index() {
       await auth().createUserWithEmailAndPassword(email, password);
     } catch (e: any) {
       const err = e as FirebaseError;
-      alert('Registration failed: ' + err.message);
+      //alert('Registration failed: ' + err.message);
       console.log('Registration failed: ' + err.message);
     } finally {
       setSignupLoading(false);
@@ -96,7 +96,7 @@ export default function Index() {
       await auth().signInWithEmailAndPassword(email, password);
     } catch (e: any) {
       const err = e as FirebaseError;
-      alert('Sign in failed: ' + err.message);
+      //alert('Sign in failed: ' + err.message);
       console.log('Sign in failed: ' + err.message);
     } finally {
       setLoginLoading(false);

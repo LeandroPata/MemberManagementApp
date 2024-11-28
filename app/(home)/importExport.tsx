@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, PermissionsAndroid, Platform } from 'react-native';
 import { Button } from 'react-native-paper';
-import { router } from 'expo-router';
-import * as FileSystem from 'expo-file-system';
 import { FirebaseError } from 'firebase/app';
-import { utils } from '@react-native-firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import DocumentPicker from 'react-native-document-picker';
@@ -161,8 +158,67 @@ export default function importExport() {
     return check;
   };
 
+  const checkPermissions = async () => {
+    const checkRead = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
+    );
+
+    const checkWrite = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+    );
+
+    console.log(checkRead);
+    console.log(checkWrite);
+
+    if (!checkRead || !checkWrite) {
+      const granted = await requestPermissions();
+      return granted;
+    }
+    return true;
+  };
+
+  const requestPermissions = async () => {
+    let grantedRead = '';
+    let grantedWrite = '';
+    try {
+      grantedRead = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
+      );
+      grantedWrite = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+      );
+
+      console.log(grantedRead);
+      console.log(grantedWrite);
+    } catch (e: any) {
+      const err = e as FirebaseError;
+      //alert('Error importing: ' + err.message);
+      console.log('Error importing: ' + err.message);
+      setImportLoading(false);
+    } finally {
+      if (
+        !(grantedRead === PermissionsAndroid.RESULTS.GRANTED) ||
+        !(grantedWrite === PermissionsAndroid.RESULTS.GRANTED)
+      ) {
+        alert('Storage permissions are necessary to import/export data!');
+        return false;
+      }
+      return true;
+    }
+  };
+
   const importMembers = async () => {
     setImportLoading(true);
+
+    if (Number(Platform.Version) < 33) {
+      const permissionsCheck = await checkPermissions();
+
+      if (!permissionsCheck) {
+        setImportLoading(false);
+        return;
+      }
+    }
+
     const file = await pickFile();
     if (!file) {
       setImportLoading(false);
@@ -228,6 +284,15 @@ export default function importExport() {
   const exportMembers = async () => {
     setExportLoading(true);
 
+    if (Number(Platform.Version) < 33) {
+      const permissionsCheck = await checkPermissions();
+
+      if (!permissionsCheck) {
+        setExportLoading(false);
+        return;
+      }
+    }
+
     try {
       const snapshot = await firestore()
         .collection('members')
@@ -243,19 +308,28 @@ export default function importExport() {
       const file = convertJSONToCSV(membersData);
       console.log(file);
 
-      const filePath = FileSystem.cacheDirectory + 'membersData.csv';
-      //console.log(filePath);
+      const filePath = RNFS.CachesDirectoryPath + '/membersData.csv';
 
-      await FileSystem.writeAsStringAsync(filePath, file);
+      console.log(filePath);
 
-      alert('Exporting successfull!');
-      console.log('Exporting successfull!');
+      await RNFS.writeFile(filePath, file);
 
       await uploadFile(filePath);
 
-      const task = reference.writeToFile(
-        utils.FilePath.EXTERNAL_STORAGE_DIRECTORY + '/Documents/membersData.csv'
-      );
+      let docPath = '';
+
+      await RNFS.readDir(RNFS.ExternalStorageDirectoryPath).then((results) => {
+        //docPath = result[10].path + '/membersData.csv';
+        results.forEach((result) => {
+          if (result.name == 'Documents') {
+            docPath = result.path + '/membersData.csv';
+          }
+        });
+      });
+
+      console.log(docPath);
+
+      const task = reference.writeToFile(docPath);
 
       task.on('state_changed', (taskSnapshot) => {
         console.log(
@@ -265,8 +339,8 @@ export default function importExport() {
 
       await task
         .then(() => {
-          console.log('Data downloaded!');
-          //alert('Data downloaded!');
+          alert('Exporting successfull!');
+          console.log('Exporting successfull!');
         })
         .catch((e: any) => {
           const err = e as FirebaseError;

@@ -25,6 +25,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       backgroundColor: "#ffffff"
     },
     package: "com.leandropata.membermanagementapp",
+    permissions: ["android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"],
     googleServicesFile: process.env.GOOGLE_SERVICES_JSON || './google-services.json'
   },
   web: {

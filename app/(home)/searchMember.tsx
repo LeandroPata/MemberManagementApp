@@ -263,7 +263,10 @@ export default function SearchMember() {
 
   return (
     <View style={styles.container}>
-      <KeyboardAvoidingView style={{ marginHorizontal: 20 }} behavior='padding'>
+      <KeyboardAvoidingView
+        style={{ marginHorizontal: '3%' }}
+        behavior='padding'
+      >
         <TextInput
           style={styles.input}
           value={name}
@@ -293,21 +296,21 @@ export default function SearchMember() {
             Search Member
           </Button>
         </View>
-      </KeyboardAvoidingView>
-      {!members ? null : (
         <View
           style={{
-            marginHorizontal: 20,
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
-            padding: 10,
+            marginVertical: '3%',
           }}
         >
-          <View style={{ width: '48%' }}>
+          <View style={{ width: '49%' }}>
             <Button
               style={styles.button}
-              labelStyle={[styles.buttonText, { fontSize: 15, paddingTop: 0 }]}
+              labelStyle={[
+                styles.buttonText,
+                { fontSize: 15, paddingTop: 0, fontWeight: 'normal' },
+              ]}
               mode='elevated'
               onPress={() => {
                 console.log('Order by name');
@@ -317,10 +320,13 @@ export default function SearchMember() {
               Order by name
             </Button>
           </View>
-          <View style={{ width: '48%' }}>
+          <View style={{ width: '49%' }}>
             <Button
               style={styles.button}
-              labelStyle={[styles.buttonText, { fontSize: 15, paddingTop: 0 }]}
+              labelStyle={[
+                styles.buttonText,
+                { fontSize: 13, paddingTop: 0, fontWeight: 'normal' },
+              ]}
               mode='elevated'
               onPress={() => {
                 console.log('Order by member number');
@@ -331,7 +337,8 @@ export default function SearchMember() {
             </Button>
           </View>
         </View>
-      )}
+      </KeyboardAvoidingView>
+
       <FlatList
         data={members}
         renderItem={renderItem}
@@ -367,11 +374,11 @@ const styles = StyleSheet.create({
     marginVertical: 2,
   },
   item: {
-    borderRadius: 10,
+    borderRadius: 5,
     paddingHorizontal: 10,
     paddingVertical: 5,
-    marginVertical: 3,
-    marginHorizontal: 5,
+    marginVertical: '1%',
+    marginHorizontal: '1%',
     width: '48%',
   },
   title: {

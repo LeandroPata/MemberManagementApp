@@ -14,7 +14,7 @@ const HomeLayout = () => {
 
   return (
     <Drawer
-      drawerContent={CustomDrawerContent}
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
         headerStyle: {
           backgroundColor: theme.colors.background,

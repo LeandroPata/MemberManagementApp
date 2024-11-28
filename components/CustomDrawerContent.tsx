@@ -1,13 +1,13 @@
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import {
   DrawerContentScrollView,
   DrawerItem,
   DrawerItemList,
 } from '@react-navigation/drawer';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import auth from '@react-native-firebase/auth';
 import { useTheme } from 'react-native-paper';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import auth from '@react-native-firebase/auth';
 
 export default function CustomDrawerContent(props: any) {
   const theme = useTheme();
@@ -24,9 +24,9 @@ export default function CustomDrawerContent(props: any) {
           label={'Sign Out'}
           icon={({ focused, color, size }) => (
             <Ionicons
+              name={focused ? 'log-out' : 'log-out-outline'}
               color={color}
               size={size}
-              name={focused ? 'log-out' : 'log-out-outline'}
             />
           )}
           inactiveTintColor={theme.colors.onBackground}

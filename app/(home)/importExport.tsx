@@ -4,7 +4,7 @@ import { Button } from 'react-native-paper';
 import { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
-import DocumentPicker from 'react-native-document-picker';
+import * as DocumentPicker from 'expo-document-picker';
 import RNFS from 'react-native-fs';
 
 export default function importExport() {
@@ -119,9 +119,12 @@ export default function importExport() {
 
   const pickFile = async () => {
     let doc = null;
+    console.log(Platform.OS);
     try {
-      doc = await DocumentPicker.pickSingle({
-        type: DocumentPicker.types.csv,
+      doc = await DocumentPicker.getDocumentAsync({
+        type:
+          Platform.OS == 'android' ? 'text/comma-separated-values' : 'text/csv',
+        copyToCacheDirectory: false,
       });
     } catch (e: any) {
       const err = e as FirebaseError;
@@ -316,17 +319,7 @@ export default function importExport() {
 
       await uploadFile(filePath);
 
-      let docPath = '';
-
-      await RNFS.readDir(RNFS.ExternalStorageDirectoryPath).then((results) => {
-        //docPath = result[10].path + '/membersData.csv';
-        results.forEach((result) => {
-          if (result.name == 'Documents') {
-            docPath = result.path + '/membersData.csv';
-          }
-        });
-      });
-
+      const docPath = RNFS.DownloadDirectoryPath + '/membersData.csv';
       console.log(docPath);
 
       const task = reference.writeToFile(docPath);

@@ -130,6 +130,7 @@ export default function importExport() {
       const err = e as FirebaseError;
       //alert('File not chosen: ' + err.message);
       console.log('File not chosen: ' + err.message);
+      setImportLoading(false);
     } finally {
       return doc;
     }
@@ -143,6 +144,7 @@ export default function importExport() {
       const err = e as FirebaseError;
       //alert("Couldn't read file: " + err.message);
       console.log("Couldn't read file: " + err.message);
+      setImportLoading(false);
       return null;
     }
   };
@@ -223,13 +225,12 @@ export default function importExport() {
     }
 
     const file = await pickFile();
-    if (!file) {
+    if (!file || file.canceled) {
       setImportLoading(false);
       return;
     }
-    //console.log(file);
 
-    const fileContent = await readFile(file.uri);
+    const fileContent = await readFile(file.assets[0].uri);
     //console.log(fileContent);
 
     const data = await convertCSVtoJSON(fileContent);
@@ -319,8 +320,17 @@ export default function importExport() {
 
       await uploadFile(filePath);
 
-      const docPath = RNFS.DownloadDirectoryPath + '/membersData.csv';
+      let docPath = RNFS.DownloadDirectoryPath + '/membersData.csv';
       console.log(docPath);
+
+      let i = 1;
+
+      while (await RNFS.exists(docPath)) {
+        docPath =
+          RNFS.DownloadDirectoryPath + '/membersData' + i.toString() + '.csv';
+        console.log(docPath);
+        i++;
+      }
 
       const task = reference.writeToFile(docPath);
 

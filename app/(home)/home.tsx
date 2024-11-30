@@ -45,17 +45,6 @@ export default function Home() {
         >
           Import/Export
         </Button>
-        <Button
-          style={styles.button}
-          contentStyle={styles.buttonContent}
-          labelStyle={styles.buttonText}
-          icon='logout'
-          mode='elevated'
-          //loading={loginLoading}
-          onPress={() => auth().signOut()}
-        >
-          Sign Out
-        </Button>
       </View>
     </View>
   );

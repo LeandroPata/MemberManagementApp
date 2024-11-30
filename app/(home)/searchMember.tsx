@@ -243,13 +243,15 @@ export default function SearchMember() {
         }}
       >
         <View>
-          {item.profilePicture ? (
-            <Avatar.Image
-              size={100}
-              style={{ alignSelf: 'center', marginBottom: 10 }}
-              source={{ uri: item.profilePicture }}
-            />
-          ) : null}
+          <Avatar.Image
+            size={100}
+            style={{ alignSelf: 'center', marginBottom: 10 }}
+            source={{
+              uri: item.profilePicture
+                ? item.profilePicture
+                : process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL,
+            }}
+          />
           <Text style={[styles.title, { color: theme.colors.onPrimary }]}>
             Name: {item.name}
           </Text>

@@ -4,6 +4,7 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Pressable,
+  ScrollView,
 } from 'react-native';
 import {
   Button,
@@ -29,15 +30,19 @@ export default function AddMember() {
   const [loading, setLoading] = useState(false);
   const [autoNumber, setAutoNumber] = useState(true);
 
-  const [dateModal, setDateModal] = useState(false);
+  const [birthDateModal, setBirthDateModal] = useState(false);
+  const [endDateModal, setEndDateModal] = useState(false);
   const [pictureModal, setPictureModal] = useState(false);
 
   const [name, setName] = useState('');
   const [memberNumber, setMemberNumber] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhone] = useState('');
+  const [occupation, setOccupation] = useState('');
+  const [country, setCountry] = useState('');
   const [address, setAddress] = useState('');
   const [zipCode, setZipCode] = useState('');
+  const [birthDate, setBirthDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [profilePicture, setProfilePicture] = useState(
     process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL
@@ -68,7 +73,7 @@ export default function AddMember() {
 
   const checkNumber = async () => {
     let numberAvailable = 1;
-    const snapshot = await firestore()
+    await firestore()
       .collection('members')
       .orderBy('memberNumber', 'asc')
       .get()
@@ -212,8 +217,11 @@ export default function AddMember() {
           memberNumber: minNumber,
           email: email.trim(),
           phoneNumber: phoneNumber,
+          occupation: occupation,
+          country: country,
           address: address.trim(),
           zipCode: zipCode.trim(),
+          birthDate: Timestamp.fromDate(birthDate),
           addedDate: Timestamp.fromDate(new Date()),
           endDate: Timestamp.fromDate(endDate),
           profilePicture: url ? url : profilePicture,
@@ -224,8 +232,11 @@ export default function AddMember() {
           setMemberNumber('');
           setEmail('');
           setPhone('');
+          setOccupation('');
+          setCountry('');
           setAddress('');
           setZipCode('');
+          setBirthDate(new Date());
           setEndDate(new Date());
           setProfilePicture(process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL);
         });
@@ -275,122 +286,180 @@ export default function AddMember() {
           </Button>
         </Modal>
       </Portal>
+
       <View style={styles.container}>
-        <KeyboardAvoidingView
-          style={{ paddingHorizontal: 10 }}
-          behavior='padding'
-        >
-          <Pressable
-            style={styles.pictureButton}
-            onPress={() => {
-              setPictureModal(true);
-            }}
+        <ScrollView>
+          <KeyboardAvoidingView
+            style={{ paddingHorizontal: 10 }}
+            behavior='padding'
           >
-            <Avatar.Image
-              size={200}
-              style={{ alignSelf: 'center' }}
-              source={{ uri: profilePicture }}
-            />
-          </Pressable>
-          <TextInput
-            style={styles.input}
-            value={name}
-            onChangeText={setName}
-            autoCapitalize='words'
-            keyboardType='default'
-            label='Name'
-          />
-          <TextInput
-            style={styles.input}
-            value={email}
-            onChangeText={setEmail}
-            autoCapitalize='none'
-            keyboardType='email-address'
-            label='Email'
-          />
-          <TextInput
-            style={styles.input}
-            value={phoneNumber}
-            onChangeText={setPhone}
-            autoCapitalize='none'
-            inputMode='tel'
-            keyboardType='phone-pad'
-            label='Phone Number'
-          />
-          <TextInput
-            style={styles.input}
-            value={address}
-            onChangeText={setAddress}
-            autoCapitalize='sentences'
-            inputMode='text'
-            keyboardType='default'
-            label='Address'
-          />
-          <TextInput
-            style={styles.input}
-            value={zipCode}
-            onChangeText={(text) => {
-              setZipCode(text);
-              if (text.length > 4 && !text.includes('-')) {
-                let a = text.substring(0, 4);
-                let b = text.substring(4);
-                a = a.concat('-');
-                text = a.concat(b);
-                setZipCode(text);
-              }
-            }}
-            maxLength={8}
-            autoCapitalize='none'
-            inputMode='numeric'
-            keyboardType='number-pad'
-            label='Zip Code'
-          />
-          <View
-            style={{
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              justifyContent: 'space-between',
-            }}
-          >
+            <Pressable
+              style={styles.pictureButton}
+              onPress={() => {
+                setPictureModal(true);
+              }}
+            >
+              <Avatar.Image
+                size={200}
+                style={{ alignSelf: 'center' }}
+                source={{ uri: profilePicture }}
+              />
+            </Pressable>
             <View
               style={{
                 flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                flex: 2,
+                flexWrap: 'wrap',
+                justifyContent: 'space-between',
               }}
             >
-              <Text>Auto Number</Text>
-              <Switch value={autoNumber} onValueChange={setAutoNumber} />
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flex: 2,
+                }}
+              >
+                <Text
+                  style={[
+                    styles.title,
+                    { fontSize: 15, color: theme.colors.onBackground },
+                  ]}
+                >
+                  Auto Number
+                </Text>
+                <Switch value={autoNumber} onValueChange={setAutoNumber} />
+              </View>
+              <TextInput
+                disabled={autoNumber}
+                style={[styles.input, { flex: 3 }]}
+                value={memberNumber}
+                onChangeText={setMemberNumber}
+                autoCapitalize='none'
+                keyboardType='numeric'
+                label='Member Number'
+              />
             </View>
             <TextInput
-              disabled={autoNumber}
-              style={[styles.input, { flex: 3 }]}
-              value={memberNumber}
-              onChangeText={setMemberNumber}
-              autoCapitalize='none'
-              keyboardType='numeric'
-              label='Member Number'
+              style={styles.input}
+              value={name}
+              onChangeText={setName}
+              autoCapitalize='words'
+              keyboardType='default'
+              label='Name'
             />
-          </View>
-          <Button onPress={() => setDateModal(true)}>
-            End Date: {endDate.toLocaleDateString('pt-pt')}
-          </Button>
-          <DatePicker
-            modal
-            mode='date'
-            locale='pt-pt'
-            open={dateModal}
-            date={endDate}
-            onConfirm={(endDate) => {
-              setDateModal(false);
-              setEndDate(endDate);
-            }}
-            onCancel={() => {
-              setDateModal(false);
-            }}
-          />
-        </KeyboardAvoidingView>
+            <TextInput
+              style={styles.input}
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize='none'
+              keyboardType='email-address'
+              label='Email'
+            />
+            <TextInput
+              style={styles.input}
+              value={phoneNumber}
+              onChangeText={setPhone}
+              autoCapitalize='none'
+              inputMode='tel'
+              keyboardType='phone-pad'
+              label='Phone Number'
+            />
+            <TextInput
+              style={styles.input}
+              value={occupation}
+              onChangeText={setOccupation}
+              autoCapitalize='sentences'
+              inputMode='text'
+              keyboardType='default'
+              label='Occupation'
+            />
+            <TextInput
+              style={styles.input}
+              value={country}
+              onChangeText={setCountry}
+              autoCapitalize='sentences'
+              inputMode='text'
+              keyboardType='default'
+              label='Country'
+            />
+            <TextInput
+              style={styles.input}
+              value={address}
+              onChangeText={setAddress}
+              autoCapitalize='sentences'
+              inputMode='text'
+              keyboardType='default'
+              label='Address'
+            />
+            <TextInput
+              style={styles.input}
+              value={zipCode}
+              onChangeText={(text) => {
+                setZipCode(text);
+                if (text.length > 4 && !text.includes('-')) {
+                  let a = text.substring(0, 4);
+                  let b = text.substring(4);
+                  a = a.concat('-');
+                  text = a.concat(b);
+                  setZipCode(text);
+                }
+              }}
+              maxLength={8}
+              autoCapitalize='none'
+              inputMode='numeric'
+              keyboardType='number-pad'
+              label='Zip Code'
+            />
+            <Button
+              style={{ marginVertical: 5 }}
+              labelStyle={[styles.title, { fontSize: 20 }]}
+              onPress={() => setBirthDateModal(true)}
+            >
+              Birth Date: {birthDate.toLocaleDateString('pt-pt')}
+            </Button>
+            <DatePicker
+              modal
+              mode='date'
+              locale='pt-pt'
+              open={birthDateModal}
+              date={birthDate}
+              maximumDate={new Date()}
+              minimumDate={new Date('1900-01-01')}
+              theme={theme.dark ? 'dark' : 'light'}
+              onConfirm={(birthDate) => {
+                setBirthDateModal(false);
+                setBirthDate(birthDate);
+              }}
+              onCancel={() => {
+                setBirthDateModal(false);
+              }}
+            />
+            <Button
+              style={{ marginVertical: 5 }}
+              labelStyle={[styles.title, { fontSize: 20 }]}
+              onPress={() => setEndDateModal(true)}
+            >
+              End Date: {endDate.toLocaleDateString('pt-pt')}
+            </Button>
+            <DatePicker
+              modal
+              mode='date'
+              locale='pt-pt'
+              open={endDateModal}
+              date={endDate}
+              minimumDate={new Date()}
+              theme={theme.dark ? 'dark' : 'light'}
+              onConfirm={(endDate) => {
+                setEndDateModal(false);
+                setEndDate(endDate);
+              }}
+              onCancel={() => {
+                setEndDateModal(false);
+              }}
+            />
+          </KeyboardAvoidingView>
+        </ScrollView>
         <View style={styles.buttonContainer}>
           <Button
             style={styles.button}
@@ -442,4 +511,8 @@ const styles = StyleSheet.create({
     marginVertical: 2,
   },
   pictureButton: { padding: 15, alignSelf: 'center' },
+  title: {
+    fontWeight: 'bold',
+    textAlignVertical: 'center',
+  },
 });

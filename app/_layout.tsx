@@ -59,7 +59,7 @@ export default function RootLayout() {
               level5: 'rgb(63, 48, 46)',
             },
             surfaceDisabled: 'rgba(237, 224, 222, 0.12)',
-            onSurfaceDisabled: 'rgba(237, 224, 222, 0.38)',
+            onSurfaceDisabled: 'rgb(237, 224, 222)',
             backdrop: 'rgba(59, 45, 43, 0.4)',
           },
         }
@@ -104,7 +104,7 @@ export default function RootLayout() {
               level5: 'rgb(241, 225, 227)',
             },
             surfaceDisabled: 'rgba(32, 26, 25, 0.12)',
-            onSurfaceDisabled: 'rgba(32, 26, 25, 0.38)',
+            onSurfaceDisabled: 'rgb(32, 26, 25)',
             backdrop: 'rgba(59, 45, 43, 0.4)',
           },
         };

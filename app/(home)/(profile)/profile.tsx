@@ -446,7 +446,7 @@ export default function Profile() {
       <View style={styles.container}>
         {loading || !profile ? (
           <ActivityIndicator size={'large'} style={{ margin: 28 }} />
-        ) : editing ? (
+        ) : (
           <>
             <ScrollView>
               <KeyboardAvoidingView
@@ -454,6 +454,7 @@ export default function Profile() {
                 behavior='padding'
               >
                 <Pressable
+                  disabled={!editing}
                   style={styles.pictureButton}
                   onPress={() => {
                     setPictureModal(true);
@@ -462,7 +463,11 @@ export default function Profile() {
                   <Avatar.Image
                     size={200}
                     style={{ alignSelf: 'center' }}
-                    source={{ uri: profilePicture }}
+                    source={{
+                      uri: profilePicture
+                        ? profilePicture
+                        : process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL,
+                    }}
                   />
                 </Pressable>
 
@@ -489,7 +494,11 @@ export default function Profile() {
                     >
                       Auto Number
                     </Text>
-                    <Switch value={autoNumber} onValueChange={setAutoNumber} />
+                    <Switch
+                      disabled={!editing}
+                      value={autoNumber}
+                      onValueChange={setAutoNumber}
+                    />
                   </View>
                   <TextInput
                     disabled={autoNumber}
@@ -502,6 +511,7 @@ export default function Profile() {
                   />
                 </View>
                 <TextInput
+                  disabled={!editing}
                   style={styles.input}
                   value={name}
                   onChangeText={setName}
@@ -510,6 +520,7 @@ export default function Profile() {
                   label='Name'
                 />
                 <TextInput
+                  disabled={!editing}
                   style={styles.input}
                   value={email}
                   onChangeText={setEmail}
@@ -518,6 +529,7 @@ export default function Profile() {
                   label='Email'
                 />
                 <TextInput
+                  disabled={!editing}
                   style={styles.input}
                   value={phoneNumber}
                   onChangeText={setPhone}
@@ -527,6 +539,7 @@ export default function Profile() {
                   label='Phone Number'
                 />
                 <TextInput
+                  disabled={!editing}
                   style={styles.input}
                   value={occupation}
                   onChangeText={setOccupation}
@@ -536,6 +549,7 @@ export default function Profile() {
                   label='Occupation'
                 />
                 <TextInput
+                  disabled={!editing}
                   style={styles.input}
                   value={country}
                   onChangeText={setCountry}
@@ -545,6 +559,7 @@ export default function Profile() {
                   label='Country'
                 />
                 <TextInput
+                  disabled={!editing}
                   style={styles.input}
                   value={address}
                   onChangeText={setAddress}
@@ -554,6 +569,7 @@ export default function Profile() {
                   label='Address'
                 />
                 <TextInput
+                  disabled={!editing}
                   style={styles.input}
                   value={zipCode}
                   onChangeText={(text) => {
@@ -573,6 +589,7 @@ export default function Profile() {
                   label='Zip Code'
                 />
                 <Button
+                  disabled={!editing}
                   style={{ marginVertical: 5 }}
                   labelStyle={styles.dateText}
                   onPress={() => setBirthDateModal(true)}
@@ -597,6 +614,7 @@ export default function Profile() {
                   }}
                 />
                 <Button
+                  disabled={!editing}
                   style={{ marginVertical: 5 }}
                   labelStyle={styles.dateText}
                   onPress={() => setEndDateModal(true)}
@@ -622,129 +640,50 @@ export default function Profile() {
               </KeyboardAvoidingView>
             </ScrollView>
             <View style={styles.buttonContainer}>
-              <Button
-                style={styles.button}
-                contentStyle={styles.buttonContent}
-                labelStyle={styles.buttonText}
-                icon='content-save'
-                mode='elevated'
-                loading={loadingSave}
-                onPress={saveMember}
-              >
-                Save
-              </Button>
+              {editing ? (
+                <Button
+                  style={styles.button}
+                  contentStyle={styles.buttonContent}
+                  labelStyle={styles.buttonText}
+                  icon='content-save'
+                  mode='elevated'
+                  loading={loadingSave}
+                  onPress={saveMember}
+                >
+                  Save
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    style={styles.button}
+                    contentStyle={styles.buttonContent}
+                    labelStyle={styles.buttonText}
+                    icon='account-edit'
+                    mode='elevated'
+                    loading={loadingSave}
+                    onPress={() => {
+                      setEditing(true);
+                    }}
+                  >
+                    Edit Member
+                  </Button>
+                  <Button
+                    style={styles.button}
+                    contentStyle={styles.buttonContent}
+                    labelStyle={styles.buttonText}
+                    icon='account-remove'
+                    mode='elevated'
+                    loading={loadingDelete}
+                    onPress={() => {
+                      setConfirmDeleteModal(true);
+                    }}
+                  >
+                    Delete Member
+                  </Button>
+                </>
+              )}
             </View>
           </>
-        ) : (
-          <ScrollView style={{ paddingHorizontal: 10 }}>
-            {profilePicture ? (
-              <>
-                <Avatar.Image
-                  size={250}
-                  style={{ alignSelf: 'center', marginBottom: 15 }}
-                  source={{ uri: profilePicture }}
-                />
-              </>
-            ) : null}
-            <Text style={styles.title}>
-              Name:{' '}
-              <Text style={[styles.title, { fontWeight: 'normal' }]}>
-                {profile.name}
-              </Text>
-            </Text>
-            <Text style={styles.title}>
-              Member Number:{' '}
-              <Text style={[styles.title, { fontWeight: 'normal' }]}>
-                {profile.memberNumber}
-              </Text>
-            </Text>
-            <Text style={styles.title}>
-              Email:{' '}
-              <Text style={[styles.title, { fontWeight: 'normal' }]}>
-                {profile.email}
-              </Text>
-            </Text>
-            <Text style={styles.title}>
-              Phone Number:{' '}
-              <Text style={[styles.title, { fontWeight: 'normal' }]}>
-                {profile.phoneNumber}
-              </Text>
-            </Text>
-            <Text style={styles.title}>
-              Occupation:{' '}
-              <Text style={[styles.title, { fontWeight: 'normal' }]}>
-                {profile.occupation}
-              </Text>
-            </Text>
-            <Text style={styles.title}>
-              Country:{' '}
-              <Text style={[styles.title, { fontWeight: 'normal' }]}>
-                {profile.country}
-              </Text>
-            </Text>
-            <Text style={styles.title}>
-              Address:{' '}
-              <Text style={[styles.title, { fontWeight: 'normal' }]}>
-                {profile.address}
-              </Text>
-            </Text>
-            <Text style={styles.title}>
-              Zip Code:{' '}
-              <Text style={[styles.title, { fontWeight: 'normal' }]}>
-                {profile.zipCode}
-              </Text>
-            </Text>
-            <Text style={styles.title}>
-              Birth Date:{' '}
-              <Text style={[styles.title, { fontWeight: 'normal' }]}>
-                {new Date(profile.birthDate.toDate()).toLocaleDateString(
-                  'pt-pt'
-                )}
-              </Text>
-            </Text>
-            <Text style={styles.title}>
-              Added Date:{' '}
-              <Text style={[styles.title, { fontWeight: 'normal' }]}>
-                {new Date(profile.addedDate.toDate()).toLocaleDateString(
-                  'pt-pt'
-                )}
-              </Text>
-            </Text>
-            <Text style={styles.title}>
-              End Date:{' '}
-              <Text style={[styles.title, { fontWeight: 'normal' }]}>
-                {new Date(profile.endDate.toDate()).toLocaleDateString('pt-pt')}
-              </Text>
-            </Text>
-            <View style={styles.buttonContainer}>
-              <Button
-                style={styles.button}
-                contentStyle={styles.buttonContent}
-                labelStyle={styles.buttonText}
-                icon='account-edit'
-                mode='elevated'
-                loading={loadingSave}
-                onPress={() => {
-                  setEditing(true);
-                }}
-              >
-                Edit Member
-              </Button>
-              <Button
-                style={styles.button}
-                contentStyle={styles.buttonContent}
-                labelStyle={styles.buttonText}
-                icon='account-remove'
-                mode='elevated'
-                loading={loadingDelete}
-                onPress={() => {
-                  setConfirmDeleteModal(true);
-                }}
-              >
-                Delete Member
-              </Button>
-            </View>
-          </ScrollView>
         )}
       </View>
     </>
@@ -771,10 +710,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    marginVertical: 8,
+    marginVertical: 5,
     justifyContent: 'center',
   },
-  buttonContent: { minWidth: 280, minHeight: 80 },
+  buttonContent: {
+    minWidth: 280,
+    minHeight: 80,
+  },
   buttonText: {
     fontSize: 25,
     fontWeight: 'bold',
@@ -784,7 +726,10 @@ const styles = StyleSheet.create({
   input: {
     marginVertical: 2,
   },
-  pictureButton: { padding: 15, alignSelf: 'center' },
+  pictureButton: {
+    padding: 15,
+    alignSelf: 'center',
+  },
   picture: {
     width: 100,
     height: 100,

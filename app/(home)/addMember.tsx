@@ -217,8 +217,8 @@ export default function AddMember() {
           memberNumber: minNumber,
           email: email.trim(),
           phoneNumber: phoneNumber,
-          occupation: occupation,
-          country: country,
+          occupation: occupation.trim(),
+          country: country.trim(),
           address: address.trim(),
           zipCode: zipCode.trim(),
           birthDate: Timestamp.fromDate(birthDate),
@@ -413,7 +413,7 @@ export default function AddMember() {
             />
             <Button
               style={{ marginVertical: 5 }}
-              labelStyle={[styles.title, { fontSize: 20 }]}
+              labelStyle={styles.dateText}
               onPress={() => setBirthDateModal(true)}
             >
               Birth Date: {birthDate.toLocaleDateString('pt-pt')}
@@ -437,7 +437,7 @@ export default function AddMember() {
             />
             <Button
               style={{ marginVertical: 5 }}
-              labelStyle={[styles.title, { fontSize: 20 }]}
+              labelStyle={styles.dateText}
               onPress={() => setEndDateModal(true)}
             >
               End Date: {endDate.toLocaleDateString('pt-pt')}
@@ -511,8 +511,9 @@ const styles = StyleSheet.create({
     marginVertical: 2,
   },
   pictureButton: { padding: 15, alignSelf: 'center' },
-  title: {
+  dateText: {
     fontWeight: 'bold',
     textAlignVertical: 'center',
+    fontSize: 20,
   },
 });

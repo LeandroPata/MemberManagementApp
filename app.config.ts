@@ -50,6 +50,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         cameraPermission: "The app accesses your camera to take a photo for profile pictures."
       }
     ],
+    "expo-localization",
     "@react-native-firebase/app",
     "@react-native-firebase/auth"
   ],

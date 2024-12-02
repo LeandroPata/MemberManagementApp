@@ -4,10 +4,12 @@ import { Button, useTheme } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import auth from '@react-native-firebase/auth';
+import { useTranslation } from 'react-i18next';
 
 export default function Home() {
   const insets = useSafeAreaInsets();
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <View style={styles.container}>
@@ -21,7 +23,7 @@ export default function Home() {
           //loading={loginLoading}
           onPress={() => router.push('/(home)/addMember')}
         >
-          Add Member
+          {t('home.addMember')}
         </Button>
         <Button
           style={styles.button}
@@ -32,7 +34,7 @@ export default function Home() {
           //loading={loginLoading}
           onPress={() => router.push('/(home)/searchMember')}
         >
-          Search Member
+          {t('home.searchMember')}
         </Button>
         <Button
           style={styles.button}
@@ -43,7 +45,7 @@ export default function Home() {
           //loading={loginLoading}
           onPress={() => router.push('/(home)/importExport')}
         >
-          Import/Export
+          {t('home.importExport')}
         </Button>
       </View>
     </View>

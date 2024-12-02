@@ -40,7 +40,13 @@
     "numberExists": "Este número de membro já foi atribuído a outro membro!",
     "emailFormat": "O Email está mal formatado!"
   },
-  "searchMember": {},
+  "searchMember": {
+    "name": "Nome",
+    "memberNumber": "Número de Membro",
+    "searchMember": "Procurar Membro",
+    "orderName": "Ordenar por nome",
+    "orderNumber": "Ordenar por número"
+  },
   "importExport": {},
   "profile": {}
 }

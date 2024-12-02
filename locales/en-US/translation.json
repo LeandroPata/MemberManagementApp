@@ -40,7 +40,13 @@
     "numberExists": "This member number is already attributed to another member!",
     "emailFormat": "Email is in the wrong format!"
   },
-  "searchMember": {},
+  "searchMember": {
+    "name": "Name",
+    "memberNumber": "Member Number",
+    "searchMember": "Search Member",
+    "orderName": "Order by name",
+    "orderNumber": "Order by number"
+  },
   "importExport": {},
   "profile": {}
 }

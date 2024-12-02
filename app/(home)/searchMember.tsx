@@ -17,10 +17,12 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import firestore from '@react-native-firebase/firestore';
+import { useTranslation } from 'react-i18next';
 
 export default function SearchMember() {
   const insets = useSafeAreaInsets();
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState(false);
@@ -253,10 +255,10 @@ export default function SearchMember() {
             }}
           />
           <Text style={[styles.title, { color: theme.colors.onPrimary }]}>
-            Name: {item.name}
+            {t('searchMember.name') + ': ' + item.name}
           </Text>
           <Text style={[styles.title, { color: theme.colors.onPrimary }]}>
-            Member Number: {item.memberNumber}
+            {t('searchMember.memberNumber') + ': ' + item.memberNumber}
           </Text>
         </View>
       </TouchableRipple>
@@ -275,7 +277,7 @@ export default function SearchMember() {
           onChangeText={setName}
           autoCapitalize='words'
           keyboardType='default'
-          label='Name'
+          label={t('searchMember.name')}
         />
         <TextInput
           style={styles.input}
@@ -283,7 +285,7 @@ export default function SearchMember() {
           onChangeText={setMemberNumber}
           autoCapitalize='none'
           keyboardType='numeric'
-          label='Member Number'
+          label={t('searchMember.memberNumber')}
         />
         <View style={styles.buttonContainer}>
           <Button
@@ -295,7 +297,7 @@ export default function SearchMember() {
             loading={loading}
             onPress={searchMember}
           >
-            Search Member
+            {t('searchMember.searchMember')}
           </Button>
         </View>
         <View
@@ -319,7 +321,7 @@ export default function SearchMember() {
                 orderMembersName();
               }}
             >
-              Order by name
+              {t('searchMember.orderName')}
             </Button>
           </View>
           <View style={{ width: '49%' }}>
@@ -335,7 +337,7 @@ export default function SearchMember() {
                 orderMembersNumber();
               }}
             >
-              Order by number
+              {t('searchMember.orderNumber')}
             </Button>
           </View>
         </View>

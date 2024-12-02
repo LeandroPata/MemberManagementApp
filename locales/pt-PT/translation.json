@@ -47,6 +47,13 @@
     "orderName": "Ordenar por nome",
     "orderNumber": "Ordenar por número"
   },
-  "importExport": {},
+  "importExport": {
+    "importMembers": "Importar Membros",
+    "exportMembers": "Exportar Membros",
+    "storagePermission": "Permissões de armazenamento são necessárias para importar/exportar dados!",
+    "importSuccess": "Importação com sucesso!",
+    "importExistingMembers": "Os membros com os seguintes números já existem na base de dados e não foram importados",
+    "exportSuccess": "Exportação com sucesso!"
+  },
   "profile": {}
 }

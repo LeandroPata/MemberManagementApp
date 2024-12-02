@@ -6,8 +6,11 @@ import firestore, { Timestamp } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import * as DocumentPicker from 'expo-document-picker';
 import RNFS from 'react-native-fs';
+import { useTranslation } from 'react-i18next';
 
 export default function importExport() {
+  const { t } = useTranslation();
+
   const [importLoading, setImportLoading] = useState(false);
   const [exportLoading, setExportLoading] = useState(false);
 
@@ -205,7 +208,7 @@ export default function importExport() {
         !(grantedRead === PermissionsAndroid.RESULTS.GRANTED) ||
         !(grantedWrite === PermissionsAndroid.RESULTS.GRANTED)
       ) {
-        alert('Storage permissions are necessary to import/export data!');
+        alert(t('importExport.storagePermission'));
         return false;
       }
       return true;
@@ -248,7 +251,6 @@ export default function importExport() {
       for (let member of membersData) {
         const check = await checkMember(member);
         if (!check) {
-          console.log('check');
           const memberRef = firestore().collection('members').doc();
 
           //set profilePicture to field to an existing picture if it exists
@@ -273,14 +275,20 @@ export default function importExport() {
       //alert('Error importing: ' + err.message);
       console.log('Error importing: ' + err.message);
       setImportLoading(false);
+      return;
     } finally {
       await batch.commit();
       console.log(existingMembers);
-      alert(
-        'Importing Successfull!\nThe following member numbers already existed in the database and were not imported:' +
-          existingMembers.toString()
-      );
-      console.log('Importing Successfull');
+      let importMsg = t('importExport.importSuccess');
+      if (existingMembers.length) {
+        importMsg +=
+          '\n' +
+          t('importExport.importExistingMembers') +
+          ': ' +
+          existingMembers.toString();
+      }
+      alert(importMsg);
+      console.log(importMsg);
       setImportLoading(false);
     }
   };
@@ -342,7 +350,7 @@ export default function importExport() {
 
       await task
         .then(() => {
-          alert('Exporting successfull!');
+          alert(t('importExport.exportSuccess'));
           console.log('Exporting successfull!');
         })
         .catch((e: any) => {
@@ -356,6 +364,7 @@ export default function importExport() {
       console.log('Exporting members failed: ' + err.message);
       //alert('Exporting members failed: ' + err.message);
       setExportLoading(false);
+      return;
     } finally {
       setExportLoading(false);
     }
@@ -373,7 +382,7 @@ export default function importExport() {
           loading={importLoading}
           onPress={importMembers}
         >
-          Import Members
+          {t('importExport.importMembers')}
         </Button>
         <Button
           style={styles.button}
@@ -384,7 +393,7 @@ export default function importExport() {
           loading={exportLoading}
           onPress={exportMembers}
         >
-          Export Members
+          {t('importExport.exportMembers')}
         </Button>
       </View>
     </View>

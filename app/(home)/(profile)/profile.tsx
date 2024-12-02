@@ -25,12 +25,14 @@ import { useBackHandler } from '@react-native-community/hooks';
 import { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
+import { useTranslation } from 'react-i18next';
 
 export default function Profile() {
   const { profileID } = useLocalSearchParams();
 
   const insets = useSafeAreaInsets();
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -96,26 +98,31 @@ export default function Profile() {
 
   const getMember = async (id) => {
     setLoading(true);
-    await firestore()
-      .collection('members')
-      .doc(id)
-      .get()
-      .then((documentSnapshot) => {
-        if (documentSnapshot && documentSnapshot.data()) {
-          setProfile(documentSnapshot.data());
-          setName(documentSnapshot.data().name);
-          setMemberNumber(documentSnapshot.data().memberNumber.toString());
-          setEmail(documentSnapshot.data().email);
-          setPhone(documentSnapshot.data().phoneNumber);
-          setOccupation(documentSnapshot.data().occupation);
-          setCountry(documentSnapshot.data().country);
-          setAddress(documentSnapshot.data().address);
-          setZipCode(documentSnapshot.data().zipCode);
-          setBirthDate(new Date(documentSnapshot.data().birthDate.toDate()));
-          setEndDate(new Date(documentSnapshot.data().endDate.toDate()));
-          setProfilePicture(documentSnapshot.data().profilePicture);
-        }
-      });
+    try {
+      await firestore()
+        .collection('members')
+        .doc(id)
+        .get()
+        .then((documentSnapshot) => {
+          if (documentSnapshot && documentSnapshot.data()) {
+            setProfile(documentSnapshot.data());
+            setName(documentSnapshot.data().name);
+            setMemberNumber(documentSnapshot.data().memberNumber.toString());
+            setEmail(documentSnapshot.data().email);
+            setPhone(documentSnapshot.data().phoneNumber);
+            setOccupation(documentSnapshot.data().occupation);
+            setCountry(documentSnapshot.data().country);
+            setAddress(documentSnapshot.data().address);
+            setZipCode(documentSnapshot.data().zipCode);
+            setBirthDate(new Date(documentSnapshot.data().birthDate.toDate()));
+            setEndDate(new Date(documentSnapshot.data().endDate.toDate()));
+            setProfilePicture(documentSnapshot.data().profilePicture);
+          }
+        });
+    } catch (e: any) {
+      const err = e as FirebaseError;
+      console.log('Getting profile failed: ' + err.message);
+    }
     setLoading(false);
   };
 
@@ -143,7 +150,7 @@ export default function Profile() {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
     if (permissionResult.granted === false) {
-      alert('Permission to access camera denied!');
+      alert(t('profile.cameraPermission'));
       return;
     }
 
@@ -279,13 +286,13 @@ export default function Profile() {
     if (autoNumber) {
       await assignMemberNumber();
     } else if (!memberNumber.trim()) {
-      alert('Member number is mandatory!');
+      alert(t('profile.numberMandatory'));
       setLoading(false);
       return;
     } else {
       const numberAvailable = await checkNumber();
       if (numberAvailable > 1) {
-        alert('This member number is already attributed to another member!');
+        alert(t('profile.numberExists'));
         setLoading(false);
         return;
       }
@@ -312,7 +319,7 @@ export default function Profile() {
           profilePicture: url ? url : profilePicture,
         })
         .then(() => {
-          alert('Member Updated!');
+          alert(t('profile.updatedMember'));
           setEditing(false);
         });
     } catch (e: any) {
@@ -336,7 +343,7 @@ export default function Profile() {
         .doc(profileID)
         .delete()
         .then(() => {
-          alert('Member Deleted!');
+          alert(t('profile.deletedMember'));
         });
     } catch (e: any) {
       const err = e as FirebaseError;
@@ -346,7 +353,6 @@ export default function Profile() {
     } finally {
       setLoadingDelete(false);
     }
-
     setLoadingDelete(false);
     setConfirmDeleteModal(false);
     router.replace('/(home)/searchMember');
@@ -374,7 +380,7 @@ export default function Profile() {
             mode='elevated'
             onPress={pickImage}
           >
-            From gallery
+            {t('profile.gallery')}
           </Button>
           <Button
             style={styles.button}
@@ -384,7 +390,7 @@ export default function Profile() {
             mode='elevated'
             onPress={takePicture}
           >
-            Take Picture
+            {t('profile.camera')}
           </Button>
         </Modal>
       </Portal>
@@ -410,7 +416,7 @@ export default function Profile() {
               },
             ]}
           >
-            Are you sure you want to delete this member?
+            {t('profile.deleteConfirmation')}
           </Text>
           <View
             style={[
@@ -427,7 +433,7 @@ export default function Profile() {
                 deleteMember();
               }}
             >
-              Yes
+              {t('profile.yes')}
             </Button>
             <Button
               style={[styles.button, { width: '45%', marginHorizontal: 8 }]}
@@ -438,7 +444,7 @@ export default function Profile() {
                 setConfirmDeleteModal(false);
               }}
             >
-              No
+              {t('profile.no')}
             </Button>
           </View>
         </Modal>
@@ -492,7 +498,7 @@ export default function Profile() {
                         { fontSize: 15, color: theme.colors.onBackground },
                       ]}
                     >
-                      Auto Number
+                      {t('profile.autoNumber')}
                     </Text>
                     <Switch
                       disabled={!editing}
@@ -507,7 +513,7 @@ export default function Profile() {
                     onChangeText={setMemberNumber}
                     autoCapitalize='none'
                     keyboardType='numeric'
-                    label='Member Number'
+                    label={t('profile.memberNumber')}
                   />
                 </View>
                 <TextInput
@@ -517,7 +523,7 @@ export default function Profile() {
                   onChangeText={setName}
                   autoCapitalize='words'
                   keyboardType='default'
-                  label='Name'
+                  label={t('profile.name')}
                 />
                 <TextInput
                   disabled={!editing}
@@ -526,7 +532,7 @@ export default function Profile() {
                   onChangeText={setEmail}
                   autoCapitalize='none'
                   keyboardType='email-address'
-                  label='Email'
+                  label={t('profile.email')}
                 />
                 <TextInput
                   disabled={!editing}
@@ -536,7 +542,7 @@ export default function Profile() {
                   autoCapitalize='none'
                   inputMode='tel'
                   keyboardType='phone-pad'
-                  label='Phone Number'
+                  label={t('profile.phoneNumber')}
                 />
                 <TextInput
                   disabled={!editing}
@@ -546,7 +552,7 @@ export default function Profile() {
                   autoCapitalize='sentences'
                   inputMode='text'
                   keyboardType='default'
-                  label='Occupation'
+                  label={t('profile.occupation')}
                 />
                 <TextInput
                   disabled={!editing}
@@ -556,7 +562,7 @@ export default function Profile() {
                   autoCapitalize='sentences'
                   inputMode='text'
                   keyboardType='default'
-                  label='Country'
+                  label={t('profile.country')}
                 />
                 <TextInput
                   disabled={!editing}
@@ -566,7 +572,7 @@ export default function Profile() {
                   autoCapitalize='sentences'
                   inputMode='text'
                   keyboardType='default'
-                  label='Address'
+                  label={t('profile.address')}
                 />
                 <TextInput
                   disabled={!editing}
@@ -586,7 +592,7 @@ export default function Profile() {
                   autoCapitalize='none'
                   inputMode='numeric'
                   keyboardType='number-pad'
-                  label='Zip Code'
+                  label={t('profile.zipCode')}
                 />
                 <Button
                   disabled={!editing}
@@ -594,7 +600,9 @@ export default function Profile() {
                   labelStyle={styles.dateText}
                   onPress={() => setBirthDateModal(true)}
                 >
-                  Birth Date: {birthDate.toLocaleDateString('pt-pt')}
+                  {t('profile.birthDate') +
+                    ': ' +
+                    birthDate.toLocaleDateString('pt-pt')}
                 </Button>
                 <DatePicker
                   modal
@@ -619,7 +627,9 @@ export default function Profile() {
                   labelStyle={styles.dateText}
                   onPress={() => setEndDateModal(true)}
                 >
-                  End Date: {endDate.toLocaleDateString('pt-pt')}
+                  {t('profile.endDate') +
+                    ': ' +
+                    endDate.toLocaleDateString('pt-pt')}
                 </Button>
                 <DatePicker
                   modal
@@ -650,7 +660,7 @@ export default function Profile() {
                   loading={loadingSave}
                   onPress={saveMember}
                 >
-                  Save
+                  {t('profile.saveMember')}
                 </Button>
               ) : (
                 <>
@@ -665,7 +675,7 @@ export default function Profile() {
                       setEditing(true);
                     }}
                   >
-                    Edit Member
+                    {t('profile.editMember')}
                   </Button>
                   <Button
                     style={styles.button}
@@ -678,7 +688,7 @@ export default function Profile() {
                       setConfirmDeleteModal(true);
                     }}
                   >
-                    Delete Member
+                    {t('profile.deleteMember')}
                   </Button>
                 </>
               )}

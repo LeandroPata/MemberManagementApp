@@ -55,5 +55,33 @@
     "importExistingMembers": "The members with the following numbers already existed in the database and were not imported",
     "exportSuccess": "Exporting successfull!"
   },
-  "profile": {}
+  "profile": {
+    "autoNumber": "Auto Number",
+    "memberNumber": "Member Number",
+    "name": "Name",
+    "email": "Email",
+    "phoneNumber": "Phone Number",
+    "occupation": "Occupation",
+    "country": "Country",
+    "address": "Address",
+    "zipCode": "Zip Code",
+    "birthDate": "Birth Date",
+    "endDate": "End Date",
+    "gallery": "From Gallery",
+    "camera": "Take Picture",
+    "numberUnavailable": "Number unavailable!",
+    "cameraPermission": "Permission to access camera denied!",
+    "nameMandatory": "Name is mandatory!",
+    "numberMandatory": "Member number is mandatory!",
+    "numberExists": "This member number is already attributed to another member!",
+    "emailFormat": "Email is in the wrong format!",
+    "saveMember": "Save",
+    "editMember": "Edit Member",
+    "deleteMember": "Delete Member",
+    "yes": "Yes",
+    "no": "No",
+    "deleteConfirmation": "Are you sure you want to delete this member?",
+    "updatedMember": "Updated Member!",
+    "deletedMember": "Member Deleted!"
+  }
 }

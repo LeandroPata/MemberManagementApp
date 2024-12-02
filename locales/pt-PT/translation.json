@@ -55,5 +55,33 @@
     "importExistingMembers": "Os membros com os seguintes números já existem na base de dados e não foram importados",
     "exportSuccess": "Exportação com sucesso!"
   },
-  "profile": {}
+  "profile": {
+    "autoNumber": "Número Automático",
+    "memberNumber": "Número de Membro",
+    "name": "Nome",
+    "email": "Email",
+    "phoneNumber": "Contacto",
+    "occupation": "Ocupação",
+    "country": "Nacionalidade",
+    "address": "Morada",
+    "zipCode": "Código Postal",
+    "birthDate": "Data de Nascimento",
+    "endDate": "Data Final",
+    "gallery": "Galeria",
+    "camera": "Tirar Foto",
+    "numberUnavailable": "Número indisponível!",
+    "cameraPermission": "Permissão para aceder à camera negada!",
+    "nameMandatory": "Nome é mandatório!",
+    "numberMandatory": "Número de Membro é mandatório!",
+    "numberExists": "Este número de membro já foi atribuído a outro membro!",
+    "emailFormat": "O Email está mal formatado!",
+    "saveMember": "Guardar",
+    "editMember": "Editar Membro",
+    "deleteMember": "Apagar Membro",
+    "yes": "Sim",
+    "no": "Não",
+    "deleteConfirmation": "Tem a certeza que quer apagar este membro?",
+    "updatedMember": "Membro Atualizado!",
+    "deletedMember": "Membro Apagado!"
+  }
 }

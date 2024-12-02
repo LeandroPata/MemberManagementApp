@@ -10,7 +10,8 @@
     "emailEmpty": "O campo de Email está vazio!",
     "passwordEmpty": "O campo de Password está vazio!",
     "emailFormat": "O Email está mal formatado!",
-    "passwordNotMatch": "As passwords não são iguais!"
+    "passwordNotMatch": "As passwords não são iguais!",
+    "emailPasswordWrong": "As credenciais inseridas estão incorretas!"
   },
   "home": {
     "addMember": "Adicionar Membro",

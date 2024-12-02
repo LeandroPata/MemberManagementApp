@@ -10,7 +10,8 @@
     "emailEmpty": "Email field is empty!",
     "passwordEmpty": "Password field is empty!",
     "emailFormat": "Email is in the wrong format!",
-    "passwordNotMatch": "Passwords do not match!"
+    "passwordNotMatch": "Passwords do not match!",
+    "emailPasswordWrong": "Your supplied credentials are incorrect!"
   },
   "home": {
     "addMember": "Add Member",

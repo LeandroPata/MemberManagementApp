@@ -49,15 +49,12 @@ export default function Index() {
     setConfirmSignupLoading(true);
     if (!confirmPassword.trim()) {
       alert(t('index.passwordEmpty'));
-      setSignupLoading(false);
       setConfirmSignupLoading(false);
-      setShowModal(false);
       return;
     } else if (password != confirmPassword) {
       alert(t('index.passwordNotMatch'));
-      setSignupLoading(false);
       setConfirmSignupLoading(false);
-      setShowModal(false);
+      setConfirmPassword('');
       return;
     }
 
@@ -98,8 +95,13 @@ export default function Index() {
       await auth().signInWithEmailAndPassword(email, password);
     } catch (e: any) {
       const err = e as FirebaseError;
-      //alert('Sign in failed: ' + err.message);
-      console.log('Sign in failed: ' + err.message);
+      if (err.code == 'auth/invalid-credential') {
+        alert(t('index.emailPasswordWrong'));
+        setPassword('');
+      } else {
+        //alert('Sign in failed: ' + err.message);
+        console.log('Sign in failed: ' + err.message);
+      }
     } finally {
       setLoginLoading(false);
     }

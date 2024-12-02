@@ -10,12 +10,14 @@ import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SystemUI from 'expo-system-ui';
 import { StatusBar } from 'expo-status-bar';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import '@/locales/i18n';
 
 export default function RootLayout() {
   const router = useRouter();
   const segments = useSegments();
   const colorScheme = useColorScheme();
   //console.log(colorScheme);
+
   const theme =
     colorScheme === 'dark'
       ? {

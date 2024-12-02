@@ -1,0 +1,8 @@
+{
+  "language": "Language",
+  "home": {
+    "addMember": "Add Member",
+    "searchMember": "Search Member",
+    "importExport": "Import/Export"
+  }
+}

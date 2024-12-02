@@ -22,10 +22,12 @@ import * as ImagePicker from 'expo-image-picker';
 import { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
+import { useTranslation } from 'react-i18next';
 
 export default function AddMember() {
   const insets = useSafeAreaInsets();
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const [loading, setLoading] = useState(false);
   const [autoNumber, setAutoNumber] = useState(true);
@@ -81,7 +83,7 @@ export default function AddMember() {
         querySnapshot.forEach((documentSnapshot) => {
           if (memberNumber == documentSnapshot.data().memberNumber) {
             numberAvailable++;
-            console.log('Number unavailable!');
+            console.log(t('addMember.numberUnavailable'));
           }
         });
       });
@@ -113,7 +115,7 @@ export default function AddMember() {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
     if (permissionResult.granted === false) {
-      alert('Permission to access camera denied!');
+      alert(t('addMember.cameraPermission'));
       return;
     }
 
@@ -174,7 +176,7 @@ export default function AddMember() {
     setLoading(true);
 
     if (!name.trim()) {
-      alert('Name is mandatory!');
+      alert(t('addMember.nameMandatory'));
       setLoading(false);
       return;
     }
@@ -184,7 +186,7 @@ export default function AddMember() {
       email.trim() &&
       (!email.includes('@') || !email.includes('.'))
     ) {
-      alert('Email is in the wrong format!');
+      alert(t('addMember.emailFormat'));
       setLoading(false);
       return;
     }
@@ -192,13 +194,13 @@ export default function AddMember() {
     if (autoNumber) {
       await assignMemberNumber();
     } else if (!memberNumber.trim()) {
-      alert('Member number is mandatory!');
+      alert(t('addMember.numberMandatory'));
       setLoading(false);
       return;
     } else {
       const numberAvailable = await checkNumber();
       if (numberAvailable > 1) {
-        alert('This member number is already attributed to another member!');
+        alert(t('addMember.numberExists'));
         setLoading(false);
         return;
       }
@@ -272,7 +274,7 @@ export default function AddMember() {
             mode='elevated'
             onPress={pickImage}
           >
-            From gallery
+            {t('addMember.gallery')}
           </Button>
           <Button
             style={styles.button}
@@ -282,7 +284,7 @@ export default function AddMember() {
             mode='elevated'
             onPress={takePicture}
           >
-            Take Picture
+            {t('addMember.camera')}
           </Button>
         </Modal>
       </Portal>
@@ -326,7 +328,7 @@ export default function AddMember() {
                     { fontSize: 15, color: theme.colors.onBackground },
                   ]}
                 >
-                  Auto Number
+                  {t('addMember.autoNumber')}
                 </Text>
                 <Switch value={autoNumber} onValueChange={setAutoNumber} />
               </View>
@@ -337,7 +339,7 @@ export default function AddMember() {
                 onChangeText={setMemberNumber}
                 autoCapitalize='none'
                 keyboardType='numeric'
-                label='Member Number'
+                label={t('addMember.memberNumber')}
               />
             </View>
             <TextInput
@@ -346,7 +348,7 @@ export default function AddMember() {
               onChangeText={setName}
               autoCapitalize='words'
               keyboardType='default'
-              label='Name'
+              label={t('addMember.name')}
             />
             <TextInput
               style={styles.input}
@@ -354,7 +356,7 @@ export default function AddMember() {
               onChangeText={setEmail}
               autoCapitalize='none'
               keyboardType='email-address'
-              label='Email'
+              label={t('addMember.email')}
             />
             <TextInput
               style={styles.input}
@@ -363,7 +365,7 @@ export default function AddMember() {
               autoCapitalize='none'
               inputMode='tel'
               keyboardType='phone-pad'
-              label='Phone Number'
+              label={t('addMember.phoneNumber')}
             />
             <TextInput
               style={styles.input}
@@ -372,7 +374,7 @@ export default function AddMember() {
               autoCapitalize='sentences'
               inputMode='text'
               keyboardType='default'
-              label='Occupation'
+              label={t('addMember.occupation')}
             />
             <TextInput
               style={styles.input}
@@ -381,7 +383,7 @@ export default function AddMember() {
               autoCapitalize='sentences'
               inputMode='text'
               keyboardType='default'
-              label='Country'
+              label={t('addMember.country')}
             />
             <TextInput
               style={styles.input}
@@ -390,7 +392,7 @@ export default function AddMember() {
               autoCapitalize='sentences'
               inputMode='text'
               keyboardType='default'
-              label='Address'
+              label={t('addMember.address')}
             />
             <TextInput
               style={styles.input}
@@ -409,14 +411,16 @@ export default function AddMember() {
               autoCapitalize='none'
               inputMode='numeric'
               keyboardType='number-pad'
-              label='Zip Code'
+              label={t('addMember.zipCode')}
             />
             <Button
               style={{ marginVertical: 5 }}
               labelStyle={styles.dateText}
               onPress={() => setBirthDateModal(true)}
             >
-              Birth Date: {birthDate.toLocaleDateString('pt-pt')}
+              {t('addMember.birthDate') +
+                ': ' +
+                birthDate.toLocaleDateString('pt-pt')}
             </Button>
             <DatePicker
               modal
@@ -440,7 +444,9 @@ export default function AddMember() {
               labelStyle={styles.dateText}
               onPress={() => setEndDateModal(true)}
             >
-              End Date: {endDate.toLocaleDateString('pt-pt')}
+              {t('addMember.endDate') +
+                ': ' +
+                endDate.toLocaleDateString('pt-pt')}
             </Button>
             <DatePicker
               modal
@@ -470,7 +476,7 @@ export default function AddMember() {
             loading={loading}
             onPress={addMember}
           >
-            Add Member
+            {t('addMember.addMember')}
           </Button>
         </View>
       </View>
@@ -511,6 +517,11 @@ const styles = StyleSheet.create({
     marginVertical: 2,
   },
   pictureButton: { padding: 15, alignSelf: 'center' },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginVertical: 3,
+  },
   dateText: {
     fontWeight: 'bold',
     textAlignVertical: 'center',

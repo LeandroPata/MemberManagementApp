@@ -13,6 +13,13 @@
     "passwordNotMatch": "As passwords não são iguais!",
     "emailPasswordWrong": "As credenciais inseridas estão incorretas!"
   },
+  "drawer": {
+    "home": "Página Principal",
+    "addMember": "Adicionar Membro",
+    "searchMember": "Procurar Membro",
+    "importExport": "Importar/Exportar",
+    "signOut": "Sair da Conta"
+  },
   "home": {
     "addMember": "Adicionar Membro",
     "searchMember": "Procurar Membro",

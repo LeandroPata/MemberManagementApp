@@ -13,6 +13,13 @@
     "passwordNotMatch": "Passwords do not match!",
     "emailPasswordWrong": "Your supplied credentials are incorrect!"
   },
+  "drawer": {
+    "home": "Home",
+    "addMember": "Add Member",
+    "searchMember": "Search Member",
+    "importExport": "Import/Export",
+    "signOut": "Sign Out"
+  },
   "home": {
     "addMember": "Add Member",
     "searchMember": "Search Member",

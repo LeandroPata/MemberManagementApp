@@ -7,10 +7,12 @@ import { GestureHandlerRootView } from '@/components/gesture-handler';
 import { Drawer } from 'expo-router/drawer';
 import { Ionicons } from '@expo/vector-icons';
 import CustomDrawerContent from '@/components/CustomDrawerContent';
+import { useTranslation } from 'react-i18next';
 
 const HomeLayout = () => {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   return (
     <Drawer
@@ -53,8 +55,8 @@ const HomeLayout = () => {
       <Drawer.Screen
         name='home'
         options={{
-          drawerLabel: 'Home',
-          title: 'Home',
+          drawerLabel: t('drawer.home'),
+          title: t('drawer.home'),
           drawerIcon: ({ focused, size, color }) => (
             <Ionicons
               name={focused ? 'home' : 'home-outline'}
@@ -67,8 +69,8 @@ const HomeLayout = () => {
       <Drawer.Screen
         name='addMember'
         options={{
-          drawerLabel: 'Add Member',
-          title: 'Add Member',
+          drawerLabel: t('drawer.addMember'),
+          title: t('drawer.addMember'),
           drawerIcon: ({ focused, size, color }) => (
             <Ionicons
               name={focused ? 'person-add' : 'person-add-outline'}
@@ -81,8 +83,8 @@ const HomeLayout = () => {
       <Drawer.Screen
         name='searchMember'
         options={{
-          drawerLabel: 'Search Member',
-          title: 'Search Member',
+          drawerLabel: t('drawer.searchMember'),
+          title: t('drawer.searchMember'),
           drawerIcon: ({ focused, size, color }) => (
             <Ionicons
               name={focused ? 'search' : 'search-outline'}
@@ -95,8 +97,8 @@ const HomeLayout = () => {
       <Drawer.Screen
         name='importExport'
         options={{
-          drawerLabel: 'Import/Export',
-          title: 'Import/Export',
+          drawerLabel: t('drawer.importExport'),
+          title: t('drawer.importExport'),
           drawerIcon: ({ focused, size, color }) => (
             <Ionicons
               name={focused ? 'server' : 'server-outline'}

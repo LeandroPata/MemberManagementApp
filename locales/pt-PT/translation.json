@@ -1,8 +1,24 @@
 {
   "language": "Idioma",
+  "index": {
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirmar Password",
+    "login": "Login",
+    "createAccount": "Criar Conta",
+    "emailPasswordEmpty": "Os campos de Email e Password estão vazios!",
+    "emailEmpty": "O campo de Email está vazio!",
+    "passwordEmpty": "O campo de Password está vazio!",
+    "emailFormat": "O Email está mal formatado!",
+    "passwordNotMatch": "As passwords não são iguais!"
+  },
   "home": {
     "addMember": "Adicionar Membro",
     "searchMember": "Procurar Membro",
     "importExport": "Importar/Exportar"
-  }
+  },
+  "addMember": {},
+  "searchMember": {},
+  "importExport": {},
+  "profile": {}
 }

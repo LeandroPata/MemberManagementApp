@@ -1,8 +1,24 @@
 {
   "language": "Language",
+  "index": {
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "login": "Login",
+    "createAccount": "Create Account",
+    "emailPasswordEmpty": "Email and password fields are empty!",
+    "emailEmpty": "Email field is empty!",
+    "passwordEmpty": "Password field is empty!",
+    "emailFormat": "Email is in the wrong format!",
+    "passwordNotMatch": "Passwords do not match!"
+  },
   "home": {
     "addMember": "Add Member",
     "searchMember": "Search Member",
     "importExport": "Import/Export"
-  }
+  },
+  "addMember": {},
+  "searchMember": {},
+  "importExport": {},
+  "profile": {}
 }

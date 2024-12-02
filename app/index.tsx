@@ -5,10 +5,12 @@ import { Portal, Modal, TextInput, Button, useTheme } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FirebaseError } from 'firebase/app';
 import auth from '@react-native-firebase/auth';
+import { useTranslation } from 'react-i18next';
 
 export default function Index() {
   const insets = useSafeAreaInsets();
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const [loginLoading, setLoginLoading] = useState(false);
   const [signupLoading, setSignupLoading] = useState(false);
@@ -23,19 +25,19 @@ export default function Index() {
     setSignupLoading(true);
 
     if (!email.trim() && !password.trim()) {
-      alert('Email and password fields are empty!');
+      alert(t('index.emailPasswordEmpty'));
       setSignupLoading(false);
       return;
     } else if (!email.trim()) {
-      alert('Email field is empty!');
-      setSignupLoading(false);
-      return;
-    } else if (!password.trim()) {
-      alert('Password field is empty!');
+      alert(t('index.emailEmpty'));
       setSignupLoading(false);
       return;
     } else if (!email.includes('@') || !email.includes('.')) {
-      alert('Email is in the wrong format!');
+      alert(t('index.emailFormat'));
+      setSignupLoading(false);
+      return;
+    } else if (!password.trim()) {
+      alert(t('index.passwordEmpty'));
       setSignupLoading(false);
       return;
     }
@@ -46,13 +48,13 @@ export default function Index() {
   const confirmSignUp = async () => {
     setConfirmSignupLoading(true);
     if (!confirmPassword.trim()) {
-      alert('Confirm password field is empty!');
+      alert(t('index.passwordEmpty'));
       setSignupLoading(false);
       setConfirmSignupLoading(false);
       setShowModal(false);
       return;
     } else if (password != confirmPassword) {
-      alert('Passwords do not match!');
+      alert(t('index.passwordNotMatch'));
       setSignupLoading(false);
       setConfirmSignupLoading(false);
       setShowModal(false);
@@ -75,19 +77,19 @@ export default function Index() {
   const signIn = async () => {
     setLoginLoading(true);
     if (!email.trim() && !password.trim()) {
-      alert('Email and password fields are empty!');
+      alert(t('index.emailPasswordEmpty'));
       setLoginLoading(false);
       return;
     } else if (!email.trim()) {
-      alert('Email field is empty!');
-      setLoginLoading(false);
-      return;
-    } else if (!password.trim()) {
-      alert('Password field is empty!');
+      alert(t('index.emailEmpty'));
       setLoginLoading(false);
       return;
     } else if (!email.includes('@') || !email.includes('.')) {
-      alert('Email is in the wrong format!');
+      alert(t('index.emailFormat'));
+      setLoginLoading(false);
+      return;
+    } else if (!password.trim()) {
+      alert(t('index.passwordEmpty'));
       setLoginLoading(false);
       return;
     }
@@ -121,7 +123,7 @@ export default function Index() {
         >
           <TextInput
             style={styles.input}
-            label='Confirm Password'
+            label={t('index.confirmPassword')}
             value={confirmPassword}
             onChangeText={(confirmPassword) =>
               setConfirmPassword(confirmPassword)
@@ -144,7 +146,7 @@ export default function Index() {
               loading={confirmSignupLoading}
               onPress={confirmSignUp}
             >
-              Confirm Password
+              {t('index.confirmPassword')}
             </Button>
           </View>
         </Modal>
@@ -156,7 +158,7 @@ export default function Index() {
         >
           <TextInput
             style={styles.input}
-            label='Email'
+            label={t('index.email')}
             value={email}
             onChangeText={(email) => setEmail(email)}
             //error={true}
@@ -166,7 +168,7 @@ export default function Index() {
           />
           <TextInput
             style={styles.input}
-            label='Password'
+            label={t('index.password')}
             value={password}
             onChangeText={(password) => setPassword(password)}
             //error={true}
@@ -184,7 +186,7 @@ export default function Index() {
             loading={loginLoading}
             onPress={signIn}
           >
-            Login
+            {t('index.login')}
           </Button>
           <Button
             style={styles.button}
@@ -195,7 +197,7 @@ export default function Index() {
             loading={signupLoading}
             onPress={signUp}
           >
-            Create Account
+            {t('index.createAccount')}
           </Button>
         </View>
       </View>

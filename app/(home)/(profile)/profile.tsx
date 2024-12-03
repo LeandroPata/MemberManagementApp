@@ -245,13 +245,12 @@ export default function Profile() {
       .orderBy('memberNumber', 'asc')
       .get()
       .then((querySnapshot) => {
-        let i = 1;
+        let i: number = 1;
         querySnapshot.forEach((documentSnapshot) => {
           if (i == Number(memberNumber)) {
             minNumber = i;
-          } else if (i == documentSnapshot.data().memberNumber) {
-            i = documentSnapshot.data().memberNumber + 1;
-            //console.log(i);
+          } else if (i == Number(documentSnapshot.data().memberNumber)) {
+            i = Number(documentSnapshot.data().memberNumber) + 1;
           }
         });
         if (!minNumber) {

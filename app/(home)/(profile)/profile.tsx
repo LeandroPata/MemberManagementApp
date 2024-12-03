@@ -247,7 +247,7 @@ export default function Profile() {
       .then((querySnapshot) => {
         let i = 1;
         querySnapshot.forEach((documentSnapshot) => {
-          if (i == parseInt(memberNumber)) {
+          if (i == Number(memberNumber)) {
             minNumber = i;
           } else if (i == documentSnapshot.data().memberNumber) {
             i = documentSnapshot.data().memberNumber + 1;
@@ -298,7 +298,7 @@ export default function Profile() {
         setLoading(false);
         return;
       }
-      minNumber = parseInt(memberNumber);
+      minNumber = Number(memberNumber);
     }
 
     const url = await uploadPicture();

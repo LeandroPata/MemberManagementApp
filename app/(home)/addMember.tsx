@@ -58,7 +58,7 @@ export default function AddMember() {
       .then((querySnapshot) => {
         let i = 1;
         querySnapshot.forEach((documentSnapshot) => {
-          if (i == parseInt(memberNumber)) {
+          if (i == Number(memberNumber)) {
             minNumber = i;
           } else if (i == documentSnapshot.data().memberNumber) {
             i = documentSnapshot.data().memberNumber + 1;
@@ -202,7 +202,7 @@ export default function AddMember() {
         setLoading(false);
         return;
       }
-      minNumber = parseInt(memberNumber);
+      minNumber = Number(memberNumber);
       setMemberNumber(minNumber.toString());
     }
 

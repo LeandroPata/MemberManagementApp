@@ -55,7 +55,7 @@ export default function SearchMember() {
       } else if (name && name.trim() && memberNumber && memberNumber.trim()) {
         const subscriber = firestore()
           .collection('members')
-          .where('memberNumber', '==', parseInt(memberNumber))
+          .where('memberNumber', '==', Number(memberNumber))
           .onSnapshot((querySnapshot) => {
             const members = [];
             querySnapshot.forEach((documentSnapshot) => {
@@ -94,7 +94,7 @@ export default function SearchMember() {
         const subscriber = firestore()
           .collection('members')
           .orderBy('memberNumber', 'asc')
-          .where('memberNumber', '==', parseInt(memberNumber))
+          .where('memberNumber', '==', Number(memberNumber))
           .onSnapshot((querySnapshot) => {
             const members = [];
             querySnapshot.forEach((documentSnapshot) => {
@@ -144,7 +144,7 @@ export default function SearchMember() {
       console.log('Both');
       const snapshot = await firestore()
         .collection('members')
-        .where('memberNumber', '==', parseInt(memberNumber))
+        .where('memberNumber', '==', Number(memberNumber))
         .get()
         .then((querySnapshot) => {
           const members = [];
@@ -195,7 +195,7 @@ export default function SearchMember() {
       const snapshot = await firestore()
         .collection('members')
         .orderBy('memberNumber', 'asc')
-        .where('memberNumber', '==', parseInt(memberNumber))
+        .where('memberNumber', '==', Number(memberNumber))
         .get()
         .then((querySnapshot) => {
           const members = [];

@@ -1,4 +1,3 @@
-import '../components/gesture-handler';
 import { useState } from 'react';
 import { StyleSheet, KeyboardAvoidingView, View } from 'react-native';
 import { Portal, Modal, TextInput, Button, useTheme } from 'react-native-paper';
@@ -134,6 +133,7 @@ export default function Index() {
             autoCapitalize='none'
             secureTextEntry
           />
+
           <View style={[styles.buttonContainer, { marginTop: 15 }]}>
             <Button
               style={styles.button}
@@ -153,6 +153,7 @@ export default function Index() {
           </View>
         </Modal>
       </Portal>
+
       <View style={[styles.container, { paddingTop: insets.top }]}>
         <KeyboardAvoidingView
           style={{ marginHorizontal: 20 }}
@@ -178,6 +179,7 @@ export default function Index() {
             secureTextEntry
           />
         </KeyboardAvoidingView>
+
         <View style={[styles.buttonContainer, { marginTop: 50 }]}>
           <Button
             style={styles.button}

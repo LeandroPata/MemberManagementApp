@@ -17,7 +17,6 @@ import {
   Text,
   useTheme,
 } from 'react-native-paper';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DatePicker from 'react-native-date-picker';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
@@ -30,7 +29,6 @@ import { useTranslation } from 'react-i18next';
 export default function Profile() {
   const { profileID } = useLocalSearchParams();
 
-  const insets = useSafeAreaInsets();
   const theme = useTheme();
   const { t } = useTranslation();
 
@@ -75,7 +73,7 @@ export default function Profile() {
       // Screen focused
       //console.log("Hello, I'm focused!");
       getMember(profileID);
-      // Screen unfocused
+      // Screen unfocused in return
       return () => {
         //console.log('This route is now unfocused.');
         //setProfile(null);
@@ -98,6 +96,7 @@ export default function Profile() {
 
   const getMember = async (id) => {
     setLoading(true);
+
     try {
       await firestore()
         .collection('members')
@@ -128,6 +127,7 @@ export default function Profile() {
 
   const pickImage = async () => {
     setPictureModal(false);
+
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: 'images',
@@ -146,6 +146,7 @@ export default function Profile() {
 
   const takePicture = async () => {
     setPictureModal(false);
+
     // Ask the user for the permission to access the camera
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
@@ -262,6 +263,7 @@ export default function Profile() {
 
   const checkNumber = async () => {
     let numberAvailable = 1;
+
     if (memberNumber != profile.memberNumber) {
       const snapshot = await firestore()
         .collection('members')
@@ -394,6 +396,7 @@ export default function Profile() {
           </Button>
         </Modal>
       </Portal>
+
       <Portal>
         <Modal
           visible={confirmDeleteModal}
@@ -418,6 +421,7 @@ export default function Profile() {
           >
             {t('profile.deleteConfirmation')}
           </Text>
+
           <View
             style={[
               styles.buttonContainer,
@@ -449,6 +453,7 @@ export default function Profile() {
           </View>
         </Modal>
       </Portal>
+
       <View style={styles.container}>
         {loading || !profile ? (
           <ActivityIndicator size={'large'} style={{ margin: 28 }} />
@@ -506,6 +511,7 @@ export default function Profile() {
                       onValueChange={setAutoNumber}
                     />
                   </View>
+
                   <TextInput
                     disabled={autoNumber}
                     style={[styles.input, { flex: 3 }]}
@@ -516,6 +522,7 @@ export default function Profile() {
                     label={t('profile.memberNumber')}
                   />
                 </View>
+
                 <TextInput
                   disabled={!editing}
                   style={styles.input}
@@ -594,61 +601,68 @@ export default function Profile() {
                   keyboardType='number-pad'
                   label={t('profile.zipCode')}
                 />
-                <Button
-                  disabled={!editing}
-                  style={{ marginVertical: 5 }}
-                  labelStyle={styles.dateText}
-                  onPress={() => setBirthDateModal(true)}
-                >
-                  {t('profile.birthDate') +
-                    ': ' +
-                    birthDate.toLocaleDateString('pt-pt')}
-                </Button>
-                <DatePicker
-                  modal
-                  mode='date'
-                  locale='pt-pt'
-                  open={birthDateModal}
-                  date={birthDate}
-                  maximumDate={new Date()}
-                  minimumDate={new Date('1900-01-01')}
-                  theme={theme.dark ? 'dark' : 'light'}
-                  onConfirm={(birthDate) => {
-                    setBirthDateModal(false);
-                    setBirthDate(birthDate);
-                  }}
-                  onCancel={() => {
-                    setBirthDateModal(false);
-                  }}
-                />
-                <Button
-                  disabled={!editing}
-                  style={{ marginVertical: 5 }}
-                  labelStyle={styles.dateText}
-                  onPress={() => setEndDateModal(true)}
-                >
-                  {t('profile.endDate') +
-                    ': ' +
-                    endDate.toLocaleDateString('pt-pt')}
-                </Button>
-                <DatePicker
-                  modal
-                  mode='date'
-                  locale='pt-pt'
-                  open={endDateModal}
-                  date={endDate}
-                  minimumDate={new Date()}
-                  theme={theme.dark ? 'dark' : 'light'}
-                  onConfirm={(endDate) => {
-                    setEndDateModal(false);
-                    setEndDate(endDate);
-                  }}
-                  onCancel={() => {
-                    setEndDateModal(false);
-                  }}
-                />
+
+                <>
+                  <Button
+                    disabled={!editing}
+                    style={{ marginVertical: 5 }}
+                    labelStyle={styles.dateText}
+                    onPress={() => setBirthDateModal(true)}
+                  >
+                    {t('profile.birthDate') +
+                      ': ' +
+                      birthDate.toLocaleDateString('pt-pt')}
+                  </Button>
+                  <DatePicker
+                    modal
+                    mode='date'
+                    locale='pt-pt'
+                    open={birthDateModal}
+                    date={birthDate}
+                    maximumDate={new Date()}
+                    minimumDate={new Date('1900-01-01')}
+                    theme={theme.dark ? 'dark' : 'light'}
+                    onConfirm={(birthDate) => {
+                      setBirthDateModal(false);
+                      setBirthDate(birthDate);
+                    }}
+                    onCancel={() => {
+                      setBirthDateModal(false);
+                    }}
+                  />
+                </>
+
+                <>
+                  <Button
+                    disabled={!editing}
+                    style={{ marginVertical: 5 }}
+                    labelStyle={styles.dateText}
+                    onPress={() => setEndDateModal(true)}
+                  >
+                    {t('profile.endDate') +
+                      ': ' +
+                      endDate.toLocaleDateString('pt-pt')}
+                  </Button>
+                  <DatePicker
+                    modal
+                    mode='date'
+                    locale='pt-pt'
+                    open={endDateModal}
+                    date={endDate}
+                    minimumDate={new Date()}
+                    theme={theme.dark ? 'dark' : 'light'}
+                    onConfirm={(endDate) => {
+                      setEndDateModal(false);
+                      setEndDate(endDate);
+                    }}
+                    onCancel={() => {
+                      setEndDateModal(false);
+                    }}
+                  />
+                </>
               </KeyboardAvoidingView>
             </ScrollView>
+
             <View style={styles.buttonContainer}>
               {editing ? (
                 <Button

@@ -188,6 +188,7 @@ export default function importExport() {
   const requestPermissions = async () => {
     let grantedRead = '';
     let grantedWrite = '';
+
     try {
       grantedRead = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
@@ -318,18 +319,18 @@ export default function importExport() {
       const membersData = formatDataOrder(rawData, true);
 
       const file = convertJSONToCSV(membersData);
-      console.log(file);
+      //console.log(file);
 
       const filePath = RNFS.CachesDirectoryPath + '/membersData.csv';
 
-      console.log(filePath);
+      //console.log(filePath);
 
       await RNFS.writeFile(filePath, file);
 
       await uploadFile(filePath);
 
       let docPath = RNFS.DownloadDirectoryPath + '/membersData.csv';
-      console.log(docPath);
+      //console.log(docPath);
 
       let i = 1;
 
@@ -420,7 +421,10 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     justifyContent: 'center',
   },
-  buttonContent: { minWidth: 280, minHeight: 80 },
+  buttonContent: {
+    minWidth: 280,
+    minHeight: 80,
+  },
   buttonText: {
     fontSize: 25,
     fontWeight: 'bold',

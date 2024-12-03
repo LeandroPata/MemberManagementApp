@@ -14,13 +14,11 @@ import {
   Text,
   useTheme,
 } from 'react-native-paper';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import firestore from '@react-native-firebase/firestore';
 import { useTranslation } from 'react-i18next';
 
 export default function SearchMember() {
-  const insets = useSafeAreaInsets();
   const theme = useTheme();
   const { t } = useTranslation();
 
@@ -287,6 +285,7 @@ export default function SearchMember() {
           keyboardType='numeric'
           label={t('searchMember.memberNumber')}
         />
+
         <View style={styles.buttonContainer}>
           <Button
             style={[styles.button, { marginTop: 8 }]}
@@ -300,6 +299,7 @@ export default function SearchMember() {
             {t('searchMember.searchMember')}
           </Button>
         </View>
+
         <View
           style={{
             flexDirection: 'row',
@@ -324,6 +324,7 @@ export default function SearchMember() {
               {t('searchMember.orderName')}
             </Button>
           </View>
+
           <View style={{ width: '49%' }}>
             <Button
               style={styles.button}
@@ -367,7 +368,10 @@ const styles = StyleSheet.create({
     //marginVertical: 8,
     justifyContent: 'center',
   },
-  buttonContent: { minWidth: 250, minHeight: 50 },
+  buttonContent: {
+    minWidth: 250,
+    minHeight: 50,
+  },
   buttonText: {
     fontSize: 25,
     fontWeight: 'bold',

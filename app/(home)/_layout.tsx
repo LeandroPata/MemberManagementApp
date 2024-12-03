@@ -1,9 +1,7 @@
-import '@/components/gesture-handler';
 import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { GestureHandlerRootView } from '@/components/gesture-handler';
 import { Drawer } from 'expo-router/drawer';
 import { Ionicons } from '@expo/vector-icons';
 import CustomDrawerContent from '@/components/CustomDrawerContent';

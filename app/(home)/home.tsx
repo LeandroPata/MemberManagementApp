@@ -1,14 +1,10 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Button, useTheme } from 'react-native-paper';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Button } from 'react-native-paper';
 import { router } from 'expo-router';
-import auth from '@react-native-firebase/auth';
 import { useTranslation } from 'react-i18next';
 
 export default function Home() {
-  const insets = useSafeAreaInsets();
-  const theme = useTheme();
   const { t } = useTranslation();
 
   return (
@@ -72,7 +68,10 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     justifyContent: 'center',
   },
-  buttonContent: { minWidth: 280, minHeight: 80 },
+  buttonContent: {
+    minWidth: 280,
+    minHeight: 80,
+  },
   buttonText: {
     fontSize: 25,
     fontWeight: 'bold',

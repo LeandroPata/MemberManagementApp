@@ -16,7 +16,6 @@ import {
   Modal,
   useTheme,
 } from 'react-native-paper';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DatePicker from 'react-native-date-picker';
 import * as ImagePicker from 'expo-image-picker';
 import { FirebaseError } from 'firebase/app';
@@ -25,7 +24,6 @@ import storage from '@react-native-firebase/storage';
 import { useTranslation } from 'react-i18next';
 
 export default function AddMember() {
-  const insets = useSafeAreaInsets();
   const theme = useTheme();
   const { t } = useTranslation();
 
@@ -307,6 +305,7 @@ export default function AddMember() {
                 source={{ uri: profilePicture }}
               />
             </Pressable>
+
             <View
               style={{
                 flexDirection: 'row',
@@ -342,6 +341,7 @@ export default function AddMember() {
                 label={t('addMember.memberNumber')}
               />
             </View>
+
             <TextInput
               style={styles.input}
               value={name}
@@ -413,59 +413,66 @@ export default function AddMember() {
               keyboardType='number-pad'
               label={t('addMember.zipCode')}
             />
-            <Button
-              style={{ marginVertical: 5 }}
-              labelStyle={styles.dateText}
-              onPress={() => setBirthDateModal(true)}
-            >
-              {t('addMember.birthDate') +
-                ': ' +
-                birthDate.toLocaleDateString('pt-pt')}
-            </Button>
-            <DatePicker
-              modal
-              mode='date'
-              locale='pt-pt'
-              open={birthDateModal}
-              date={birthDate}
-              maximumDate={new Date()}
-              minimumDate={new Date('1900-01-01')}
-              theme={theme.dark ? 'dark' : 'light'}
-              onConfirm={(birthDate) => {
-                setBirthDateModal(false);
-                setBirthDate(birthDate);
-              }}
-              onCancel={() => {
-                setBirthDateModal(false);
-              }}
-            />
-            <Button
-              style={{ marginVertical: 5 }}
-              labelStyle={styles.dateText}
-              onPress={() => setEndDateModal(true)}
-            >
-              {t('addMember.endDate') +
-                ': ' +
-                endDate.toLocaleDateString('pt-pt')}
-            </Button>
-            <DatePicker
-              modal
-              mode='date'
-              locale='pt-pt'
-              open={endDateModal}
-              date={endDate}
-              minimumDate={new Date()}
-              theme={theme.dark ? 'dark' : 'light'}
-              onConfirm={(endDate) => {
-                setEndDateModal(false);
-                setEndDate(endDate);
-              }}
-              onCancel={() => {
-                setEndDateModal(false);
-              }}
-            />
+
+            <>
+              <Button
+                style={{ marginVertical: 5 }}
+                labelStyle={styles.dateText}
+                onPress={() => setBirthDateModal(true)}
+              >
+                {t('addMember.birthDate') +
+                  ': ' +
+                  birthDate.toLocaleDateString('pt-pt')}
+              </Button>
+              <DatePicker
+                modal
+                mode='date'
+                locale='pt-pt'
+                open={birthDateModal}
+                date={birthDate}
+                maximumDate={new Date()}
+                minimumDate={new Date('1900-01-01')}
+                theme={theme.dark ? 'dark' : 'light'}
+                onConfirm={(birthDate) => {
+                  setBirthDateModal(false);
+                  setBirthDate(birthDate);
+                }}
+                onCancel={() => {
+                  setBirthDateModal(false);
+                }}
+              />
+            </>
+
+            <>
+              <Button
+                style={{ marginVertical: 5 }}
+                labelStyle={styles.dateText}
+                onPress={() => setEndDateModal(true)}
+              >
+                {t('addMember.endDate') +
+                  ': ' +
+                  endDate.toLocaleDateString('pt-pt')}
+              </Button>
+              <DatePicker
+                modal
+                mode='date'
+                locale='pt-pt'
+                open={endDateModal}
+                date={endDate}
+                minimumDate={new Date()}
+                theme={theme.dark ? 'dark' : 'light'}
+                onConfirm={(endDate) => {
+                  setEndDateModal(false);
+                  setEndDate(endDate);
+                }}
+                onCancel={() => {
+                  setEndDateModal(false);
+                }}
+              />
+            </>
           </KeyboardAvoidingView>
         </ScrollView>
+
         <View style={styles.buttonContainer}>
           <Button
             style={styles.button}
@@ -506,7 +513,10 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     justifyContent: 'center',
   },
-  buttonContent: { minWidth: 280, minHeight: 80 },
+  buttonContent: {
+    minWidth: 280,
+    minHeight: 80,
+  },
   buttonText: {
     fontSize: 25,
     fontWeight: 'bold',
@@ -516,7 +526,10 @@ const styles = StyleSheet.create({
   input: {
     marginVertical: 2,
   },
-  pictureButton: { padding: 15, alignSelf: 'center' },
+  pictureButton: {
+    padding: 15,
+    alignSelf: 'center',
+  },
   title: {
     fontSize: 20,
     fontWeight: 'bold',

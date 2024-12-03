@@ -6,6 +6,7 @@ import {
   MD3LightTheme as DefaultLightTheme,
   MD3DarkTheme as DefaultDarkTheme,
 } from 'react-native-paper';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SystemUI from 'expo-system-ui';
 import { StatusBar } from 'expo-status-bar';
@@ -156,17 +157,19 @@ export default function RootLayout() {
 
   return (
     <PaperProvider theme={theme}>
-      <Portal.Host>
-        <Stack
-          screenOptions={{
-            contentStyle: { backgroundColor: theme.colors.background },
-          }}
-        >
-          <Stack.Screen name='index' options={{ headerShown: false }} />
-          <Stack.Screen name='(home)' options={{ headerShown: false }} />
-        </Stack>
-        <StatusBar style='auto' />
-      </Portal.Host>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <Portal.Host>
+          <Stack
+            screenOptions={{
+              contentStyle: { backgroundColor: theme.colors.background },
+            }}
+          >
+            <Stack.Screen name='index' options={{ headerShown: false }} />
+            <Stack.Screen name='(home)' options={{ headerShown: false }} />
+          </Stack>
+          <StatusBar style='auto' />
+        </Portal.Host>
+      </GestureHandlerRootView>
     </PaperProvider>
   );
 }

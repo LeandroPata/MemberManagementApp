@@ -16,14 +16,29 @@ export default function importExport() {
 
   const reference = storage().ref('membersData.csv');
 
-  const formatDataOrder = (data, readableDate: boolean) => {
+  // converts date format from pt-PT locale (23/01/2024) to ISO date format (2024-01-23T00:00:00.000Z)
+  // and then converts to Firestore Timestamp format
+  const convertToTimestamp = (date: Date) => {
+    const [day, month, year] = date.split('/').map(Number);
+    const convertedDate = new Date(year, month - 1, day);
+    /* console.log(
+      date + ' : ' + Timestamp.fromDate(new Date(convertedDate.toISOString()))
+    ); */
+    return Timestamp.fromDate(new Date(convertedDate.toISOString()));
+  };
+
+  // formats data from database to be ordered in a specific way
+  const formatDataOrder = (data) => {
     const orderedKeys = [
       'name',
       'memberNumber',
       'email',
       'phoneNumber',
+      'occupation',
+      'country',
       'address',
       'zipCode',
+      'birthDate',
       'addedDate',
       'endDate',
     ];
@@ -31,21 +46,7 @@ export default function importExport() {
     return data.map((doc) => {
       const orderedDoc = {};
       orderedKeys.forEach((key) => {
-        if (key == 'addedDate' || key == 'endDate') {
-          if (readableDate) {
-            const timestamp = new Date(doc[key].toDate()).toLocaleDateString(
-              'pt-pt'
-            );
-            orderedDoc[key] = timestamp || '';
-          } else {
-            const timestamp = convertDate(doc[key]);
-            orderedDoc[key] = timestamp || '';
-          }
-        } else if (key == 'memberNumber' && !readableDate) {
-          orderedDoc[key] = Number(doc[key]) || '';
-        } else {
-          orderedDoc[key] = doc[key] || '';
-        }
+        orderedDoc[key] = doc[key] || '';
       });
       Object.keys(doc).forEach((key) => {
         if (!orderedKeys.includes(key) && key != 'profilePicture') {
@@ -57,41 +58,84 @@ export default function importExport() {
     });
   };
 
-  // converts date format from pt-PT locale (23/01/2024) to ISO date format (2024-01-23T00:00:00.000Z)
-  // and then converts to Firestore Timestamp format
-  const convertDate = (date) => {
-    const [day, month, year] = date.split('/').map(Number);
-    const convertedDate = new Date(year, month - 1, day);
-    /* console.log(
-      date + ' : ' + Timestamp.fromDate(new Date(convertedDate.toISOString()))
-    ); */
-    return Timestamp.fromDate(new Date(convertedDate.toISOString()));
+  // formats data in order to be properly imported to the firestore database
+  // (date types, strings to number type)
+  const formatDataToImport = (data) => {
+    data.forEach((doc) => {
+      Object.keys(doc).forEach((key) => {
+        const regex = /^([0-2][0-9]|3[0-1])\/(0[1-9]|1[0-2])\/\d{4}$/;
+        if (regex.test(doc[key])) {
+          console.log(key);
+          console.log(doc[key]);
+          doc[key] = convertToTimestamp(doc[key]);
+          console.log(doc[key]);
+        } else if (key == 'memberNumber') {
+          console.log(key);
+          console.log(typeof doc[key]);
+          doc[key] = Number(doc[key]);
+          console.log(typeof doc[key]);
+        }
+      });
+    });
   };
 
+  // formats data in order to be more user friendly when exported
+  // (readable date types)
+  const formatDataToExport = (data) => {
+    data.forEach((doc) => {
+      Object.keys(doc).forEach((key) => {
+        if (doc[key] instanceof Timestamp) {
+          console.log(key);
+          console.log(doc[key]);
+          doc[key] = new Date(doc[key].toDate()).toLocaleDateString('pt-pt');
+          console.log(doc[key]);
+        }
+      });
+    });
+  };
+
+  // converts imported csv file to json in order to be properly imported to
+  // the firestore database
   const convertCSVtoJSON = (fileContent) => {
     const rows = fileContent.split('\n').filter((row) => row.trim() !== '');
     //console.log(rows);
-    const headers = rows[0].split(',').map((header) => header.trim());
-    //console.log(headers);
+
+    // remove enclosing quotes from headers
+    const headers = rows[0]
+      .split(',')
+      .map((header) => header.trim().replace(/^"|"$/g, ''));
+
+    console.log(headers);
 
     const data = rows.slice(1).map((row) => {
-      const values = row.split(',').map((value) => value.trim());
+      // split using regex to handle double-quoted values
+      const values = row.match(/"(?:[^"]|"")*"/g).map(
+        // remove enclosing quotes and unescape inner quotes
+        (value) => value.replace(/^"|"$/g, '').replace(/""/g, '"')
+      );
+      console.log(values);
+
       const doc = {};
+      // handle missing values
       headers.forEach((header, index) => {
-        doc[header] = values[index];
+        doc[header] = values[index] || '';
       });
-      //console.log(doc);
       return doc;
     });
+
     return data;
   };
 
+  // converts received data from the firestore database in the json format
+  // to a csv format for more readability and ease of editing if necessary
   const convertJSONToCSV = (data) => {
-    const headers = Object.keys(data[0]).join(',');
+    const headers = Object.keys(data[0])
+      .map((key) => `"${key}"`)
+      .join(',');
     const rows = data
       .map((row) =>
         Object.values(row)
-          .map((value) => `${value}`)
+          .map((value) => `"${value}"`)
           .join(',')
       )
       .join('\n');
@@ -240,9 +284,11 @@ export default function importExport() {
     const data = await convertCSVtoJSON(fileContent);
     //console.log(data);
 
-    //false so that the dates are exported in the Firestore Timestamp format
-    const membersData = await formatDataOrder(data, false);
+    const membersData = await formatDataOrder(data);
     //console.log(membersData);
+
+    // to ensure proper import
+    formatDataToImport(membersData);
 
     const batch = firestore().batch();
 
@@ -254,10 +300,10 @@ export default function importExport() {
         if (!check) {
           const memberRef = firestore().collection('members').doc();
 
-          //set profilePicture to field to an existing picture if it exists
-          //or the default one if it doesn't
-          //which I now realize will never happen and will always be the default,
-          //because the document ID is completely new, oh well
+          // set profilePicture to field to an existing picture if it exists
+          // or the default one if it doesn't
+          // which I now realize will never happen and will always be the default,
+          // because the document ID is completely new, oh well
           /* const url = await storage()
             .ref('profilePicture/' + memberRef + '.jpg')
             .getDownloadURL();
@@ -315,8 +361,10 @@ export default function importExport() {
       const rawData = snapshot.docs.map((doc) => doc.data());
       //console.log(rawData);
 
-      //true so that the dates are exported in a readable state
-      const membersData = formatDataOrder(rawData, true);
+      const membersData = formatDataOrder(rawData);
+
+      // to ensure proper export
+      formatDataToExport(membersData);
 
       const file = convertJSONToCSV(membersData);
       //console.log(file);

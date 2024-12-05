@@ -65,15 +65,15 @@ export default function importExport() {
       Object.keys(doc).forEach((key) => {
         const regex = /^([0-2][0-9]|3[0-1])\/(0[1-9]|1[0-2])\/\d{4}$/;
         if (regex.test(doc[key])) {
-          console.log(key);
-          console.log(doc[key]);
+          //console.log(key);
+          //console.log(doc[key]);
           doc[key] = convertToTimestamp(doc[key]);
-          console.log(doc[key]);
+          //console.log(doc[key]);
         } else if (key == 'memberNumber') {
-          console.log(key);
-          console.log(typeof doc[key]);
+          //console.log(key);
+          //console.log(typeof doc[key]);
           doc[key] = Number(doc[key]);
-          console.log(typeof doc[key]);
+          //console.log(typeof doc[key]);
         }
       });
     });
@@ -85,61 +85,81 @@ export default function importExport() {
     data.forEach((doc) => {
       Object.keys(doc).forEach((key) => {
         if (doc[key] instanceof Timestamp) {
-          console.log(key);
-          console.log(doc[key]);
+          //console.log(key);
+          //console.log(doc[key]);
           doc[key] = new Date(doc[key].toDate()).toLocaleDateString('pt-pt');
-          console.log(doc[key]);
+          //console.log(doc[key]);
         }
       });
+    });
+  };
+
+  // splits a row from a csv file into their separate values
+
+  const splitCSVRow = (row) => {
+    // regex identifies if expression is enclosed by double quotes (".*?") which = value, or
+    // if expression is unquoted and delimited by commas but has spaces ([^",]+(?=\s*,|$)) which = value, or
+    // if expression is unquoted, has no spaces and is delimited by commas ([^",\s]+) which = value
+    const regex = /(".*?"|[^",]+(?=\s*,|$)|[^",\s]+)/g;
+    const values = row.match(regex);
+
+    return values.map((value) => {
+      // remove enclosing quotes and unescape inner quotes if the value is quoted
+      if (value.startsWith('"') && value.endsWith('"')) {
+        return value.slice(1, -1).replace(/""/g, '"');
+      }
+      return value.trim();
     });
   };
 
   // converts imported csv file to json in order to be properly imported to
   // the firestore database
   const convertCSVtoJSON = (fileContent) => {
-    const rows = fileContent.split('\n').filter((row) => row.trim() !== '');
-    //console.log(rows);
+    try {
+      const rows = fileContent.split('\n').filter((row) => row.trim() !== '');
+      const headers = splitCSVRow(rows[0]);
 
-    // remove enclosing quotes from headers
-    const headers = rows[0]
-      .split(',')
-      .map((header) => header.trim().replace(/^"|"$/g, ''));
-
-    console.log(headers);
-
-    const data = rows.slice(1).map((row) => {
-      // split using regex to handle double-quoted values
-      const values = row.match(/"(?:[^"]|"")*"/g).map(
-        // remove enclosing quotes and unescape inner quotes
-        (value) => value.replace(/^"|"$/g, '').replace(/""/g, '"')
-      );
-      console.log(values);
-
-      const doc = {};
-      // handle missing values
-      headers.forEach((header, index) => {
-        doc[header] = values[index] || '';
+      const data = rows.slice(1).map((row) => {
+        const values = splitCSVRow(row);
+        const doc = {};
+        headers.forEach((header, index) => {
+          doc[header] = values[index] || '';
+        });
+        return doc;
       });
-      return doc;
-    });
 
-    return data;
+      return data;
+    } catch (e: any) {
+      const err = e as FirebaseError;
+      //alert('Error converting to JSON: ' + err.message);
+      console.log('Error converting to JSON: ' + err.message);
+      setImportLoading(false);
+      return;
+    }
   };
 
   // converts received data from the firestore database in the json format
   // to a csv format for more readability and ease of editing if necessary
   const convertJSONToCSV = (data) => {
-    const headers = Object.keys(data[0])
-      .map((key) => `"${key}"`)
-      .join(',');
-    const rows = data
-      .map((row) =>
-        Object.values(row)
-          .map((value) => `"${value}"`)
-          .join(',')
-      )
-      .join('\n');
-    return `${headers}\n${rows}`;
+    try {
+      const headers = Object.keys(data[0])
+        .map((key) => `"${key}"`)
+        .join(',');
+      const rows = data
+        .map((row) =>
+          Object.values(row)
+            .map((value) => `"${value}"`)
+            .join(',')
+        )
+        .join('\n');
+      return `${headers}\n${rows}`;
+    } catch (e: any) {
+      const err = e as FirebaseError;
+      //alert('Error converting to CSV: ' + err.message);
+      console.log('Error converting to CSV: ' + err.message);
+      setExportLoading(false);
+      return;
+    }
   };
 
   const uploadFile = async (filePath) => {
@@ -166,7 +186,7 @@ export default function importExport() {
 
   const pickFile = async () => {
     let doc = null;
-    console.log(Platform.OS);
+    //console.log(Platform.OS);
     try {
       doc = await DocumentPicker.getDocumentAsync({
         type:

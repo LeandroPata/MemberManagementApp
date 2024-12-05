@@ -461,7 +461,7 @@ export default function Profile() {
             <ScrollView>
               <KeyboardAvoidingView
                 style={{ marginHorizontal: 20 }}
-                behavior='padding'
+                behavior='height'
               >
                 <Pressable
                   disabled={!editing}

@@ -291,7 +291,7 @@ export default function AddMember() {
         <ScrollView>
           <KeyboardAvoidingView
             style={{ paddingHorizontal: 10 }}
-            behavior='padding'
+            behavior='height'
           >
             <Pressable
               style={styles.pictureButton}

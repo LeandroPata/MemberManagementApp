@@ -68,6 +68,22 @@ export default function Profile() {
   useBackHandler(() => {
     if (editing) {
       setEditing(false);
+
+      setName('');
+      setMemberNumber('');
+      setEmail('');
+      setPhoneNumber('');
+      setOccupation('');
+      setCountry('');
+      setAddress('');
+      setZipCode('');
+      setBirthDate(new Date());
+      setEndDate(new Date());
+      setProfilePicture('');
+
+      setNameError(false);
+      setMemberNumberError(false);
+      setEmailError(false);
     } else {
       router.replace('/(home)/searchMember');
     }
@@ -87,8 +103,11 @@ export default function Profile() {
         setMemberNumber('');
         setEmail('');
         setPhoneNumber('');
+        setOccupation('');
+        setCountry('');
         setAddress('');
         setZipCode('');
+        setBirthDate(new Date());
         setEndDate(new Date());
         setProfilePicture('');
 
@@ -116,7 +135,7 @@ export default function Profile() {
         .then((documentSnapshot) => {
           if (documentSnapshot && documentSnapshot.data()) {
             setProfile(documentSnapshot.data());
-            setName(documentSnapshot.data().name);
+            /* setName(documentSnapshot.data().name);
             setMemberNumber(documentSnapshot.data().memberNumber.toString());
             setEmail(documentSnapshot.data().email);
             setPhoneNumber(documentSnapshot.data().phoneNumber);
@@ -126,7 +145,7 @@ export default function Profile() {
             setZipCode(documentSnapshot.data().zipCode);
             setBirthDate(new Date(documentSnapshot.data().birthDate.toDate()));
             setEndDate(new Date(documentSnapshot.data().endDate.toDate()));
-            setProfilePicture(documentSnapshot.data().profilePicture);
+            setProfilePicture(documentSnapshot.data().profilePicture); */
           }
         });
     } catch (e: any) {
@@ -348,6 +367,7 @@ export default function Profile() {
         .then(() => {
           alert(t('profile.updatedMember'));
           setEditing(false);
+          getMember(profileID);
         });
     } catch (e: any) {
       const err = e as FirebaseError;
@@ -540,7 +560,11 @@ export default function Profile() {
                   <TextInput
                     disabled={autoNumber}
                     style={[styles.input, { flex: 3 }]}
-                    value={memberNumber}
+                    value={
+                      memberNumber
+                        ? memberNumber
+                        : profile.memberNumber.toString()
+                    }
                     onChangeText={(input) => {
                       setMemberNumber(input.replace(/[^0-9]/g, ''));
                     }}
@@ -560,7 +584,7 @@ export default function Profile() {
                 <TextInput
                   disabled={!editing}
                   style={styles.input}
-                  value={name}
+                  value={name ? name : profile.name}
                   onChangeText={setName}
                   onEndEditing={() => {
                     if (!name.trim()) {
@@ -576,7 +600,7 @@ export default function Profile() {
                 <TextInput
                   disabled={!editing}
                   style={styles.input}
-                  value={email}
+                  value={email ? email : profile.email}
                   onChangeText={setEmail}
                   onEndEditing={() => {
                     if (email && email.trim() && !email.match(emailRegex)) {
@@ -592,7 +616,7 @@ export default function Profile() {
                 <TextInput
                   disabled={!editing}
                   style={styles.input}
-                  value={phoneNumber}
+                  value={phoneNumber ? phoneNumber : profile.phoneNumber}
                   onChangeText={(input) => {
                     setPhoneNumber(input.replace(/[^0-9+\-\s]/g, ''));
                   }}
@@ -607,7 +631,7 @@ export default function Profile() {
                 <TextInput
                   disabled={!editing}
                   style={styles.input}
-                  value={occupation}
+                  value={occupation ? occupation : profile.occupation}
                   onChangeText={setOccupation}
                   onEndEditing={() => {
                     setOccupation(occupation.trim());
@@ -620,7 +644,7 @@ export default function Profile() {
                 <TextInput
                   disabled={!editing}
                   style={styles.input}
-                  value={country}
+                  value={country ? country : profile.country}
                   onChangeText={setCountry}
                   onEndEditing={() => {
                     setCountry(country.trim());
@@ -633,7 +657,7 @@ export default function Profile() {
                 <TextInput
                   disabled={!editing}
                   style={styles.input}
-                  value={address}
+                  value={address ? address : profile.address}
                   onChangeText={setAddress}
                   onEndEditing={() => {
                     setAddress(address.trim());
@@ -646,7 +670,7 @@ export default function Profile() {
                 <TextInput
                   disabled={!editing}
                   style={styles.input}
-                  value={zipCode}
+                  value={zipCode ? zipCode : profile.zipCode}
                   onChangeText={(input) => {
                     setZipCode(input.replace(/[^0-9\-]/g, ''));
                     if (input.length > 4 && !input.includes('-')) {
@@ -676,7 +700,12 @@ export default function Profile() {
                   >
                     {t('profile.birthDate') +
                       ': ' +
-                      birthDate.toLocaleDateString('pt-pt')}
+                      (birthDate.toLocaleDateString('pt-pt') !=
+                      new Date().toLocaleDateString('pt-pt')
+                        ? birthDate.toLocaleDateString('pt-pt')
+                        : new Date(
+                            profile.birthDate.toDate()
+                          ).toLocaleDateString('pt-pt'))}
                   </Button>
                   <DatePicker
                     modal
@@ -706,7 +735,12 @@ export default function Profile() {
                   >
                     {t('profile.endDate') +
                       ': ' +
-                      endDate.toLocaleDateString('pt-pt')}
+                      (endDate.toLocaleDateString('pt-pt') !=
+                      new Date().toLocaleDateString('pt-pt')
+                        ? endDate.toLocaleDateString('pt-pt')
+                        : new Date(profile.endDate.toDate()).toLocaleDateString(
+                            'pt-pt'
+                          ))}
                   </Button>
                   <DatePicker
                     modal
@@ -751,6 +785,17 @@ export default function Profile() {
                     mode='elevated'
                     onPress={() => {
                       setEditing(true);
+                      setName(profile.name);
+                      setMemberNumber(profile.memberNumber.toString());
+                      setEmail(profile.email);
+                      setPhoneNumber(profile.phoneNumber);
+                      setOccupation(profile.occupation);
+                      setCountry(profile.country);
+                      setAddress(profile.address);
+                      setZipCode(profile.zipCode);
+                      setBirthDate(new Date(profile.birthDate.toDate()));
+                      setEndDate(new Date(profile.endDate.toDate()));
+                      setProfilePicture('');
                     }}
                   >
                     {t('profile.editMember')}

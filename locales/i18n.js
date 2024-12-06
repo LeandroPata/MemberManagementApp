@@ -7,13 +7,20 @@ import translationPtPT from './pt-PT/translation.json';
 
 const resources = {
   'en-US': { translation: translationEnUS },
+  'en-GB': { translation: translationEnUS },
   'pt-PT': { translation: translationPtPT },
+  'pt-BR': { translation: translationPtPT },
 };
 
 const initI18n = async () => {
-  let savedLanguage = await AsyncStorage.getItem('language');
+  // kept this way for now, until a way to change language in-app is implemented
+  // let savedLanguage = await AsyncStorage.getItem('language');
+  let savedLanguage = Localization.getLocales()[0].languageTag;
 
-  if (!savedLanguage) savedLanguage = Localization.getLocales()[0].languageTag;
+  if (!savedLanguage) {
+    savedLanguage = Localization.getLocales()[0].languageTag;
+    await AsyncStorage.setItem('language', savedLanguage);
+  }
 
   i18n.use(initReactI18next).init({
     debug: true,

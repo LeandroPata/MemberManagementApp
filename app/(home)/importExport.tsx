@@ -130,9 +130,8 @@ export default function importExport() {
 
       return data;
     } catch (e: any) {
-      const err = e as FirebaseError;
-      //alert('Error converting to JSON: ' + err.message);
-      console.log('Error converting to JSON: ' + err.message);
+      //alert('Error converting to JSON: ' + e.message);
+      console.log('Error converting to JSON: ' + e.message);
       setImportLoading(false);
       return;
     }
@@ -154,9 +153,8 @@ export default function importExport() {
         .join('\n');
       return `${headers}\n${rows}`;
     } catch (e: any) {
-      const err = e as FirebaseError;
-      //alert('Error converting to CSV: ' + err.message);
-      console.log('Error converting to CSV: ' + err.message);
+      //alert('Error converting to CSV: ' + e.message);
+      console.log('Error converting to CSV: ' + e.message);
       setExportLoading(false);
       return;
     }
@@ -194,9 +192,8 @@ export default function importExport() {
         copyToCacheDirectory: false,
       });
     } catch (e: any) {
-      const err = e as FirebaseError;
-      //alert('File not chosen: ' + err.message);
-      console.log('File not chosen: ' + err.message);
+      //alert('File not chosen: ' + e.message);
+      console.log('File not chosen: ' + e.message);
       setImportLoading(false);
     } finally {
       return doc;
@@ -208,9 +205,8 @@ export default function importExport() {
       const fileContent = await RNFS.readFile(fileUri, 'utf8');
       return fileContent;
     } catch (e: any) {
-      const err = e as FirebaseError;
-      //alert("Couldn't read file: " + err.message);
-      console.log("Couldn't read file: " + err.message);
+      //alert("Couldn't read file: " + e.message);
+      console.log("Couldn't read file: " + e.message);
       setImportLoading(false);
       return null;
     }
@@ -264,9 +260,8 @@ export default function importExport() {
       console.log(grantedRead);
       console.log(grantedWrite);
     } catch (e: any) {
-      const err = e as FirebaseError;
-      //alert('Error importing: ' + err.message);
-      console.log('Error importing: ' + err.message);
+      //alert('Error with permissions: ' + e.message);
+      console.log('Error with permissions: ' + e.message);
       setImportLoading(false);
     } finally {
       if (

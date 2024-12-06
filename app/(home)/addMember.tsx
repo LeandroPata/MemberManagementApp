@@ -27,8 +27,13 @@ export default function AddMember() {
   const theme = useTheme();
   const { t } = useTranslation();
 
-  const [loading, setLoading] = useState(false);
   const [autoNumber, setAutoNumber] = useState(true);
+
+  const [loading, setLoading] = useState(false);
+
+  const [nameError, setNameError] = useState(false);
+  const [memberNumberError, setMemberNumberError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
 
   const [birthDateModal, setBirthDateModal] = useState(false);
   const [endDateModal, setEndDateModal] = useState(false);
@@ -37,7 +42,7 @@ export default function AddMember() {
   const [name, setName] = useState('');
   const [memberNumber, setMemberNumber] = useState('');
   const [email, setEmail] = useState('');
-  const [phoneNumber, setPhone] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [occupation, setOccupation] = useState('');
   const [country, setCountry] = useState('');
   const [address, setAddress] = useState('');
@@ -48,6 +53,7 @@ export default function AddMember() {
     process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL
   );
 
+  const emailRegex = /.+@.+\..+/g;
   let minNumber = 0;
 
   const assignMemberNumber = async () => {
@@ -58,7 +64,7 @@ export default function AddMember() {
       .then((querySnapshot) => {
         let i: number = 1;
         querySnapshot.forEach((documentSnapshot) => {
-          if (i == Number(memberNumber)) {
+          if (i == Number(memberNumber.trim())) {
             minNumber = i;
           } else if (i == Number(documentSnapshot.data().memberNumber)) {
             i = Number(documentSnapshot.data().memberNumber) + 1;
@@ -79,7 +85,7 @@ export default function AddMember() {
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((documentSnapshot) => {
-          if (memberNumber == documentSnapshot.data().memberNumber) {
+          if (memberNumber.trim() == documentSnapshot.data().memberNumber) {
             numberAvailable++;
             console.log(t('addMember.numberUnavailable'));
           }
@@ -175,16 +181,14 @@ export default function AddMember() {
 
     if (!name.trim()) {
       alert(t('addMember.nameMandatory'));
+      setNameError(true);
       setLoading(false);
       return;
     }
 
-    if (
-      email &&
-      email.trim() &&
-      (!email.includes('@') || !email.includes('.'))
-    ) {
+    if (email && email.trim() && !email.match(emailRegex)) {
       alert(t('addMember.emailFormat'));
+      setEmailError(true);
       setLoading(false);
       return;
     }
@@ -193,16 +197,18 @@ export default function AddMember() {
       await assignMemberNumber();
     } else if (!memberNumber.trim()) {
       alert(t('addMember.numberMandatory'));
+      setMemberNumberError(true);
       setLoading(false);
       return;
     } else {
       const numberAvailable = await checkNumber();
       if (numberAvailable > 1) {
         alert(t('addMember.numberExists'));
+        setMemberNumberError(true);
         setLoading(false);
         return;
       }
-      minNumber = Number(memberNumber);
+      minNumber = Number(memberNumber.trim());
       setMemberNumber(minNumber.toString());
     }
 
@@ -216,7 +222,7 @@ export default function AddMember() {
           name: name.trim(),
           memberNumber: minNumber,
           email: email.trim(),
-          phoneNumber: phoneNumber,
+          phoneNumber: phoneNumber.trim(),
           occupation: occupation.trim(),
           country: country.trim(),
           address: address.trim(),
@@ -231,7 +237,7 @@ export default function AddMember() {
           setName('');
           setMemberNumber('');
           setEmail('');
-          setPhone('');
+          setPhoneNumber('');
           setOccupation('');
           setCountry('');
           setAddress('');
@@ -289,10 +295,7 @@ export default function AddMember() {
 
       <View style={styles.container}>
         <ScrollView>
-          <KeyboardAvoidingView
-            style={{ paddingHorizontal: 10 }}
-            behavior='height'
-          >
+          <KeyboardAvoidingView style={{ paddingHorizontal: 10 }}>
             <Pressable
               style={styles.pictureButton}
               onPress={() => {
@@ -324,7 +327,11 @@ export default function AddMember() {
                 <Text
                   style={[
                     styles.title,
-                    { fontSize: 15, color: theme.colors.onBackground },
+                    {
+                      fontSize: 15,
+                      color: theme.colors.onBackground,
+                      maxWidth: '80%',
+                    },
                   ]}
                 >
                   {t('addMember.autoNumber')}
@@ -335,7 +342,16 @@ export default function AddMember() {
                 disabled={autoNumber}
                 style={[styles.input, { flex: 3 }]}
                 value={memberNumber}
-                onChangeText={setMemberNumber}
+                onChangeText={(input) => {
+                  setMemberNumber(input.replace(/[^0-9]/g, ''));
+                }}
+                onEndEditing={() => {
+                  if (!autoNumber && !memberNumber.trim()) {
+                    setMemberNumberError(true);
+                  } else setMemberNumberError(false);
+                  setMemberNumber(memberNumber.trim());
+                }}
+                error={memberNumberError}
                 autoCapitalize='none'
                 keyboardType='numeric'
                 label={t('addMember.memberNumber')}
@@ -346,6 +362,13 @@ export default function AddMember() {
               style={styles.input}
               value={name}
               onChangeText={setName}
+              onEndEditing={() => {
+                if (!name.trim()) {
+                  setNameError(true);
+                } else setNameError(false);
+                setName(name.trim());
+              }}
+              error={nameError}
               autoCapitalize='words'
               keyboardType='default'
               label={t('addMember.name')}
@@ -354,6 +377,13 @@ export default function AddMember() {
               style={styles.input}
               value={email}
               onChangeText={setEmail}
+              onEndEditing={() => {
+                if (email && email.trim() && !email.match(emailRegex)) {
+                  setEmailError(true);
+                } else setEmailError(false);
+                setEmail(email.trim());
+              }}
+              error={emailError}
               autoCapitalize='none'
               keyboardType='email-address'
               label={t('addMember.email')}
@@ -361,7 +391,12 @@ export default function AddMember() {
             <TextInput
               style={styles.input}
               value={phoneNumber}
-              onChangeText={setPhone}
+              onChangeText={(input) => {
+                setPhoneNumber(input.replace(/[^0-9+\-\s]/g, ''));
+              }}
+              onEndEditing={() => {
+                setPhoneNumber(phoneNumber.trim());
+              }}
               autoCapitalize='none'
               inputMode='tel'
               keyboardType='phone-pad'
@@ -371,6 +406,9 @@ export default function AddMember() {
               style={styles.input}
               value={occupation}
               onChangeText={setOccupation}
+              onEndEditing={() => {
+                setOccupation(occupation.trim());
+              }}
               autoCapitalize='sentences'
               inputMode='text'
               keyboardType='default'
@@ -380,6 +418,9 @@ export default function AddMember() {
               style={styles.input}
               value={country}
               onChangeText={setCountry}
+              onEndEditing={() => {
+                setCountry(country.trim());
+              }}
               autoCapitalize='sentences'
               inputMode='text'
               keyboardType='default'
@@ -389,6 +430,9 @@ export default function AddMember() {
               style={styles.input}
               value={address}
               onChangeText={setAddress}
+              onEndEditing={() => {
+                setAddress(address.trim());
+              }}
               autoCapitalize='sentences'
               inputMode='text'
               keyboardType='default'
@@ -397,15 +441,18 @@ export default function AddMember() {
             <TextInput
               style={styles.input}
               value={zipCode}
-              onChangeText={(text) => {
-                setZipCode(text);
-                if (text.length > 4 && !text.includes('-')) {
-                  let a = text.substring(0, 4);
-                  let b = text.substring(4);
+              onChangeText={(input) => {
+                setZipCode(input.replace(/[^0-9\-]/g, ''));
+                if (input.length > 4 && !input.includes('-')) {
+                  let a = input.substring(0, 4);
+                  let b = input.substring(4);
                   a = a.concat('-');
-                  text = a.concat(b);
-                  setZipCode(text);
+                  input = a.concat(b);
+                  setZipCode(input);
                 }
+              }}
+              onEndEditing={() => {
+                setZipCode(zipCode.trim());
               }}
               maxLength={8}
               autoCapitalize='none'

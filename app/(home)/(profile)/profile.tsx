@@ -2,12 +2,12 @@ import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
-  ActivityIndicator,
   KeyboardAvoidingView,
   Pressable,
   ScrollView,
 } from 'react-native';
 import {
+  ActivityIndicator,
   Button,
   Modal,
   Portal,
@@ -32,12 +32,17 @@ export default function Profile() {
   const theme = useTheme();
   const { t } = useTranslation();
 
+  const [autoNumber, setAutoNumber] = useState(true);
   const [profile, setProfile] = useState(null);
+  const [editing, setEditing] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
-  const [editing, setEditing] = useState(false);
-  const [autoNumber, setAutoNumber] = useState(true);
+
+  const [nameError, setNameError] = useState(false);
+  const [memberNumberError, setMemberNumberError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
 
   const [birthDateModal, setBirthDateModal] = useState(false);
   const [endDateModal, setEndDateModal] = useState(false);
@@ -47,7 +52,7 @@ export default function Profile() {
   const [name, setName] = useState('');
   const [memberNumber, setMemberNumber] = useState('');
   const [email, setEmail] = useState('');
-  const [phoneNumber, setPhone] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [occupation, setOccupation] = useState('');
   const [country, setCountry] = useState('');
   const [address, setAddress] = useState('');
@@ -56,8 +61,9 @@ export default function Profile() {
   const [endDate, setEndDate] = useState(new Date());
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
 
-  let minNumber = 0;
+  const emailRegex = /.+@.+\..+/g;
   const reference = storage().ref('profilePicture/' + profileID + '.jpg');
+  let minNumber = 0;
 
   useBackHandler(() => {
     if (editing) {
@@ -80,16 +86,21 @@ export default function Profile() {
         setName('');
         setMemberNumber('');
         setEmail('');
-        setPhone('');
+        setPhoneNumber('');
         setAddress('');
         setZipCode('');
         setEndDate(new Date());
         setProfilePicture('');
+
         setEditing(false);
         setPictureModal(false);
         setConfirmDeleteModal(false);
         setBirthDateModal(false);
         setEndDateModal(false);
+
+        setNameError(false);
+        setMemberNumberError(false);
+        setEmailError(false);
       };
     }, [profileID])
   );
@@ -108,7 +119,7 @@ export default function Profile() {
             setName(documentSnapshot.data().name);
             setMemberNumber(documentSnapshot.data().memberNumber.toString());
             setEmail(documentSnapshot.data().email);
-            setPhone(documentSnapshot.data().phoneNumber);
+            setPhoneNumber(documentSnapshot.data().phoneNumber);
             setOccupation(documentSnapshot.data().occupation);
             setCountry(documentSnapshot.data().country);
             setAddress(documentSnapshot.data().address);
@@ -247,7 +258,7 @@ export default function Profile() {
       .then((querySnapshot) => {
         let i: number = 1;
         querySnapshot.forEach((documentSnapshot) => {
-          if (i == Number(memberNumber)) {
+          if (i == Number(memberNumber.trim())) {
             minNumber = i;
           } else if (i == Number(documentSnapshot.data().memberNumber)) {
             i = Number(documentSnapshot.data().memberNumber) + 1;
@@ -263,14 +274,14 @@ export default function Profile() {
   const checkNumber = async () => {
     let numberAvailable = 1;
 
-    if (memberNumber != profile.memberNumber) {
+    if (memberNumber.trim() != profile.memberNumber) {
       const snapshot = await firestore()
         .collection('members')
         .orderBy('memberNumber', 'asc')
         .get()
         .then((querySnapshot) => {
           querySnapshot.forEach((documentSnapshot) => {
-            if (memberNumber == documentSnapshot.data().memberNumber) {
+            if (memberNumber.trim() == documentSnapshot.data().memberNumber) {
               numberAvailable++;
               console.log('Number unavailable!');
             }
@@ -284,20 +295,35 @@ export default function Profile() {
   const saveMember = async () => {
     setLoadingSave(true);
 
+    if (!name.trim()) {
+      alert(t('profile.nameMandatory'));
+      setNameError(true);
+      setLoadingSave(false);
+      return;
+    }
+
+    if (email && email.trim() && !email.match(emailRegex)) {
+      alert(t('profile.emailFormat'));
+      setEmailError(true);
+      setLoadingSave(false);
+      return;
+    }
+
     if (autoNumber) {
       await assignMemberNumber();
     } else if (!memberNumber.trim()) {
       alert(t('profile.numberMandatory'));
-      setLoading(false);
+      setLoadingSave(false);
       return;
     } else {
       const numberAvailable = await checkNumber();
       if (numberAvailable > 1) {
         alert(t('profile.numberExists'));
-        setLoading(false);
+        setLoadingSave(false);
         return;
       }
       minNumber = Number(memberNumber);
+      setMemberNumber(minNumber.toString());
     }
 
     const url = await uploadPicture();
@@ -310,7 +336,7 @@ export default function Profile() {
           name: name.trim(),
           memberNumber: minNumber,
           email: email.trim(),
-          phoneNumber: phoneNumber,
+          phoneNumber: phoneNumber.trim(),
           occupation: occupation.trim(),
           country: country.trim(),
           address: address.trim(),
@@ -455,14 +481,11 @@ export default function Profile() {
 
       <View style={styles.container}>
         {loading || !profile ? (
-          <ActivityIndicator size={'large'} style={{ margin: 28 }} />
+          <ActivityIndicator size={75} style={{ margin: 28 }} />
         ) : (
           <>
             <ScrollView>
-              <KeyboardAvoidingView
-                style={{ marginHorizontal: 20 }}
-                behavior='height'
-              >
+              <KeyboardAvoidingView style={{ marginHorizontal: 20 }}>
                 <Pressable
                   disabled={!editing}
                   style={styles.pictureButton}
@@ -499,7 +522,11 @@ export default function Profile() {
                     <Text
                       style={[
                         styles.title,
-                        { fontSize: 15, color: theme.colors.onBackground },
+                        {
+                          fontSize: 15,
+                          color: theme.colors.onBackground,
+                          maxWidth: '80%',
+                        },
                       ]}
                     >
                       {t('profile.autoNumber')}
@@ -510,12 +537,20 @@ export default function Profile() {
                       onValueChange={setAutoNumber}
                     />
                   </View>
-
                   <TextInput
                     disabled={autoNumber}
                     style={[styles.input, { flex: 3 }]}
                     value={memberNumber}
-                    onChangeText={setMemberNumber}
+                    onChangeText={(input) => {
+                      setMemberNumber(input.replace(/[^0-9]/g, ''));
+                    }}
+                    onEndEditing={() => {
+                      if (!autoNumber && !memberNumber.trim()) {
+                        setMemberNumberError(true);
+                      } else setMemberNumberError(false);
+                      setMemberNumber(memberNumber.trim());
+                    }}
+                    error={memberNumberError}
                     autoCapitalize='none'
                     keyboardType='numeric'
                     label={t('profile.memberNumber')}
@@ -527,6 +562,13 @@ export default function Profile() {
                   style={styles.input}
                   value={name}
                   onChangeText={setName}
+                  onEndEditing={() => {
+                    if (!name.trim()) {
+                      setNameError(true);
+                    } else setNameError(false);
+                    setName(name.trim());
+                  }}
+                  error={nameError}
                   autoCapitalize='words'
                   keyboardType='default'
                   label={t('profile.name')}
@@ -536,6 +578,13 @@ export default function Profile() {
                   style={styles.input}
                   value={email}
                   onChangeText={setEmail}
+                  onEndEditing={() => {
+                    if (email && email.trim() && !email.match(emailRegex)) {
+                      setEmailError(true);
+                    } else setEmailError(false);
+                    setEmail(email.trim());
+                  }}
+                  error={emailError}
                   autoCapitalize='none'
                   keyboardType='email-address'
                   label={t('profile.email')}
@@ -544,7 +593,12 @@ export default function Profile() {
                   disabled={!editing}
                   style={styles.input}
                   value={phoneNumber}
-                  onChangeText={setPhone}
+                  onChangeText={(input) => {
+                    setPhoneNumber(input.replace(/[^0-9+\-\s]/g, ''));
+                  }}
+                  onEndEditing={() => {
+                    setPhoneNumber(phoneNumber.trim());
+                  }}
                   autoCapitalize='none'
                   inputMode='tel'
                   keyboardType='phone-pad'
@@ -555,6 +609,9 @@ export default function Profile() {
                   style={styles.input}
                   value={occupation}
                   onChangeText={setOccupation}
+                  onEndEditing={() => {
+                    setOccupation(occupation.trim());
+                  }}
                   autoCapitalize='sentences'
                   inputMode='text'
                   keyboardType='default'
@@ -565,6 +622,9 @@ export default function Profile() {
                   style={styles.input}
                   value={country}
                   onChangeText={setCountry}
+                  onEndEditing={() => {
+                    setCountry(country.trim());
+                  }}
                   autoCapitalize='sentences'
                   inputMode='text'
                   keyboardType='default'
@@ -575,6 +635,9 @@ export default function Profile() {
                   style={styles.input}
                   value={address}
                   onChangeText={setAddress}
+                  onEndEditing={() => {
+                    setAddress(address.trim());
+                  }}
                   autoCapitalize='sentences'
                   inputMode='text'
                   keyboardType='default'
@@ -584,15 +647,18 @@ export default function Profile() {
                   disabled={!editing}
                   style={styles.input}
                   value={zipCode}
-                  onChangeText={(text) => {
-                    setZipCode(text);
-                    if (text.length > 4 && !text.includes('-')) {
-                      let a = text.substring(0, 4);
-                      let b = text.substring(4);
+                  onChangeText={(input) => {
+                    setZipCode(input.replace(/[^0-9\-]/g, ''));
+                    if (input.length > 4 && !input.includes('-')) {
+                      let a = input.substring(0, 4);
+                      let b = input.substring(4);
                       a = a.concat('-');
-                      text = a.concat(b);
-                      setZipCode(text);
+                      input = a.concat(b);
+                      setZipCode(input);
                     }
+                  }}
+                  onEndEditing={() => {
+                    setZipCode(zipCode.trim());
                   }}
                   maxLength={8}
                   autoCapitalize='none'
@@ -683,7 +749,6 @@ export default function Profile() {
                     labelStyle={styles.buttonText}
                     icon='account-edit'
                     mode='elevated'
-                    loading={loadingSave}
                     onPress={() => {
                       setEditing(true);
                     }}

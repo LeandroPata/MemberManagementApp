@@ -26,7 +26,7 @@
     "importExport": "Importar/Exportar"
   },
   "addMember": {
-    "autoNumber": "Número Automático",
+    "autoNumber": "Atribuição Automática",
     "memberNumber": "Número de Membro",
     "name": "Nome",
     "email": "Email",
@@ -63,7 +63,7 @@
     "exportSuccess": "Exportação com sucesso!"
   },
   "profile": {
-    "autoNumber": "Número Automático",
+    "autoNumber": "Atribuição Automática",
     "memberNumber": "Número de Membro",
     "name": "Nome",
     "email": "Email",

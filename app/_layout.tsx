@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, useColorScheme, View } from 'react-native';
+import { useColorScheme, View } from 'react-native';
 import {
   PaperProvider,
   Portal,
+  ActivityIndicator,
   MD3LightTheme as DefaultLightTheme,
   MD3DarkTheme as DefaultDarkTheme,
 } from 'react-native-paper';
@@ -36,10 +37,10 @@ export default function RootLayout() {
             onTertiary: 'rgb(63, 45, 4)',
             tertiaryContainer: 'rgb(88, 68, 25)',
             onTertiaryContainer: 'rgb(254, 223, 166)',
-            error: 'rgb(255, 180, 171)',
+            error: 'rgb(142, 0, 3)',
             onError: 'rgb(105, 0, 5)',
             errorContainer: 'rgb(147, 0, 10)',
-            onErrorContainer: 'rgb(255, 180, 171)',
+            onErrorContainer: 'rgb(255, 255, 255)',
             background: 'rgb(25, 25, 24)',
             onBackground: 'rgb(237, 224, 222)',
             surface: 'rgb(32, 26, 25)',
@@ -151,7 +152,7 @@ export default function RootLayout() {
           flex: 1,
         }}
       >
-        <ActivityIndicator size='large' />
+        <ActivityIndicator size={75} />
       </View>
     );
 

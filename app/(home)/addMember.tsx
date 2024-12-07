@@ -5,6 +5,7 @@ import {
   KeyboardAvoidingView,
   Pressable,
   ScrollView,
+  Keyboard,
 } from 'react-native';
 import {
   Button,
@@ -88,7 +89,7 @@ export default function AddMember() {
         querySnapshot.forEach((documentSnapshot) => {
           if (memberNumber.trim() == documentSnapshot.data().memberNumber) {
             numberAvailable++;
-            console.log(t('addMember.numberUnavailable'));
+            console.log(t('addMember.memberNumberUnavailable'));
           }
         });
       });
@@ -179,16 +180,17 @@ export default function AddMember() {
 
   const addMember = async () => {
     setLoading(true);
+    Keyboard.dismiss();
 
     if (!name.trim()) {
-      alert(t('addMember.nameMandatory'));
+      alert(t('addMember.nameError'));
       setNameError(true);
       setLoading(false);
       return;
     }
 
     if (email && email.trim() && !email.match(emailRegex)) {
-      alert(t('addMember.emailFormat'));
+      alert(t('addMember.emailError'));
       setEmailError(true);
       setLoading(false);
       return;
@@ -197,14 +199,14 @@ export default function AddMember() {
     if (autoNumber) {
       await assignMemberNumber();
     } else if (!memberNumber.trim()) {
-      alert(t('addMember.numberMandatory'));
+      alert(t('addMember.memberNumberError'));
       setMemberNumberError(true);
       setLoading(false);
       return;
     } else {
       const numberAvailable = await checkNumber();
       if (numberAvailable > 1) {
-        alert(t('addMember.numberExists'));
+        alert(t('addMember.memberNumberExists'));
         setMemberNumberError(true);
         setLoading(false);
         return;

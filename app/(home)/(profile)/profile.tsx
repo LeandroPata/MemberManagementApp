@@ -5,6 +5,7 @@ import {
   KeyboardAvoidingView,
   Pressable,
   ScrollView,
+  Keyboard,
 } from 'react-native';
 import {
   ActivityIndicator,
@@ -314,16 +315,17 @@ export default function Profile() {
 
   const saveMember = async () => {
     setLoadingSave(true);
+    Keyboard.dismiss();
 
     if (!name.trim()) {
-      alert(t('profile.nameMandatory'));
+      alert(t('profile.nameError'));
       setNameError(true);
       setLoadingSave(false);
       return;
     }
 
     if (email && email.trim() && !email.match(emailRegex)) {
-      alert(t('profile.emailFormat'));
+      alert(t('profile.emailError'));
       setEmailError(true);
       setLoadingSave(false);
       return;
@@ -332,13 +334,13 @@ export default function Profile() {
     if (autoNumber) {
       await assignMemberNumber();
     } else if (!memberNumber.trim()) {
-      alert(t('profile.numberMandatory'));
+      alert(t('profile.memberNumberError'));
       setLoadingSave(false);
       return;
     } else {
       const numberAvailable = await checkNumber();
       if (numberAvailable > 1) {
-        alert(t('profile.numberExists'));
+        alert(t('profile.memberNumberExists'));
         setLoadingSave(false);
         return;
       }
@@ -502,7 +504,11 @@ export default function Profile() {
 
       <View style={styles.container}>
         {loading || !profile ? (
-          <ActivityIndicator size={75} style={{ margin: 28 }} />
+          <ActivityIndicator
+            size={75}
+            color={theme.colors.primary}
+            style={{ margin: 28 }}
+          />
         ) : (
           <>
             <ScrollView>

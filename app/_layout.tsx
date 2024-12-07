@@ -152,7 +152,7 @@ export default function RootLayout() {
           flex: 1,
         }}
       >
-        <ActivityIndicator size={75} />
+        <ActivityIndicator size={75} color={theme.colors.primary} />
       </View>
     );
 

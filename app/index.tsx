@@ -1,6 +1,13 @@
-import { useState } from 'react';
-import { StyleSheet, KeyboardAvoidingView, View } from 'react-native';
-import { Portal, Modal, TextInput, Button, useTheme } from 'react-native-paper';
+import { useEffect, useState } from 'react';
+import { StyleSheet, KeyboardAvoidingView, View, Keyboard } from 'react-native';
+import {
+  Portal,
+  Modal,
+  TextInput,
+  Button,
+  useTheme,
+  HelperText,
+} from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FirebaseError } from 'firebase/app';
 import auth from '@react-native-firebase/auth';
@@ -14,46 +21,67 @@ export default function Index() {
   const [loginLoading, setLoginLoading] = useState(false);
   const [signupLoading, setSignupLoading] = useState(false);
   const [confirmSignupLoading, setConfirmSignupLoading] = useState(false);
+
   const [showModal, setShowModal] = useState(false);
+
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  const emailRegex = /.+@.+\..+/g;
+
   const signUp = async () => {
     setSignupLoading(true);
+    Keyboard.dismiss();
 
     if (!email.trim() && !password.trim()) {
       alert(t('index.emailPasswordEmpty'));
       setSignupLoading(false);
+      setEmailError(true);
+      setPasswordError(true);
       return;
     } else if (!email.trim()) {
       alert(t('index.emailEmpty'));
       setSignupLoading(false);
-      return;
-    } else if (!email.includes('@') || !email.includes('.')) {
-      alert(t('index.emailFormat'));
-      setSignupLoading(false);
+      setEmailError(true);
       return;
     } else if (!password.trim()) {
       alert(t('index.passwordEmpty'));
       setSignupLoading(false);
       return;
+    } else if (!email.match(emailRegex)) {
+      alert(t('index.emailError'));
+      setSignupLoading(false);
+      setEmailError(true);
+      return;
+    } else if (password.length < 6) {
+      alert(t('index.passwordError'));
+      setSignupLoading(false);
+      setPasswordError(true);
+      return;
     }
-
+    setEmailError(false);
+    setPasswordError(false);
     setShowModal(true);
   };
 
   const confirmSignUp = async () => {
     setConfirmSignupLoading(true);
+    Keyboard.dismiss();
     if (!confirmPassword.trim()) {
       alert(t('index.passwordEmpty'));
       setConfirmSignupLoading(false);
+      setConfirmPasswordError(true);
       return;
     } else if (password != confirmPassword) {
       alert(t('index.passwordNotMatch'));
       setConfirmSignupLoading(false);
       setConfirmPassword('');
+      setConfirmPasswordError(true);
       return;
     }
 
@@ -70,25 +98,43 @@ export default function Index() {
     }
   };
 
-  const signIn = async () => {
+  const logIn = async () => {
     setLoginLoading(true);
+    Keyboard.dismiss();
+
     if (!email.trim() && !password.trim()) {
       alert(t('index.emailPasswordEmpty'));
       setLoginLoading(false);
+      setEmailError(true);
+      setPasswordError(true);
       return;
-    } else if (!email.trim()) {
-      alert(t('index.emailEmpty'));
-      setLoginLoading(false);
-      return;
-    } else if (!email.includes('@') || !email.includes('.')) {
-      alert(t('index.emailFormat'));
-      setLoginLoading(false);
-      return;
-    } else if (!password.trim()) {
-      alert(t('index.passwordEmpty'));
-      setLoginLoading(false);
-      return;
+    } else {
+      if (!email.trim()) {
+        alert(t('index.emailEmpty'));
+        setLoginLoading(false);
+        setEmailError(true);
+        return;
+      } else if (!email.match(emailRegex)) {
+        alert(t('index.emailError'));
+        setLoginLoading(false);
+        setEmailError(true);
+        return;
+      }
+
+      if (!password.trim()) {
+        alert(t('index.passwordEmpty'));
+        setLoginLoading(false);
+        setPasswordError(true);
+        return;
+      } else if (password.length < 6) {
+        alert(t('index.passwordError'));
+        setLoginLoading(false);
+        setPasswordError(true);
+        return;
+      }
     }
+    setEmailError(false);
+    setPasswordError(false);
 
     try {
       await auth().signInWithEmailAndPassword(email, password);
@@ -96,6 +142,7 @@ export default function Index() {
       const err = e as FirebaseError;
       if (err.code == 'auth/invalid-credential') {
         alert(t('index.emailPasswordWrong'));
+        setLoginLoading(false);
         setPassword('');
       } else {
         //alert('Sign in failed: ' + err.message);
@@ -124,15 +171,28 @@ export default function Index() {
         >
           <TextInput
             style={styles.input}
-            label={t('index.confirmPassword')}
             value={confirmPassword}
-            onChangeText={(confirmPassword) =>
-              setConfirmPassword(confirmPassword)
-            }
-            //error={true}
+            onChangeText={setConfirmPassword}
+            onEndEditing={() => {
+              if (password != confirmPassword) {
+                setConfirmPasswordError(true);
+              } else setConfirmPasswordError(false);
+              setConfirmPassword(confirmPassword.trim());
+            }}
+            error={confirmPasswordError}
             autoCapitalize='none'
+            label={t('index.confirmPassword')}
             secureTextEntry
           />
+          {confirmPasswordError ? (
+            <HelperText
+              type='error'
+              visible={confirmPasswordError}
+              style={styles.errorHelper}
+            >
+              {t('index.confirmPasswordError')}
+            </HelperText>
+          ) : null}
 
           <View style={[styles.buttonContainer, { marginTop: 15 }]}>
             <Button
@@ -161,23 +221,53 @@ export default function Index() {
         >
           <TextInput
             style={styles.input}
-            label={t('index.email')}
             value={email}
-            onChangeText={(email) => setEmail(email)}
-            //error={true}
+            onChangeText={setEmail}
+            onEndEditing={() => {
+              if (!email.match(emailRegex)) {
+                setEmailError(true);
+              } else setEmailError(false);
+              setEmail(email.trim());
+            }}
+            error={emailError}
             autoCapitalize='none'
             keyboardType='email-address'
-            returnKeyType='next'
+            label={t('index.email')}
           />
+          {emailError ? (
+            <HelperText
+              type='error'
+              visible={emailError}
+              style={styles.errorHelper}
+            >
+              {t('index.emailError')}
+            </HelperText>
+          ) : null}
           <TextInput
             style={styles.input}
-            label={t('index.password')}
             value={password}
-            onChangeText={(password) => setPassword(password)}
-            //error={true}
+            onChangeText={setPassword}
+            onEndEditing={() => {
+              if (password.length < 6) {
+                setPasswordError(true);
+              } else setPasswordError(false);
+              setPassword(password.trim());
+            }}
+            error={passwordError}
             autoCapitalize='none'
+            keyboardType='default'
+            label={t('index.password')}
             secureTextEntry
           />
+          {passwordError ? (
+            <HelperText
+              type='error'
+              visible={passwordError}
+              style={styles.errorHelper}
+            >
+              {t('index.passwordError')}
+            </HelperText>
+          ) : null}
         </KeyboardAvoidingView>
 
         <View style={[styles.buttonContainer, { marginTop: 50 }]}>
@@ -188,7 +278,9 @@ export default function Index() {
             icon='login'
             mode='elevated'
             loading={loginLoading}
-            onPress={signIn}
+            onPress={() => {
+              logIn();
+            }}
           >
             {t('index.login')}
           </Button>
@@ -247,5 +339,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     overflow: 'visible',
     paddingTop: 10,
+  },
+  errorHelper: {
+    fontWeight: 'bold',
+    fontSize: 15,
   },
 });

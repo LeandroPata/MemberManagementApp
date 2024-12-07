@@ -16,6 +16,7 @@ import {
   Avatar,
   Text,
   useTheme,
+  HelperText,
 } from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
@@ -554,7 +555,10 @@ export default function Profile() {
                     <Switch
                       disabled={!editing}
                       value={autoNumber}
-                      onValueChange={setAutoNumber}
+                      onValueChange={(input) => {
+                        setAutoNumber(input);
+                        setMemberNumberError(false);
+                      }}
                     />
                   </View>
                   <TextInput
@@ -597,6 +601,16 @@ export default function Profile() {
                   keyboardType='default'
                   label={t('profile.name')}
                 />
+                {nameError ? (
+                  <HelperText
+                    type='error'
+                    visible={nameError}
+                    style={styles.errorHelper}
+                  >
+                    Name is invalid!
+                  </HelperText>
+                ) : null}
+
                 <TextInput
                   disabled={!editing}
                   style={styles.input}
@@ -613,6 +627,16 @@ export default function Profile() {
                   keyboardType='email-address'
                   label={t('profile.email')}
                 />
+                {emailError ? (
+                  <HelperText
+                    type='error'
+                    visible={emailError}
+                    style={styles.errorHelper}
+                  >
+                    Email is invalid!
+                  </HelperText>
+                ) : null}
+
                 <TextInput
                   disabled={!editing}
                   style={styles.input}
@@ -878,5 +902,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlignVertical: 'center',
     fontSize: 20,
+  },
+  errorHelper: {
+    fontWeight: 'bold',
+    fontSize: 15,
   },
 });

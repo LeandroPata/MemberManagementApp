@@ -15,6 +15,7 @@ import {
   Portal,
   Modal,
   useTheme,
+  HelperText,
 } from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
 import * as ImagePicker from 'expo-image-picker';
@@ -336,7 +337,13 @@ export default function AddMember() {
                 >
                   {t('addMember.autoNumber')}
                 </Text>
-                <Switch value={autoNumber} onValueChange={setAutoNumber} />
+                <Switch
+                  value={autoNumber}
+                  onValueChange={(input) => {
+                    setAutoNumber(input);
+                    setMemberNumberError(false);
+                  }}
+                />
               </View>
               <TextInput
                 disabled={autoNumber}
@@ -373,6 +380,16 @@ export default function AddMember() {
               keyboardType='default'
               label={t('addMember.name')}
             />
+            {nameError ? (
+              <HelperText
+                type='error'
+                visible={nameError}
+                style={styles.errorHelper}
+              >
+                Name is invalid!
+              </HelperText>
+            ) : null}
+
             <TextInput
               style={styles.input}
               value={email}
@@ -388,6 +405,16 @@ export default function AddMember() {
               keyboardType='email-address'
               label={t('addMember.email')}
             />
+            {emailError ? (
+              <HelperText
+                type='error'
+                visible={emailError}
+                style={styles.errorHelper}
+              >
+                Email is invalid!
+              </HelperText>
+            ) : null}
+
             <TextInput
               style={styles.input}
               value={phoneNumber}
@@ -586,5 +613,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlignVertical: 'center',
     fontSize: 20,
+  },
+  errorHelper: {
+    fontWeight: 'bold',
+    fontSize: 15,
   },
 });

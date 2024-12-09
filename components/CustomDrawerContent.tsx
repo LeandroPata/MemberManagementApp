@@ -23,6 +23,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { EventRegister } from 'react-native-event-listeners';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import i18next from 'i18next';
 
 export default function CustomDrawerContent(props: any) {
   const theme = useTheme();
@@ -74,12 +75,27 @@ export default function CustomDrawerContent(props: any) {
       </DrawerContentScrollView>
 
       <View style={{ paddingBottom: 20 + insets.bottom }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            width: '95%',
+          }}
+        >
+          <List.Item
+            title='Dark Mode'
+            left={(props) => (
+              <Ionicons {...props} name='moon-sharp' size={25} />
+            )}
+          />
+          <Switch value={darkModeSwitch} onValueChange={changeColorScheme} />
+        </View>
         <TouchableOpacity style={{ marginLeft: -4 }} onPress={toggleAccordion}>
           <List.Item
-            title='Settings'
+            title='Language'
             titleStyle={{ fontSize: 15, fontWeight: 'bold' }}
             left={(props) => (
-              <Ionicons {...props} name='settings-sharp' size={32} />
+              <Ionicons {...props} name='language-sharp' size={32} />
             )}
             right={(props) => (
               <Ionicons
@@ -99,28 +115,25 @@ export default function CustomDrawerContent(props: any) {
               alignSelf: 'center',
             }}
           >
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-              }}
-            >
-              <List.Item
-                title='Dark Mode'
-                left={(props) => (
-                  <Ionicons {...props} name='moon-sharp' size={25} />
-                )}
-              />
-              <Switch
-                value={darkModeSwitch}
-                onValueChange={changeColorScheme}
-              />
-            </View>
             <List.Item
-              title='Language'
+              title='English'
               left={(props) => (
                 <Ionicons {...props} name='language-sharp' size={25} />
               )}
+              onPress={() => {
+                i18next.changeLanguage('en-US');
+                AsyncStorage.setItem('language', 'en-US');
+              }}
+            />
+            <List.Item
+              title='Português'
+              left={(props) => (
+                <Ionicons {...props} name='language-sharp' size={25} />
+              )}
+              onPress={() => {
+                i18next.changeLanguage('pt-PT');
+                AsyncStorage.setItem('language', 'pt-PT');
+              }}
             />
           </View>
         </Animated.View>

@@ -13,9 +13,8 @@ const resources = {
 };
 
 const initI18n = async () => {
-  // kept this way for now, until a way to change language in-app is implemented
-  // let savedLanguage = await AsyncStorage.getItem('language');
-  let savedLanguage = Localization.getLocales()[0].languageTag;
+  let savedLanguage = await AsyncStorage.getItem('language');
+  console.log(savedLanguage);
 
   if (!savedLanguage) {
     savedLanguage = Localization.getLocales()[0].languageTag;

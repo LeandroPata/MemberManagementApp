@@ -84,6 +84,7 @@ export default function CustomDrawerContent(props: any) {
         >
           <List.Item
             title='Dark Mode'
+            titleStyle={{ fontSize: 15, fontWeight: 'bold' }}
             left={(props) => (
               <Ionicons {...props} name='moon-sharp' size={25} />
             )}

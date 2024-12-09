@@ -83,7 +83,7 @@ export default function CustomDrawerContent(props: any) {
           }}
         >
           <List.Item
-            title='Dark Mode'
+            title={t('drawer.darkMode')}
             titleStyle={{ fontSize: 15, fontWeight: 'bold' }}
             left={(props) => (
               <Ionicons {...props} name='moon-sharp' size={25} />
@@ -93,7 +93,7 @@ export default function CustomDrawerContent(props: any) {
         </View>
         <TouchableOpacity style={{ marginLeft: -4 }} onPress={toggleAccordion}>
           <List.Item
-            title='Language'
+            title={t('drawer.language')}
             titleStyle={{ fontSize: 15, fontWeight: 'bold' }}
             left={(props) => (
               <Ionicons {...props} name='language-sharp' size={32} />

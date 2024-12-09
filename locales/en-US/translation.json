@@ -20,6 +20,8 @@
     "addMember": "Add Member",
     "searchMember": "Search Member",
     "importExport": "Import/Export",
+    "darkMode": "Dark Mode",
+    "language": "Language",
     "signOut": "Sign Out"
   },
   "home": {

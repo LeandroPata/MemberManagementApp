@@ -10,15 +10,33 @@ import {
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SystemUI from 'expo-system-ui';
-import { StatusBar } from 'expo-status-bar';
+import { setStatusBarStyle, StatusBar } from 'expo-status-bar';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import '@/locales/i18n';
+import { EventRegister } from 'react-native-event-listeners';
 
 export default function RootLayout() {
   const router = useRouter();
   const segments = useSegments();
-  const colorScheme = useColorScheme();
-  //console.log(colorScheme);
+
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
+
+  const [colorScheme, setColorScheme] = useState('');
+
+  if (!colorScheme) {
+    AsyncStorage.getItem('colorScheme').then((token) => {
+      //console.log('Token: ' + token);
+      setColorScheme(token);
+
+      if (!token) {
+        setColorScheme(useColorScheme());
+        //console.log(colorScheme);
+        AsyncStorage.setItem('colorScheme', colorScheme);
+      }
+    });
+  }
 
   const theme =
     colorScheme === 'dark'
@@ -113,9 +131,6 @@ export default function RootLayout() {
           },
         };
 
-  const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
-
   const onAuthStateChanged = (user: FirebaseAuthTypes.User | null) => {
     //console.log('onAuthStateChanged', user);
     setUser(user);
@@ -140,6 +155,15 @@ export default function RootLayout() {
   }, [user, initializing]);
 
   useEffect(() => {
+    const eventListener: string = EventRegister.addEventListener(
+      'updateTheme',
+      (data) => setColorScheme(data)
+    );
+    return () => EventRegister.removeEventListener(eventListener);
+  });
+
+  useEffect(() => {
+    //console.log(colorScheme);
     SystemUI.setBackgroundColorAsync(theme.colors.background);
   }, [theme.colors.background, colorScheme]);
 
@@ -160,6 +184,7 @@ export default function RootLayout() {
     <PaperProvider theme={theme}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <Portal.Host>
+          <StatusBar style={colorScheme == 'dark' ? 'light' : 'dark'} />
           <Stack
             screenOptions={{
               contentStyle: { backgroundColor: theme.colors.background },
@@ -168,7 +193,6 @@ export default function RootLayout() {
             <Stack.Screen name='index' options={{ headerShown: false }} />
             <Stack.Screen name='(home)' options={{ headerShown: false }} />
           </Stack>
-          <StatusBar style='auto' />
         </Portal.Host>
       </GestureHandlerRootView>
     </PaperProvider>

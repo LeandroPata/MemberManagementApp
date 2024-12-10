@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -18,6 +18,7 @@ import {
   Text,
   useTheme,
   HelperText,
+  Dialog,
 } from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
@@ -50,7 +51,7 @@ export default function Profile() {
   const [birthDateModal, setBirthDateModal] = useState(false);
   const [endDateModal, setEndDateModal] = useState(false);
   const [pictureModal, setPictureModal] = useState(false);
-  const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
+  const [confirmDeleteVisible, setConfirmDeleteVisible] = useState(false);
 
   const [name, setName] = useState('');
   const [memberNumber, setMemberNumber] = useState('');
@@ -126,7 +127,7 @@ export default function Profile() {
 
         setEditing(false);
         setPictureModal(false);
-        setConfirmDeleteModal(false);
+        setConfirmDeleteVisible(false);
         setBirthDateModal(false);
         setEndDateModal(false);
 
@@ -415,7 +416,7 @@ export default function Profile() {
       setLoadingDelete(false);
     }
     setLoadingDelete(false);
-    setConfirmDeleteModal(false);
+    setConfirmDeleteVisible(false);
     router.replace('/(home)/searchMember');
   };
 
@@ -462,6 +463,35 @@ export default function Profile() {
       </Portal>
 
       <Portal>
+        <Dialog
+          visible={confirmDeleteVisible}
+          onDismiss={() => setConfirmDeleteVisible(false)}
+        >
+          <Dialog.Content>
+            <Text style={{ fontSize: 15 }}>
+              {t('profile.deleteConfirmation')}
+            </Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button
+              onPress={() => {
+                deleteMember();
+              }}
+            >
+              {t('profile.yes')}
+            </Button>
+            <Button
+              onPress={() => {
+                setConfirmDeleteVisible(false);
+              }}
+            >
+              {t('profile.no')}
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+
+      {/* <Portal>
         <Modal
           visible={confirmDeleteModal}
           onDismiss={() => {
@@ -516,7 +546,7 @@ export default function Profile() {
             </Button>
           </View>
         </Modal>
-      </Portal>
+      </Portal> */}
 
       <View style={styles.container}>
         {loading || !profile ? (
@@ -854,7 +884,7 @@ export default function Profile() {
                     mode='elevated'
                     loading={loadingDelete}
                     onPress={() => {
-                      setConfirmDeleteModal(true);
+                      setConfirmDeleteVisible(true);
                     }}
                   >
                     {t('profile.deleteMember')}

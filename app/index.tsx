@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FirebaseError } from 'firebase/app';
 import auth from '@react-native-firebase/auth';
 import { useTranslation } from 'react-i18next';
+import SnackbarInfo from '@/components/SnackbarInfo';
 
 export default function Index() {
   const insets = useSafeAreaInsets();
@@ -32,6 +33,16 @@ export default function Index() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  // All the logic to implement the snackbar
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarText, setSnackbarText] = useState('');
+
+  const showSnackbar = (text: string) => {
+    setSnackbarText(text);
+    setSnackbarVisible(true);
+  };
+  const onDismissSnackbar = () => setSnackbarVisible(false);
+
   const emailRegex = /.+@.+\..+/g;
 
   const signUp = async () => {
@@ -39,27 +50,27 @@ export default function Index() {
     Keyboard.dismiss();
 
     if (!email.trim() && !password.trim()) {
-      alert(t('index.emailPasswordEmpty'));
+      showSnackbar(t('index.emailPasswordEmpty'));
       setSignupLoading(false);
       setEmailError(true);
       setPasswordError(true);
       return;
     } else if (!email.trim()) {
-      alert(t('index.emailEmpty'));
+      showSnackbar(t('index.emailEmpty'));
       setSignupLoading(false);
       setEmailError(true);
       return;
     } else if (!password.trim()) {
-      alert(t('index.passwordEmpty'));
+      showSnackbar(t('index.passwordEmpty'));
       setSignupLoading(false);
       return;
     } else if (!email.match(emailRegex)) {
-      alert(t('index.emailError'));
+      showSnackbar(t('index.emailError'));
       setSignupLoading(false);
       setEmailError(true);
       return;
     } else if (password.length < 6) {
-      alert(t('index.passwordError'));
+      showSnackbar(t('index.passwordError'));
       setSignupLoading(false);
       setPasswordError(true);
       return;
@@ -73,12 +84,12 @@ export default function Index() {
     setConfirmSignupLoading(true);
     Keyboard.dismiss();
     if (!confirmPassword.trim()) {
-      alert(t('index.passwordEmpty'));
+      showSnackbar(t('index.passwordEmpty'));
       setConfirmSignupLoading(false);
       setConfirmPasswordError(true);
       return;
     } else if (password != confirmPassword) {
-      alert(t('index.passwordNotMatch'));
+      showSnackbar(t('index.passwordNotMatch'));
       setConfirmSignupLoading(false);
       setConfirmPassword('');
       setConfirmPasswordError(true);
@@ -89,7 +100,7 @@ export default function Index() {
       await auth().createUserWithEmailAndPassword(email, password);
     } catch (e: any) {
       const err = e as FirebaseError;
-      //alert('Registration failed: ' + err.message);
+      //showSnackbar('Registration failed: ' + err.message);
       console.log('Registration failed: ' + err.message);
     } finally {
       setSignupLoading(false);
@@ -103,31 +114,31 @@ export default function Index() {
     Keyboard.dismiss();
 
     if (!email.trim() && !password.trim()) {
-      alert(t('index.emailPasswordEmpty'));
+      showSnackbar(t('index.emailPasswordEmpty'));
       setLoginLoading(false);
       setEmailError(true);
       setPasswordError(true);
       return;
     } else {
       if (!email.trim()) {
-        alert(t('index.emailEmpty'));
+        showSnackbar(t('index.emailEmpty'));
         setLoginLoading(false);
         setEmailError(true);
         return;
       } else if (!email.match(emailRegex)) {
-        alert(t('index.emailError'));
+        showSnackbar(t('index.emailError'));
         setLoginLoading(false);
         setEmailError(true);
         return;
       }
 
       if (!password.trim()) {
-        alert(t('index.passwordEmpty'));
+        showSnackbar(t('index.passwordEmpty'));
         setLoginLoading(false);
         setPasswordError(true);
         return;
       } else if (password.length < 6) {
-        alert(t('index.passwordError'));
+        showSnackbar(t('index.passwordError'));
         setLoginLoading(false);
         setPasswordError(true);
         return;
@@ -141,11 +152,11 @@ export default function Index() {
     } catch (e: any) {
       const err = e as FirebaseError;
       if (err.code == 'auth/invalid-credential') {
-        alert(t('index.emailPasswordWrong'));
+        showSnackbar(t('index.emailPasswordWrong'));
         setLoginLoading(false);
         setPassword('');
       } else {
-        //alert('Sign in failed: ' + err.message);
+        //showSnackbar('Sign in failed: ' + err.message);
         console.log('Sign in failed: ' + err.message);
       }
     } finally {
@@ -155,6 +166,11 @@ export default function Index() {
 
   return (
     <>
+      <SnackbarInfo
+        text={snackbarText}
+        visible={snackbarVisible}
+        onDismiss={onDismissSnackbar}
+      />
       <Portal>
         <Modal
           visible={showModal}
@@ -213,7 +229,6 @@ export default function Index() {
           </View>
         </Modal>
       </Portal>
-
       <View style={[styles.container, { paddingTop: insets.top }]}>
         <KeyboardAvoidingView
           style={{ marginHorizontal: 20 }}

@@ -24,6 +24,7 @@ import { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import { useTranslation } from 'react-i18next';
+import SnackbarInfo from '@/components/SnackbarInfo';
 
 export default function AddMember() {
   const theme = useTheme();
@@ -54,6 +55,16 @@ export default function AddMember() {
   const [profilePicture, setProfilePicture] = useState(
     process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL
   );
+
+  // All the logic to implement the snackbar
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarText, setSnackbarText] = useState('');
+
+  const showSnackbar = (text: string) => {
+    setSnackbarText(text);
+    setSnackbarVisible(true);
+  };
+  const onDismissSnackbar = () => setSnackbarVisible(false);
 
   const emailRegex = /.+@.+\..+/g;
   let minNumber = 0;
@@ -121,7 +132,7 @@ export default function AddMember() {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
     if (permissionResult.granted === false) {
-      alert(t('addMember.cameraPermission'));
+      showSnackbar(t('addMember.cameraPermission'));
       return;
     }
 
@@ -160,11 +171,11 @@ export default function AddMember() {
       await task
         .then(() => {
           console.log('Image uploaded to the bucket!');
-          //alert('Image uploaded to the bucket!');
+          //showSnackbar('Image uploaded to the bucket!');
         })
         .catch((e: any) => {
           const err = e as FirebaseError;
-          //alert('File upload failed: ' + err.message);
+          //showSnackbar('File upload failed: ' + err.message);
           console.log('File upload failed: ' + err.message);
           setLoading(false);
         });
@@ -183,14 +194,14 @@ export default function AddMember() {
     Keyboard.dismiss();
 
     if (!name.trim()) {
-      alert(t('addMember.nameError'));
+      showSnackbar(t('addMember.nameError'));
       setNameError(true);
       setLoading(false);
       return;
     }
 
     if (email && email.trim() && !email.match(emailRegex)) {
-      alert(t('addMember.emailError'));
+      showSnackbar(t('addMember.emailError'));
       setEmailError(true);
       setLoading(false);
       return;
@@ -199,14 +210,14 @@ export default function AddMember() {
     if (autoNumber) {
       await assignMemberNumber();
     } else if (!memberNumber.trim()) {
-      alert(t('addMember.memberNumberError'));
+      showSnackbar(t('addMember.memberNumberError'));
       setMemberNumberError(true);
       setLoading(false);
       return;
     } else {
       const numberAvailable = await checkNumber();
       if (numberAvailable > 1) {
-        alert(t('addMember.memberNumberExists'));
+        showSnackbar(t('addMember.memberNumberExists'));
         setMemberNumberError(true);
         setLoading(false);
         return;
@@ -252,7 +263,7 @@ export default function AddMember() {
     } catch (e: any) {
       const err = e as FirebaseError;
       console.log('Adding member failed: ' + err.message);
-      //alert('Adding member failed: ' + err.message);
+      //showSnackbar('Adding member failed: ' + err.message);
       setLoading(false);
     } finally {
       setLoading(false);
@@ -261,6 +272,11 @@ export default function AddMember() {
 
   return (
     <>
+      <SnackbarInfo
+        text={snackbarText}
+        visible={snackbarVisible}
+        onDismiss={onDismissSnackbar}
+      />
       <Portal>
         <Modal
           visible={pictureModal}

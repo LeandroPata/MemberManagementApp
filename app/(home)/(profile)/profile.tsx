@@ -27,6 +27,7 @@ import { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import { useTranslation } from 'react-i18next';
+import SnackbarInfo from '@/components/SnackbarInfo';
 
 export default function Profile() {
   const { profileID } = useLocalSearchParams();
@@ -62,6 +63,16 @@ export default function Profile() {
   const [birthDate, setBirthDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
+
+  // All the logic to implement the snackbar
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarText, setSnackbarText] = useState('');
+
+  const showSnackbar = (text: string) => {
+    setSnackbarText(text);
+    setSnackbarVisible(true);
+  };
+  const onDismissSnackbar = () => setSnackbarVisible(false);
 
   const emailRegex = /.+@.+\..+/g;
   const reference = storage().ref('profilePicture/' + profileID + '.jpg');
@@ -183,7 +194,7 @@ export default function Profile() {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
     if (permissionResult.granted === false) {
-      alert(t('profile.cameraPermission'));
+      showSnackbar(t('profile.cameraPermission'));
       return;
     }
 
@@ -216,7 +227,7 @@ export default function Profile() {
         })
         .catch((e: any) => {
           const err = e as FirebaseError;
-          //alert('File deletion failed: ' + err.message);
+          //showSnackbar('File deletion failed: ' + err.message);
           console.log('File deletion failed: ' + err.message);
         });
 
@@ -233,11 +244,11 @@ export default function Profile() {
       await task
         .then(() => {
           console.log('Image uploaded to the bucket!');
-          //alert('Image uploaded to the bucket!');
+          //showSnackbar('Image uploaded to the bucket!');
         })
         .catch((e: any) => {
           const err = e as FirebaseError;
-          //alert('File upload failed: ' + err.message);
+          //showSnackbar('File upload failed: ' + err.message);
           console.log('File upload failed: ' + err.message);
           //setLoadingSave(false);
         });
@@ -264,7 +275,7 @@ export default function Profile() {
         })
         .catch((e: any) => {
           const err = e as FirebaseError;
-          //alert('File deletion failed: ' + err.message);
+          //showSnackbar('File deletion failed: ' + err.message);
           console.log('File deletion failed: ' + err.message);
           //setLoadingDelete(false);
         });
@@ -318,14 +329,14 @@ export default function Profile() {
     Keyboard.dismiss();
 
     if (!name.trim()) {
-      alert(t('profile.nameError'));
+      showSnackbar(t('profile.nameError'));
       setNameError(true);
       setLoadingSave(false);
       return;
     }
 
     if (email && email.trim() && !email.match(emailRegex)) {
-      alert(t('profile.emailError'));
+      showSnackbar(t('profile.emailError'));
       setEmailError(true);
       setLoadingSave(false);
       return;
@@ -334,13 +345,13 @@ export default function Profile() {
     if (autoNumber) {
       await assignMemberNumber();
     } else if (!memberNumber.trim()) {
-      alert(t('profile.memberNumberError'));
+      showSnackbar(t('profile.memberNumberError'));
       setLoadingSave(false);
       return;
     } else {
       const numberAvailable = await checkNumber();
       if (numberAvailable > 1) {
-        alert(t('profile.memberNumberExists'));
+        showSnackbar(t('profile.memberNumberExists'));
         setLoadingSave(false);
         return;
       }
@@ -368,13 +379,13 @@ export default function Profile() {
           profilePicture: url ? url : profilePicture,
         })
         .then(() => {
-          alert(t('profile.updatedMember'));
+          showSnackbar(t('profile.updatedMember'));
           setEditing(false);
           getMember(profileID);
         });
     } catch (e: any) {
       const err = e as FirebaseError;
-      //alert('Updating member failed: ' + err.message);
+      //showSnackbar('Updating member failed: ' + err.message);
       console.log('Updating member failed: ' + err.message);
       setLoadingSave(false);
     } finally {
@@ -393,11 +404,11 @@ export default function Profile() {
         .doc(profileID)
         .delete()
         .then(() => {
-          alert(t('profile.deletedMember'));
+          showSnackbar(t('profile.deletedMember'));
         });
     } catch (e: any) {
       const err = e as FirebaseError;
-      //alert('Deleting member failed: ' + err.message);
+      //showSnackbar('Deleting member failed: ' + err.message);
       console.log('Deleting member failed: ' + err.message);
       setLoadingDelete(false);
     } finally {
@@ -410,6 +421,11 @@ export default function Profile() {
 
   return (
     <>
+      <SnackbarInfo
+        text={snackbarText}
+        visible={snackbarVisible}
+        onDismiss={onDismissSnackbar}
+      />
       <Portal>
         <Modal
           visible={pictureModal}

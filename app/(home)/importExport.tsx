@@ -7,12 +7,23 @@ import storage from '@react-native-firebase/storage';
 import * as DocumentPicker from 'expo-document-picker';
 import RNFS from 'react-native-fs';
 import { useTranslation } from 'react-i18next';
+import SnackbarInfo from '@/components/SnackbarInfo';
 
 export default function importExport() {
   const { t } = useTranslation();
 
   const [importLoading, setImportLoading] = useState(false);
   const [exportLoading, setExportLoading] = useState(false);
+
+  // All the logic to implement the snackbar
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarText, setSnackbarText] = useState('');
+
+  const showSnackbar = (text: string) => {
+    setSnackbarText(text);
+    setSnackbarVisible(true);
+  };
+  const onDismissSnackbar = () => setSnackbarVisible(false);
 
   const reference = storage().ref('membersData.csv');
 
@@ -130,7 +141,7 @@ export default function importExport() {
 
       return data;
     } catch (e: any) {
-      //alert('Error converting to JSON: ' + e.message);
+      //showSnackbar('Error converting to JSON: ' + e.message);
       console.log('Error converting to JSON: ' + e.message);
       setImportLoading(false);
       return;
@@ -153,7 +164,7 @@ export default function importExport() {
         .join('\n');
       return `${headers}\n${rows}`;
     } catch (e: any) {
-      //alert('Error converting to CSV: ' + e.message);
+      //showSnackbar('Error converting to CSV: ' + e.message);
       console.log('Error converting to CSV: ' + e.message);
       setExportLoading(false);
       return;
@@ -172,11 +183,11 @@ export default function importExport() {
     await task
       .then(() => {
         console.log('Data uploaded to the bucket!');
-        //alert('Data uploaded to the bucket!');
+        //showSnackbar('Data uploaded to the bucket!');
       })
       .catch((e: any) => {
         const err = e as FirebaseError;
-        //alert('File upload failed: ' + err.message);
+        //showSnackbar('File upload failed: ' + err.message);
         console.log('File upload failed: ' + err.message);
         setExportLoading(false);
       });
@@ -192,7 +203,7 @@ export default function importExport() {
         copyToCacheDirectory: false,
       });
     } catch (e: any) {
-      //alert('File not chosen: ' + e.message);
+      //showSnackbar('File not chosen: ' + e.message);
       console.log('File not chosen: ' + e.message);
       setImportLoading(false);
     } finally {
@@ -205,7 +216,7 @@ export default function importExport() {
       const fileContent = await RNFS.readFile(fileUri, 'utf8');
       return fileContent;
     } catch (e: any) {
-      //alert("Couldn't read file: " + e.message);
+      //showSnackbar("Couldn't read file: " + e.message);
       console.log("Couldn't read file: " + e.message);
       setImportLoading(false);
       return null;
@@ -260,7 +271,7 @@ export default function importExport() {
       console.log(grantedRead);
       console.log(grantedWrite);
     } catch (e: any) {
-      //alert('Error with permissions: ' + e.message);
+      //showSnackbar('Error with permissions: ' + e.message);
       console.log('Error with permissions: ' + e.message);
       setImportLoading(false);
     } finally {
@@ -268,7 +279,7 @@ export default function importExport() {
         !(grantedRead === PermissionsAndroid.RESULTS.GRANTED) ||
         !(grantedWrite === PermissionsAndroid.RESULTS.GRANTED)
       ) {
-        alert(t('importExport.storagePermission'));
+        showSnackbar(t('importExport.storagePermission'));
         return false;
       }
       return true;
@@ -334,7 +345,7 @@ export default function importExport() {
       }
     } catch (e: any) {
       const err = e as FirebaseError;
-      //alert('Error importing: ' + err.message);
+      //showSnackbar('Error importing: ' + err.message);
       console.log('Error importing: ' + err.message);
       setImportLoading(false);
       return;
@@ -349,7 +360,7 @@ export default function importExport() {
           ': ' +
           existingMembers.toString();
       }
-      alert(importMsg);
+      showSnackbar(importMsg);
       console.log(importMsg);
       setImportLoading(false);
     }
@@ -414,19 +425,19 @@ export default function importExport() {
 
       await task
         .then(() => {
-          alert(t('importExport.exportSuccess'));
+          showSnackbar(t('importExport.exportSuccess'));
           console.log('Exporting successfull!');
         })
         .catch((e: any) => {
           const err = e as FirebaseError;
-          //alert('Data download failed: ' + err.message);
+          //showSnackbar('Data download failed: ' + err.message);
           console.log('Data download failed: ' + err.message);
           setExportLoading(false);
         });
     } catch (e: any) {
       const err = e as FirebaseError;
       console.log('Exporting members failed: ' + err.message);
-      //alert('Exporting members failed: ' + err.message);
+      //showSnackbar('Exporting members failed: ' + err.message);
       setExportLoading(false);
       return;
     } finally {
@@ -435,32 +446,39 @@ export default function importExport() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.buttonContainer}>
-        <Button
-          style={styles.button}
-          contentStyle={styles.buttonContent}
-          labelStyle={styles.buttonText}
-          icon='database-import'
-          mode='elevated'
-          loading={importLoading}
-          onPress={importMembers}
-        >
-          {t('importExport.importMembers')}
-        </Button>
-        <Button
-          style={styles.button}
-          contentStyle={styles.buttonContent}
-          labelStyle={styles.buttonText}
-          icon='database-export'
-          mode='elevated'
-          loading={exportLoading}
-          onPress={exportMembers}
-        >
-          {t('importExport.exportMembers')}
-        </Button>
+    <>
+      <SnackbarInfo
+        text={snackbarText}
+        visible={snackbarVisible}
+        onDismiss={onDismissSnackbar}
+      />
+      <View style={styles.container}>
+        <View style={styles.buttonContainer}>
+          <Button
+            style={styles.button}
+            contentStyle={styles.buttonContent}
+            labelStyle={styles.buttonText}
+            icon='database-import'
+            mode='elevated'
+            loading={importLoading}
+            onPress={importMembers}
+          >
+            {t('importExport.importMembers')}
+          </Button>
+          <Button
+            style={styles.button}
+            contentStyle={styles.buttonContent}
+            labelStyle={styles.buttonText}
+            icon='database-export'
+            mode='elevated'
+            loading={exportLoading}
+            onPress={exportMembers}
+          >
+            {t('importExport.exportMembers')}
+          </Button>
+        </View>
       </View>
-    </View>
+    </>
   );
 }
 

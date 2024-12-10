@@ -10,7 +10,7 @@ import {
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SystemUI from 'expo-system-ui';
-import { setStatusBarStyle, StatusBar } from 'expo-status-bar';
+import { StatusBar } from 'expo-status-bar';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import '@/locales/i18n';

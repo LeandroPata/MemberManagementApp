@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { Text } from 'react-native';
 import { Portal, Snackbar } from 'react-native-paper';
 
 /* // All the logic to implement the snackbar
@@ -33,17 +33,10 @@ const SnackbarInfo = (props: SnackbarInfoProps) => {
         onIconPress={props.onDismiss}
         duration={5000}
       >
-        {props.text}
+        <Text style={{ fontSize: 15 }}>{props.text}</Text>
       </Snackbar>
     </Portal>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'space-between',
-  },
-});
 
 export default SnackbarInfo;

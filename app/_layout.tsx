@@ -19,21 +19,23 @@ import { EventRegister } from 'react-native-event-listeners';
 export default function RootLayout() {
   const router = useRouter();
   const segments = useSegments();
+  const currentColorScheme = useColorScheme();
 
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
 
   const [colorScheme, setColorScheme] = useState('');
+  //console.log(colorScheme);
 
   if (!colorScheme) {
     AsyncStorage.getItem('colorScheme').then((token) => {
       //console.log('Token: ' + token);
-      setColorScheme(token);
-
-      if (!token) {
-        setColorScheme(useColorScheme());
-        //console.log(colorScheme);
-        AsyncStorage.setItem('colorScheme', colorScheme);
+      if (token) setColorScheme(token);
+      else {
+        setColorScheme(currentColorScheme);
+        AsyncStorage.setItem('colorScheme', currentColorScheme).then((token) =>
+          console.log('Done: ' + token)
+        );
       }
     });
   }

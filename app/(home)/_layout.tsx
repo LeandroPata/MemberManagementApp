@@ -34,7 +34,7 @@ const HomeLayout = () => {
             >
               <Ionicons
                 name='menu'
-                size={32}
+                size={45}
                 color={theme.colors.onBackground}
                 style={{ alignSelf: 'center' }}
               />

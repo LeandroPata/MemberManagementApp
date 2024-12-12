@@ -14,7 +14,7 @@ const resources = {
 
 const initI18n = async () => {
   let savedLanguage = await AsyncStorage.getItem('language');
-  console.log(savedLanguage);
+  //console.log(savedLanguage);
 
   if (!savedLanguage) {
     savedLanguage = Localization.getLocales()[0].languageTag;
@@ -22,7 +22,7 @@ const initI18n = async () => {
   }
 
   i18n.use(initReactI18next).init({
-    debug: true,
+    //debug: true,
     compatibilityJSON: 'v3',
     resources,
     lng: savedLanguage,

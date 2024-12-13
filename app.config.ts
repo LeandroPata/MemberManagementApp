@@ -9,11 +9,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   icon: './assets/images/icon.png',
   scheme: 'myapp',
   userInterfaceStyle: 'automatic',
-  splash: {
-    image: './assets/images/splash.png',
-    resizeMode: 'contain',
-    backgroundColor: '#ffffff',
-  },
+  newArchEnabled: false,
   ios: {
     supportsTablet: true,
     bundleIdentifier: 'com.leandropata.membermanagementapp',
@@ -29,6 +25,19 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     permissions: [
       'android.permission.READ_EXTERNAL_STORAGE',
       'android.permission.WRITE_EXTERNAL_STORAGE',
+      'android.permission.REQUEST_INSTALL_PACKAGES',
+    ],
+    intentFilters: [
+      {
+        action: 'VIEW',
+        data: [
+          {
+            scheme: 'file',
+            mimeType: 'application/vnd.android.package-archive',
+          },
+        ],
+        category: ['BROWSABLE', 'DEFAULT'],
+      },
     ],
     googleServicesFile:
       process.env.GOOGLE_SERVICES_JSON || './google-services.json',
@@ -40,6 +49,15 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   plugins: [
     'expo-router',
+    [
+      'expo-splash-screen',
+      {
+        image: './assets/images/splash.png',
+        imageWidth: 200,
+        resizeMode: 'contain',
+        backgroundColor: '#ffffff',
+      },
+    ],
     [
       'expo-build-properties',
       {

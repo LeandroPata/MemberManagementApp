@@ -24,6 +24,12 @@ import Animated, {
 import { EventRegister } from 'react-native-event-listeners';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18next from 'i18next';
+import DialogConfirmation from './DialogConfirmation';
+import { FirebaseError } from 'firebase/app';
+import storage from '@react-native-firebase/storage';
+import RNFS from 'react-native-fs';
+import * as IntentLaucher from 'expo-intent-launcher';
+import RNFetchBlob from 'rn-fetch-blob';
 
 export default function CustomDrawerContent(props: any) {
   const theme = useTheme();
@@ -32,6 +38,18 @@ export default function CustomDrawerContent(props: any) {
 
   const [expanded, setExpanded] = useState(false);
   const [darkModeSwitch, setDarkModeSwitch] = useState(false);
+
+  let updateName = '';
+
+  // All the logic to implemet DialogConfirmation
+  const [checkUpdateConfirmationVisible, setCheckUpdateConfirmationVisible] =
+    useState(false);
+  const [runUpdateConfirmationVisible, setRunUpdateConfirmationVisible] =
+    useState(false);
+  const onDismissDialogConfirmation = () => {
+    setCheckUpdateConfirmationVisible(false);
+    setRunUpdateConfirmationVisible(false);
+  };
 
   AsyncStorage.getItem('colorScheme').then((token) => {
     token == 'dark' ? setDarkModeSwitch(true) : setDarkModeSwitch(false);
@@ -68,8 +86,102 @@ export default function CustomDrawerContent(props: any) {
     console.log(darkMode);
   };
 
+  const checkUpdates = async () => {
+    setCheckUpdateConfirmationVisible(false);
+
+    const updatesStorageRef = storage().ref('updates');
+    const currentVersion = 0;
+    let updateVersion = currentVersion;
+
+    await updatesStorageRef
+      .listAll()
+      .then((result) => {
+        result.items.forEach((ref) => {
+          if (ref.name.endsWith('.apk')) {
+            const refName = ref.name.split('.');
+            refName.pop();
+            const apkName = refName.join('.').toString();
+            const apkVersion = apkName.match(/V(\d+)/)[1];
+            console.log(apkVersion);
+            if (Number(apkVersion) && Number(apkVersion) > updateVersion) {
+              updateVersion = Number(apkVersion);
+              updateName = ref.name;
+              console.log(updateName);
+            }
+          }
+        });
+      })
+      .catch((e: any) => {
+        const err = e as FirebaseError;
+        console.log('Update checking error: ' + err.message);
+      })
+      .finally(() => {
+        if (updateVersion > currentVersion) {
+          console.log('Do update?');
+
+          setRunUpdateConfirmationVisible(true);
+        } else console.log('No update');
+      });
+  };
+
+  const downloadUpdate = async (updateFileName: string) => {
+    setRunUpdateConfirmationVisible(false);
+
+    console.log('Downloading update: ' + updateFileName);
+
+    const updateStorageRef = storage().ref('updates/' + updateFileName);
+
+    const apkPath = RNFS.DownloadDirectoryPath + '/' + updateFileName;
+
+    const task = updateStorageRef.writeToFile(apkPath);
+
+    task.on('state_changed', (taskSnapshot) => {
+      console.log(
+        `${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`
+      );
+    });
+
+    await task
+      .then(() => {
+        console.log('Update Downloaded!');
+        installUpdate(apkPath);
+      })
+      .catch((e: any) => {
+        const err = e as FirebaseError;
+        console.log('Update download failed: ' + err.message);
+      });
+  };
+
+  const installUpdate = async (apkPath: string) => {
+    console.log('Installing: ' + apkPath);
+    try {
+      await RNFetchBlob.android.actionViewIntent(
+        apkPath,
+        'application/vnd.android.package-archive'
+      );
+    } catch (e: any) {
+      console.log('Installing apk failed: ' + e);
+    } finally {
+      console.log('Finished');
+    }
+  };
+
   return (
     <View style={{ flex: 1 }}>
+      <DialogConfirmation
+        text='Check for updates?'
+        visible={checkUpdateConfirmationVisible}
+        onDismiss={onDismissDialogConfirmation}
+        onConfirmation={checkUpdates}
+      />
+
+      <DialogConfirmation
+        text='There is a new version available, do you want to update?'
+        visible={runUpdateConfirmationVisible}
+        onDismiss={onDismissDialogConfirmation}
+        onConfirmation={() => downloadUpdate(updateName)}
+      />
+
       <DrawerContentScrollView {...props} scrollEnabled={false}>
         <DrawerItemList {...props} />
       </DrawerContentScrollView>
@@ -141,13 +253,21 @@ export default function CustomDrawerContent(props: any) {
 
         <DrawerItem
           labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+          label={'Check Updates'}
+          icon={({ color }) => (
+            <Ionicons name={'cloud-download-outline'} color={color} size={32} />
+          )}
+          inactiveTintColor={theme.colors.onBackground}
+          activeTintColor={theme.colors.primary}
+          inactiveBackgroundColor='transparent'
+          onPress={() => setCheckUpdateConfirmationVisible(true)}
+        />
+
+        <DrawerItem
+          labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
           label={t('drawer.signOut')}
           icon={({ focused, color }) => (
-            <Ionicons
-              name={focused ? 'log-out' : 'log-out-outline'}
-              color={color}
-              size={32}
-            />
+            <Ionicons name={'log-out-outline'} color={color} size={32} />
           )}
           inactiveTintColor={theme.colors.onBackground}
           activeTintColor={theme.colors.primary}

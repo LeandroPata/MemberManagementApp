@@ -29,6 +29,7 @@ import firestore, { Timestamp } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import { useTranslation } from 'react-i18next';
 import SnackbarInfo from '@/components/SnackbarInfo';
+import DialogConfirmation from '@/components/DialogConfirmation';
 
 export default function Profile() {
   const { profileID } = useLocalSearchParams();
@@ -51,7 +52,6 @@ export default function Profile() {
   const [birthDateModal, setBirthDateModal] = useState(false);
   const [endDateModal, setEndDateModal] = useState(false);
   const [pictureModal, setPictureModal] = useState(false);
-  const [confirmDeleteVisible, setConfirmDeleteVisible] = useState(false);
 
   const [name, setName] = useState('');
   const [memberNumber, setMemberNumber] = useState('');
@@ -65,7 +65,7 @@ export default function Profile() {
   const [endDate, setEndDate] = useState(new Date());
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
 
-  // All the logic to implement the snackbar
+  // All the logic to implement SnackbarInfo
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarText, setSnackbarText] = useState('');
 
@@ -74,6 +74,11 @@ export default function Profile() {
     setSnackbarVisible(true);
   };
   const onDismissSnackbar = () => setSnackbarVisible(false);
+
+  // All the logic to implemet DialogConfirmation
+  const [dialogConfirmationVisible, setDialogConfirmationVisible] =
+    useState(false);
+  const onDismissDialogConfirmation = () => setDialogConfirmationVisible(false);
 
   const emailRegex = /.+@.+\..+/g;
   const reference = storage().ref('profilePicture/' + profileID + '.jpg');
@@ -127,7 +132,7 @@ export default function Profile() {
 
         setEditing(false);
         setPictureModal(false);
-        setConfirmDeleteVisible(false);
+        setDialogConfirmationVisible(false);
         setBirthDateModal(false);
         setEndDateModal(false);
 
@@ -416,7 +421,7 @@ export default function Profile() {
       setLoadingDelete(false);
     }
     setLoadingDelete(false);
-    setConfirmDeleteVisible(false);
+    setDialogConfirmationVisible(false);
     router.replace('/(home)/searchMember');
   };
 
@@ -427,6 +432,14 @@ export default function Profile() {
         visible={snackbarVisible}
         onDismiss={onDismissSnackbar}
       />
+
+      <DialogConfirmation
+        text={t('profile.deleteConfirmation')}
+        visible={dialogConfirmationVisible}
+        onDismiss={onDismissDialogConfirmation}
+        onConfirmation={deleteMember}
+      />
+
       <Portal>
         <Modal
           visible={pictureModal}
@@ -461,92 +474,6 @@ export default function Profile() {
           </Button>
         </Modal>
       </Portal>
-
-      <Portal>
-        <Dialog
-          visible={confirmDeleteVisible}
-          onDismiss={() => setConfirmDeleteVisible(false)}
-        >
-          <Dialog.Content>
-            <Text style={{ fontSize: 15 }}>
-              {t('profile.deleteConfirmation')}
-            </Text>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button
-              onPress={() => {
-                deleteMember();
-              }}
-            >
-              {t('profile.yes')}
-            </Button>
-            <Button
-              onPress={() => {
-                setConfirmDeleteVisible(false);
-              }}
-            >
-              {t('profile.no')}
-            </Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
-
-      {/* <Portal>
-        <Modal
-          visible={confirmDeleteModal}
-          onDismiss={() => {
-            setConfirmDeleteModal(false);
-          }}
-          style={styles.modalContainer}
-          contentContainerStyle={[
-            styles.modalContentContainer,
-            { backgroundColor: theme.colors.primaryContainer },
-          ]}
-        >
-          <Text
-            style={[
-              styles.buttonText,
-              {
-                paddingTop: 0,
-                textAlign: 'center',
-                color: theme.colors.onPrimaryContainer,
-              },
-            ]}
-          >
-            {t('profile.deleteConfirmation')}
-          </Text>
-
-          <View
-            style={[
-              styles.buttonContainer,
-              { flexDirection: 'row', justifyContent: 'space-between' },
-            ]}
-          >
-            <Button
-              style={[styles.button, { width: '45%', marginHorizontal: 8 }]}
-              contentStyle={{ minHeight: 50 }}
-              labelStyle={styles.buttonText}
-              mode='elevated'
-              onPress={() => {
-                deleteMember();
-              }}
-            >
-              {t('profile.yes')}
-            </Button>
-            <Button
-              style={[styles.button, { width: '45%', marginHorizontal: 8 }]}
-              contentStyle={{ minHeight: 50 }}
-              labelStyle={styles.buttonText}
-              mode='elevated'
-              onPress={() => {
-                setConfirmDeleteModal(false);
-              }}
-            >
-              {t('profile.no')}
-            </Button>
-          </View>
-        </Modal>
-      </Portal> */}
 
       <View style={styles.container}>
         {loading || !profile ? (
@@ -884,7 +811,7 @@ export default function Profile() {
                     mode='elevated'
                     loading={loadingDelete}
                     onPress={() => {
-                      setConfirmDeleteVisible(true);
+                      setDialogConfirmationVisible(true);
                     }}
                   >
                     {t('profile.deleteMember')}

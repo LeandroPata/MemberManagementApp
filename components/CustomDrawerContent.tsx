@@ -169,14 +169,14 @@ export default function CustomDrawerContent(props: any) {
   return (
     <View style={{ flex: 1 }}>
       <DialogConfirmation
-        text='Check for updates?'
+        text={t('drawer.checkUpdate')}
         visible={checkUpdateConfirmationVisible}
         onDismiss={onDismissDialogConfirmation}
         onConfirmation={checkUpdates}
       />
 
       <DialogConfirmation
-        text='There is a new version available, do you want to update?'
+        text={t('drawer.runUpdate')}
         visible={runUpdateConfirmationVisible}
         onDismiss={onDismissDialogConfirmation}
         onConfirmation={() => downloadUpdate(updateName)}

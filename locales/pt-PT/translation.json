@@ -22,6 +22,8 @@
     "importExport": "Importar/Exportar",
     "darkMode": "Modo Escuro",
     "language": "Idioma",
+    "checkUpdate": "Verificar se existem atualizações?",
+    "runUpdate": "Existe uma nova atualização, atualizar?",
     "signOut": "Sair da Conta"
   },
   "home": {

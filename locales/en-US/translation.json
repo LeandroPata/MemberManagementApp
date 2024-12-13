@@ -22,6 +22,8 @@
     "importExport": "Import/Export",
     "darkMode": "Dark Mode",
     "language": "Language",
+    "checkUpdate": "Check for updates?",
+    "runUpdate": "There is a new version available, do you want to update?",
     "signOut": "Sign Out"
   },
   "home": {

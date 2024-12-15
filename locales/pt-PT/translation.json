@@ -22,9 +22,12 @@
     "importExport": "Importar/Exportar",
     "darkMode": "Modo Escuro",
     "language": "Idioma",
-    "checkUpdate": "Verificar se existem atualizações?",
-    "runUpdate": "Existe uma nova atualização, atualizar?",
-    "signOut": "Sair da Conta"
+    "checkUpdate": "Verificar atualizações",
+    "signOut": "Sair da Conta",
+    "checkUpdateDialog": "Verificar se existem atualizações?",
+    "runUpdateDialog": "Existe uma nova atualização, atualizar?",
+    "downloadingDialog": "A transferir...",
+    "signOutDialog": "Sair da conta?"
   },
   "home": {
     "addMember": "Adicionar Membro",

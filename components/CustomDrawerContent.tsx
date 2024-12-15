@@ -188,21 +188,21 @@ export default function CustomDrawerContent(props: any) {
   return (
     <View style={{ flex: 1 }}>
       <DialogConfirmation
-        text={t('drawer.checkUpdate')}
+        text={t('drawer.checkUpdateDialog')}
         visible={checkUpdateConfirmationVisible}
         onDismiss={onDismissDialogConfirmation}
         onConfirmation={checkUpdates}
       />
 
       <DialogConfirmation
-        text={t('drawer.runUpdate')}
+        text={t('drawer.runUpdateDialog')}
         visible={runUpdateConfirmationVisible}
         onDismiss={onDismissDialogConfirmation}
         onConfirmation={() => downloadUpdate(updateName)}
       />
 
       <DialogConfirmation
-        text={'Sign Out?'}
+        text={t('drawer.signOutDialog')}
         visible={signOutConfirmationVisible}
         onDismiss={onDismissDialogConfirmation}
         onConfirmation={() => {
@@ -212,10 +212,10 @@ export default function CustomDrawerContent(props: any) {
       />
 
       <Portal>
-        <Dialog
-          visible={updateDownloadProgressVisible}
-          //onDismiss={() => setUpdateDownloadProgressVisible(false)}
-        >
+        <Dialog visible={updateDownloadProgressVisible}>
+          <Dialog.Title style={{ textAlign: 'center' }}>
+            {t('drawer.downloadingDialog')}
+          </Dialog.Title>
           <Dialog.Content>
             <ProgressBar
               progress={updateDownloadProgress}
@@ -296,7 +296,7 @@ export default function CustomDrawerContent(props: any) {
 
         <DrawerItem
           labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
-          label={'Check Updates'}
+          label={t('drawer.checkUpdate')}
           icon={({ color }) => (
             <Ionicons name={'cloud-download-outline'} color={color} size={32} />
           )}

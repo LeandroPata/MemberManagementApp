@@ -11,7 +11,14 @@ import {
   DrawerItem,
   DrawerItemList,
 } from '@react-navigation/drawer';
-import { List, Switch, useTheme } from 'react-native-paper';
+import {
+  Dialog,
+  List,
+  Portal,
+  ProgressBar,
+  Switch,
+  useTheme,
+} from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import auth from '@react-native-firebase/auth';
@@ -40,15 +47,21 @@ export default function CustomDrawerContent(props: any) {
   const [darkModeSwitch, setDarkModeSwitch] = useState(false);
 
   const [updateName, setUpdateName] = useState('');
+  const [updateDownloadProgressVisible, setUpdateDownloadProgressVisible] =
+    useState(false);
+  const [updateDownloadProgress, setUpdateDownloadProgress] = useState(0);
 
   // All the logic to implemet DialogConfirmation
   const [checkUpdateConfirmationVisible, setCheckUpdateConfirmationVisible] =
     useState(false);
   const [runUpdateConfirmationVisible, setRunUpdateConfirmationVisible] =
     useState(false);
+  const [signOutConfirmationVisible, setSignOutConfirmationVisible] =
+    useState(false);
   const onDismissDialogConfirmation = () => {
     setCheckUpdateConfirmationVisible(false);
     setRunUpdateConfirmationVisible(false);
+    setSignOutConfirmationVisible(false);
   };
 
   AsyncStorage.getItem('colorScheme').then((token) => {
@@ -88,6 +101,7 @@ export default function CustomDrawerContent(props: any) {
 
   const checkUpdates = async () => {
     setCheckUpdateConfirmationVisible(false);
+    setUpdateDownloadProgress(0);
 
     const updatesStorageRef = storage().ref('updates');
     const currentVersion = 0;
@@ -134,25 +148,30 @@ export default function CustomDrawerContent(props: any) {
     const apkPath = RNFS.DownloadDirectoryPath + '/' + updateFileName;
 
     const task = updateStorageRef.writeToFile(apkPath);
+    setUpdateDownloadProgressVisible(true);
 
     task.on('state_changed', (taskSnapshot) => {
-      console.log(
-        `${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`
-      );
+      const downloadProgress =
+        (taskSnapshot.bytesTransferred * 100) / taskSnapshot.totalBytes / 100;
+      setUpdateDownloadProgress(Number(downloadProgress.toFixed(2)));
+      console.log(Number(downloadProgress.toFixed(2)));
     });
 
     await task
       .then(() => {
+        setUpdateDownloadProgressVisible(false);
         console.log('Update Downloaded!');
         installUpdate(apkPath);
       })
       .catch((e: any) => {
         const err = e as FirebaseError;
         console.log('Update download failed: ' + err.message);
+        setUpdateDownloadProgressVisible(false);
       });
   };
 
   const installUpdate = async (apkPath: string) => {
+    setUpdateDownloadProgressVisible(false);
     console.log('Installing: ' + apkPath);
     try {
       await RNFetchBlob.android.actionViewIntent(
@@ -181,6 +200,30 @@ export default function CustomDrawerContent(props: any) {
         onDismiss={onDismissDialogConfirmation}
         onConfirmation={() => downloadUpdate(updateName)}
       />
+
+      <DialogConfirmation
+        text={'Sign Out?'}
+        visible={signOutConfirmationVisible}
+        onDismiss={onDismissDialogConfirmation}
+        onConfirmation={() => {
+          setSignOutConfirmationVisible(false);
+          auth().signOut();
+        }}
+      />
+
+      <Portal>
+        <Dialog
+          visible={updateDownloadProgressVisible}
+          //onDismiss={() => setUpdateDownloadProgressVisible(false)}
+        >
+          <Dialog.Content>
+            <ProgressBar
+              progress={updateDownloadProgress}
+              color={theme.colors.primary}
+            />
+          </Dialog.Content>
+        </Dialog>
+      </Portal>
 
       <DrawerContentScrollView {...props} scrollEnabled={false}>
         <DrawerItemList {...props} />
@@ -272,7 +315,7 @@ export default function CustomDrawerContent(props: any) {
           inactiveTintColor={theme.colors.onBackground}
           activeTintColor={theme.colors.primary}
           inactiveBackgroundColor='transparent'
-          onPress={() => auth().signOut()}
+          onPress={() => setSignOutConfirmationVisible(true)}
         />
       </View>
     </View>

@@ -39,7 +39,7 @@ export default function CustomDrawerContent(props: any) {
   const [expanded, setExpanded] = useState(false);
   const [darkModeSwitch, setDarkModeSwitch] = useState(false);
 
-  let updateName = '';
+  const [updateName, setUpdateName] = useState('');
 
   // All the logic to implemet DialogConfirmation
   const [checkUpdateConfirmationVisible, setCheckUpdateConfirmationVisible] =
@@ -102,10 +102,10 @@ export default function CustomDrawerContent(props: any) {
             refName.pop();
             const apkName = refName.join('.').toString();
             const apkVersion = apkName.match(/V(\d+)/)[1];
-            console.log(apkVersion);
+            //console.log(apkVersion);
             if (Number(apkVersion) && Number(apkVersion) > updateVersion) {
               updateVersion = Number(apkVersion);
-              updateName = ref.name;
+              setUpdateName(ref.name);
               console.log(updateName);
             }
           }

@@ -14,8 +14,23 @@
       },
       "distribution": "internal"
     },
-    "preview2": {
-      "distribution": "internal"
+    "arm64": {
+      "android": {
+        "buildType": "apk",
+        "architecture": "arm64"
+      }
+    },
+    "armv7": {
+      "android": {
+        "buildType": "apk",
+        "architecture": "armv7"
+      }
+    },
+    "x86": {
+      "android": {
+        "buildType": "apk",
+        "architecture": "x86"
+      }
     },
     "production": {
       "autoIncrement": true

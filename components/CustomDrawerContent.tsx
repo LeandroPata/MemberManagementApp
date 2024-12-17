@@ -35,8 +35,8 @@ import DialogConfirmation from './DialogConfirmation';
 import { FirebaseError } from 'firebase/app';
 import storage from '@react-native-firebase/storage';
 import RNFS from 'react-native-fs';
-import * as IntentLaucher from 'expo-intent-launcher';
 import RNFetchBlob from 'rn-fetch-blob';
+import Constants from 'expo-constants';
 
 export default function CustomDrawerContent(props: any) {
   const theme = useTheme();
@@ -46,10 +46,10 @@ export default function CustomDrawerContent(props: any) {
   const [expanded, setExpanded] = useState(false);
   const [darkModeSwitch, setDarkModeSwitch] = useState(false);
 
-  const [updateName, setUpdateName] = useState('');
+  const [updateVersion, setUpdateVersion] = useState('');
   const [updateDownloadProgressVisible, setUpdateDownloadProgressVisible] =
     useState(false);
-  const [updateDownloadProgress, setUpdateDownloadProgress] = useState(0);
+  const [updateDownloadProgress, setUpdateDownloadProgress] = useState(1);
 
   // All the logic to implemet DialogConfirmation
   const [checkUpdateConfirmationVisible, setCheckUpdateConfirmationVisible] =
@@ -99,29 +99,46 @@ export default function CustomDrawerContent(props: any) {
     console.log(darkMode);
   };
 
+  const compareVersions = (newVersion: string) => {
+    const currentVersionNumber = Constants.expoConfig?.version
+      ?.split('.')
+      .map(Number) || [0, 0, 0];
+    const newVersionNumber = newVersion.split('.').map(Number);
+    //console.log('Initial: ' + currentVersionNumber + ' : ' + newVersionNumber);
+
+    for (
+      let i = 0;
+      i < Math.max(currentVersionNumber.length, newVersionNumber.length);
+      i++
+    ) {
+      //console.log(currentVersionNumber[i] + ' : ' + newVersionNumber[i]);
+      if (currentVersionNumber[i] < newVersionNumber[i]) {
+        //console.log('Newer Version');
+        return true;
+      } else if (currentVersionNumber[i] > newVersionNumber[i]) {
+        //console.log('Older Version');
+        return false;
+      }
+    }
+    //console.log('Same Version');
+    return false;
+  };
+
   const checkUpdates = async () => {
     setCheckUpdateConfirmationVisible(false);
     setUpdateDownloadProgress(0);
 
     const updatesStorageRef = storage().ref('updates');
-    const currentVersion = 0;
-    let updateVersion = currentVersion;
+    let update = false;
 
     await updatesStorageRef
       .listAll()
       .then((result) => {
-        result.items.forEach((ref) => {
-          if (ref.name.endsWith('.apk')) {
-            const refName = ref.name.split('.');
-            refName.pop();
-            const apkName = refName.join('.').toString();
-            const apkVersion = apkName.match(/V(\d+)/)[1];
-            //console.log(apkVersion);
-            if (Number(apkVersion) && Number(apkVersion) > updateVersion) {
-              updateVersion = Number(apkVersion);
-              setUpdateName(ref.name);
-              console.log(updateName);
-            }
+        result.prefixes.forEach((ref) => {
+          if (compareVersions(ref.name)) {
+            update = true;
+            setUpdateVersion(ref.name);
+            console.log(ref.name);
           }
         });
       })
@@ -130,7 +147,7 @@ export default function CustomDrawerContent(props: any) {
         console.log('Update checking error: ' + err.message);
       })
       .finally(() => {
-        if (updateVersion > currentVersion) {
+        if (update) {
           console.log('Do update?');
 
           setRunUpdateConfirmationVisible(true);
@@ -138,14 +155,31 @@ export default function CustomDrawerContent(props: any) {
       });
   };
 
-  const downloadUpdate = async (updateFileName: string) => {
+  const downloadUpdate = async (updateFolderName: string) => {
     setRunUpdateConfirmationVisible(false);
 
-    console.log('Downloading update: ' + updateFileName);
+    console.log('Downloading update: ' + updateFolderName);
 
-    const updateStorageRef = storage().ref('updates/' + updateFileName);
+    let updateFileName = '';
 
-    const apkPath = RNFS.DownloadDirectoryPath + '/' + updateFileName;
+    await storage()
+      .ref('updates/' + updateFolderName)
+      .listAll()
+      .then((result) => {
+        result.items.forEach((ref) => {
+          if (ref.name.endsWith('.apk')) {
+            updateFileName = ref.name;
+          }
+        });
+      });
+
+    const updateStorageRef = storage().ref(
+      'updates/' + updateFolderName + '/' + updateFileName
+    );
+
+    console.log('updates/' + updateFolderName + '/' + updateFileName);
+
+    const apkPath = RNFS.DownloadDirectoryPath + '/' + updateFolderName;
 
     const task = updateStorageRef.writeToFile(apkPath);
     setUpdateDownloadProgressVisible(true);
@@ -198,7 +232,7 @@ export default function CustomDrawerContent(props: any) {
         text={t('drawer.runUpdateDialog')}
         visible={runUpdateConfirmationVisible}
         onDismiss={onDismissDialogConfirmation}
-        onConfirmation={() => downloadUpdate(updateName)}
+        onConfirmation={() => downloadUpdate(updateVersion)}
       />
 
       <DialogConfirmation

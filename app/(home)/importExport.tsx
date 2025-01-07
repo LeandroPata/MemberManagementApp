@@ -56,14 +56,14 @@ export default function importExport() {
 
 		return data.map((doc) => {
 			const orderedDoc = {};
-			orderedKeys.forEach((key) => {
+			for (const key of orderedKeys) {
 				orderedDoc[key] = doc[key] || '';
-			});
-			Object.keys(doc).forEach((key) => {
-				if (!orderedKeys.includes(key) && key != 'profilePicture') {
+			}
+			for (const key of Object.keys(doc)) {
+				if (!orderedKeys.includes(key) && key !== 'profilePicture') {
 					orderedDoc[key] = doc[key];
 				}
-			});
+			}
 			//console.log(orderedDoc);
 			return orderedDoc;
 		});
@@ -72,41 +72,40 @@ export default function importExport() {
 	// formats data in order to be properly imported to the firestore database
 	// (date types, strings to number type)
 	const formatDataToImport = (data) => {
-		data.forEach((doc) => {
-			Object.keys(doc).forEach((key) => {
+		for (const doc of data) {
+			for (const key of Object.keys(doc)) {
 				const regex = /^([0-2][0-9]|3[0-1])\/(0[1-9]|1[0-2])\/\d{4}$/;
 				if (regex.test(doc[key])) {
 					//console.log(key);
 					//console.log(doc[key]);
 					doc[key] = convertToTimestamp(doc[key]);
 					//console.log(doc[key]);
-				} else if (key == 'memberNumber') {
+				} else if (key === 'memberNumber') {
 					//console.log(key);
 					//console.log(typeof doc[key]);
 					doc[key] = Number(doc[key]);
 					//console.log(typeof doc[key]);
 				}
-			});
-		});
+			}
+		}
 	};
 
 	// formats data in order to be more user friendly when exported
 	// (readable date types)
 	const formatDataToExport = (data) => {
-		data.forEach((doc) => {
-			Object.keys(doc).forEach((key) => {
+		for (const doc of data) {
+			for (const key of Object.keys(doc)) {
 				if (doc[key] instanceof Timestamp) {
 					//console.log(key);
 					//console.log(doc[key]);
 					doc[key] = new Date(doc[key].toDate()).toLocaleDateString('pt-pt');
 					//console.log(doc[key]);
 				}
-			});
-		});
+			}
+		}
 	};
 
 	// splits a row from a csv file into their separate values
-
 	const splitCSVRow = (row) => {
 		// regex identifies if expression is enclosed by double quotes (".*?") which = value, or
 		// if expression is unquoted and delimited by commas but has spaces ([^",]+(?=\s*,|$)) which = value, or
@@ -165,7 +164,7 @@ export default function importExport() {
 			return `${headers}\n${rows}`;
 		} catch (e: any) {
 			//showSnackbar('Error converting to CSV: ' + e.message);
-			console.log('Error converting to CSV: ' + e.message);
+			console.log(`Error converting to CSV: ${e.message}`);
 			setExportLoading(false);
 			return;
 		}
@@ -188,26 +187,26 @@ export default function importExport() {
 			.catch((e: any) => {
 				const err = e as FirebaseError;
 				//showSnackbar('File upload failed: ' + err.message);
-				console.log('File upload failed: ' + err.message);
+				console.log(`File upload failed: ${err.message}`);
 				setExportLoading(false);
 			});
 	};
 
 	const pickFile = async () => {
-		let doc = null;
 		//console.log(Platform.OS);
 		try {
-			doc = await DocumentPicker.getDocumentAsync({
+			const doc = await DocumentPicker.getDocumentAsync({
 				type:
-					Platform.OS == 'android' ? 'text/comma-separated-values' : 'text/csv',
+					Platform.OS === 'android'
+						? 'text/comma-separated-values'
+						: 'text/csv',
 				copyToCacheDirectory: false,
 			});
+			return doc;
 		} catch (e: any) {
 			//showSnackbar('File not chosen: ' + e.message);
-			console.log('File not chosen: ' + e.message);
+			console.log(`File not chosen: ${e.message}`);
 			setImportLoading(false);
-		} finally {
-			return doc;
 		}
 	};
 
@@ -321,7 +320,7 @@ export default function importExport() {
 		const existingMembers = [];
 
 		try {
-			for (let member of membersData) {
+			for (const member of membersData) {
 				const check = await checkMember(member);
 				if (!check) {
 					const memberRef = firestore().collection('members').doc();
@@ -335,7 +334,7 @@ export default function importExport() {
             .getDownloadURL();
           console.log(url); */
 
-					member['profilePicture'] =
+					member.profilePicture =
 						process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL;
 
 					batch.set(memberRef, member);
@@ -346,19 +345,18 @@ export default function importExport() {
 		} catch (e: any) {
 			const err = e as FirebaseError;
 			//showSnackbar('Error importing: ' + err.message);
-			console.log('Error importing: ' + err.message);
+			console.log(`Error importing: ${err.message}`);
 			setImportLoading(false);
 			return;
 		} finally {
 			await batch.commit();
 			console.log(existingMembers);
+
 			let importMsg = t('importExport.importSuccess');
 			if (existingMembers.length) {
-				importMsg +=
-					'\n' +
-					t('importExport.importExistingMembers') +
-					': ' +
-					existingMembers.toString();
+				importMsg += `\n${t(
+					'importExport.importExistingMembers'
+				)}: ${existingMembers.toString()}`;
 			}
 			showSnackbar(importMsg);
 			console.log(importMsg);
@@ -490,13 +488,6 @@ const styles = StyleSheet.create({
 	buttonContainer: {
 		marginHorizontal: 20,
 		alignItems: 'center',
-	},
-	input: {
-		marginVertical: 4,
-		height: 50,
-		borderWidth: 1,
-		borderRadius: 1,
-		padding: 5,
 	},
 	button: {
 		marginVertical: 8,

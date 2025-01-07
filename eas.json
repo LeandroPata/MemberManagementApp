@@ -1,42 +1,29 @@
 {
-  "cli": {
-    "version": ">= 12.6.0",
-    "appVersionSource": "remote"
-  },
-  "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal"
-    },
-    "preview": {
-      "android": {
-        "buildType": "apk"
-      },
-      "distribution": "internal"
-    },
-    "arm64": {
-      "android": {
-        "buildType": "apk",
-        "architecture": "arm64"
-      }
-    },
-    "armv7": {
-      "android": {
-        "buildType": "apk",
-        "architecture": "armv7"
-      }
-    },
-    "x86": {
-      "android": {
-        "buildType": "apk",
-        "architecture": "x86"
-      }
-    },
-    "production": {
-      "autoIncrement": true
-    }
-  },
-  "submit": {
-    "production": {}
-  }
+	"cli": {
+		"version": ">= 12.6.0",
+		"appVersionSource": "remote"
+	},
+	"build": {
+		"development": {
+			"developmentClient": true,
+			"distribution": "internal"
+		},
+		"preview": {
+			"android": {
+				"buildType": "apk",
+				"env": {
+					"EAS_BUILD_ARCHITECTURES": "arm64-v8a, armeabi-v7a, x86_64, x86"
+				}
+			},
+			"distribution": "internal"
+		},
+		"production": {
+			"android": {
+				"buildType": "app-bundle"
+			}
+		}
+	},
+	"submit": {
+		"production": {}
+	}
 }

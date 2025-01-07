@@ -31,11 +31,12 @@ import Animated, {
 import { EventRegister } from 'react-native-event-listeners';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18next from 'i18next';
-import DialogConfirmation from './DialogConfirmation';
 import { FirebaseError } from 'firebase/app';
 import storage from '@react-native-firebase/storage';
 import RNFetchBlob from 'rn-fetch-blob';
 import Constants from 'expo-constants';
+import SnackbarInfo from './SnackbarInfo';
+import DialogConfirmation from './DialogConfirmation';
 
 export default function CustomDrawerContent(props: any) {
 	const theme = useTheme();
@@ -49,6 +50,16 @@ export default function CustomDrawerContent(props: any) {
 	const [updateDownloadProgressVisible, setUpdateDownloadProgressVisible] =
 		useState(false);
 	const [updateDownloadProgress, setUpdateDownloadProgress] = useState(1);
+
+	// All the logic to implement the snackbar
+	const [snackbarVisible, setSnackbarVisible] = useState(false);
+	const [snackbarText, setSnackbarText] = useState('');
+
+	const showSnackbar = (text: string) => {
+		setSnackbarText(text);
+		setSnackbarVisible(true);
+	};
+	const onDismissSnackbar = () => setSnackbarVisible(false);
 
 	// All the logic to implemet DialogConfirmation
 	const [checkUpdateConfirmationVisible, setCheckUpdateConfirmationVisible] =
@@ -152,6 +163,7 @@ export default function CustomDrawerContent(props: any) {
 					setRunUpdateConfirmationVisible(true);
 				} else {
 					console.log('No update');
+					showSnackbar(t('drawer.noUpdate'));
 				}
 			});
 	};
@@ -221,172 +233,179 @@ export default function CustomDrawerContent(props: any) {
 	};
 
 	return (
-		<View style={{ flex: 1 }}>
-			<DialogConfirmation
-				text={t('drawer.checkUpdateDialog')}
-				visible={checkUpdateConfirmationVisible}
-				onDismiss={onDismissDialogConfirmation}
-				onConfirmation={checkUpdates}
+		<>
+			<SnackbarInfo
+				text={snackbarText}
+				visible={snackbarVisible}
+				onDismiss={onDismissSnackbar}
 			/>
+			<View style={{ flex: 1 }}>
+				<DialogConfirmation
+					text={t('drawer.checkUpdateDialog')}
+					visible={checkUpdateConfirmationVisible}
+					onDismiss={onDismissDialogConfirmation}
+					onConfirmation={checkUpdates}
+				/>
 
-			<DialogConfirmation
-				text={t('drawer.runUpdateDialog')}
-				visible={runUpdateConfirmationVisible}
-				onDismiss={onDismissDialogConfirmation}
-				onConfirmation={() => downloadUpdate(updateVersion)}
-			/>
+				<DialogConfirmation
+					text={t('drawer.runUpdateDialog')}
+					visible={runUpdateConfirmationVisible}
+					onDismiss={onDismissDialogConfirmation}
+					onConfirmation={() => downloadUpdate(updateVersion)}
+				/>
 
-			<DialogConfirmation
-				text={t('drawer.signOutDialog')}
-				visible={signOutConfirmationVisible}
-				onDismiss={onDismissDialogConfirmation}
-				onConfirmation={() => {
-					setSignOutConfirmationVisible(false);
-					auth().signOut();
-				}}
-			/>
-
-			<Portal>
-				<Dialog visible={updateDownloadProgressVisible}>
-					<Dialog.Title style={{ textAlign: 'center' }}>
-						{t('drawer.downloadingDialog')}
-					</Dialog.Title>
-					<Dialog.Content>
-						<ProgressBar
-							progress={updateDownloadProgress}
-							color={theme.colors.primary}
-						/>
-					</Dialog.Content>
-				</Dialog>
-			</Portal>
-
-			<DrawerContentScrollView
-				{...props}
-				scrollEnabled={false}
-			>
-				<DrawerItemList {...props} />
-			</DrawerContentScrollView>
-
-			<View style={{ paddingBottom: 20 + insets.bottom }}>
-				<View
-					style={{
-						flexDirection: 'row',
-						justifyContent: 'space-between',
-						width: '95%',
+				<DialogConfirmation
+					text={t('drawer.signOutDialog')}
+					visible={signOutConfirmationVisible}
+					onDismiss={onDismissDialogConfirmation}
+					onConfirmation={() => {
+						setSignOutConfirmationVisible(false);
+						auth().signOut();
 					}}
+				/>
+
+				<Portal>
+					<Dialog visible={updateDownloadProgressVisible}>
+						<Dialog.Title style={{ textAlign: 'center' }}>
+							{t('drawer.downloadingDialog')}
+						</Dialog.Title>
+						<Dialog.Content>
+							<ProgressBar
+								progress={updateDownloadProgress}
+								color={theme.colors.primary}
+							/>
+						</Dialog.Content>
+					</Dialog>
+				</Portal>
+
+				<DrawerContentScrollView
+					{...props}
+					scrollEnabled={false}
 				>
-					<List.Item
-						title={t('drawer.darkMode')}
-						titleStyle={{ fontSize: 15, fontWeight: 'bold' }}
-						left={(props) => (
-							<Ionicons
-								{...props}
-								name='moon-sharp'
-								size={25}
-							/>
-						)}
-					/>
-					<Switch
-						value={darkModeSwitch}
-						onValueChange={changeColorScheme}
-					/>
-				</View>
-				<TouchableOpacity
-					style={{ marginLeft: -4 }}
-					onPress={toggleAccordion}
-				>
-					<List.Item
-						title={t('drawer.language')}
-						titleStyle={{ fontSize: 15, fontWeight: 'bold' }}
-						left={(props) => (
-							<Ionicons
-								{...props}
-								name='language-sharp'
-								size={32}
-							/>
-						)}
-						right={(props) => (
-							<Ionicons
-								{...props}
-								name={expanded ? 'arrow-up' : 'arrow-down'}
-								size={25}
-							/>
-						)}
-					/>
-				</TouchableOpacity>
-				<Animated.View style={[styles.content, animatedStyle]}>
+					<DrawerItemList {...props} />
+				</DrawerContentScrollView>
+
+				<View style={{ paddingBottom: 20 + insets.bottom }}>
 					<View
 						style={{
-							width: '80%',
-							justifyContent: 'center',
-
-							alignSelf: 'center',
+							flexDirection: 'row',
+							justifyContent: 'space-between',
+							width: '95%',
 						}}
 					>
 						<List.Item
-							title='English'
+							title={t('drawer.darkMode')}
+							titleStyle={{ fontSize: 15, fontWeight: 'bold' }}
 							left={(props) => (
 								<Ionicons
 									{...props}
-									name='language-sharp'
+									name='moon-sharp'
 									size={25}
 								/>
 							)}
-							onPress={() => {
-								i18next.changeLanguage('en-US');
-								AsyncStorage.setItem('language', 'en-US');
-							}}
 						/>
-						<List.Item
-							title='Português'
-							left={(props) => (
-								<Ionicons
-									{...props}
-									name='language-sharp'
-									size={25}
-								/>
-							)}
-							onPress={() => {
-								i18next.changeLanguage('pt-PT');
-								AsyncStorage.setItem('language', 'pt-PT');
-							}}
+						<Switch
+							value={darkModeSwitch}
+							onValueChange={changeColorScheme}
 						/>
 					</View>
-				</Animated.View>
-
-				<DrawerItem
-					labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
-					label={t('drawer.checkUpdate')}
-					icon={({ color }) => (
-						<Ionicons
-							name={'cloud-download-outline'}
-							color={color}
-							size={32}
+					<TouchableOpacity
+						style={{ marginLeft: -4 }}
+						onPress={toggleAccordion}
+					>
+						<List.Item
+							title={t('drawer.language')}
+							titleStyle={{ fontSize: 15, fontWeight: 'bold' }}
+							left={(props) => (
+								<Ionicons
+									{...props}
+									name='language-sharp'
+									size={32}
+								/>
+							)}
+							right={(props) => (
+								<Ionicons
+									{...props}
+									name={expanded ? 'arrow-up' : 'arrow-down'}
+									size={25}
+								/>
+							)}
 						/>
-					)}
-					inactiveTintColor={theme.colors.onBackground}
-					activeTintColor={theme.colors.primary}
-					inactiveBackgroundColor='transparent'
-					onPress={() => setCheckUpdateConfirmationVisible(true)}
-				/>
+					</TouchableOpacity>
+					<Animated.View style={[styles.content, animatedStyle]}>
+						<View
+							style={{
+								width: '80%',
+								justifyContent: 'center',
 
-				<DrawerItem
-					labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
-					label={t('drawer.signOut')}
-					icon={({ focused, color }) => (
-						<Ionicons
-							name={'log-out-outline'}
-							color={color}
-							size={32}
-						/>
-					)}
-					inactiveTintColor={theme.colors.onBackground}
-					activeTintColor={theme.colors.primary}
-					inactiveBackgroundColor='transparent'
-					onPress={() => setSignOutConfirmationVisible(true)}
-				/>
+								alignSelf: 'center',
+							}}
+						>
+							<List.Item
+								title='English'
+								left={(props) => (
+									<Ionicons
+										{...props}
+										name='language-sharp'
+										size={25}
+									/>
+								)}
+								onPress={() => {
+									i18next.changeLanguage('en-US');
+									AsyncStorage.setItem('language', 'en-US');
+								}}
+							/>
+							<List.Item
+								title='Português'
+								left={(props) => (
+									<Ionicons
+										{...props}
+										name='language-sharp'
+										size={25}
+									/>
+								)}
+								onPress={() => {
+									i18next.changeLanguage('pt-PT');
+									AsyncStorage.setItem('language', 'pt-PT');
+								}}
+							/>
+						</View>
+					</Animated.View>
+
+					<DrawerItem
+						labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+						label={t('drawer.checkUpdate')}
+						icon={({ color }) => (
+							<Ionicons
+								name={'cloud-download-outline'}
+								color={color}
+								size={32}
+							/>
+						)}
+						inactiveTintColor={theme.colors.onBackground}
+						activeTintColor={theme.colors.primary}
+						inactiveBackgroundColor='transparent'
+						onPress={() => setCheckUpdateConfirmationVisible(true)}
+					/>
+
+					<DrawerItem
+						labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+						label={t('drawer.signOut')}
+						icon={({ focused, color }) => (
+							<Ionicons
+								name={'log-out-outline'}
+								color={color}
+								size={32}
+							/>
+						)}
+						inactiveTintColor={theme.colors.onBackground}
+						activeTintColor={theme.colors.primary}
+						inactiveBackgroundColor='transparent'
+						onPress={() => setSignOutConfirmationVisible(true)}
+					/>
+				</View>
 			</View>
-		</View>
+		</>
 	);
 }
 

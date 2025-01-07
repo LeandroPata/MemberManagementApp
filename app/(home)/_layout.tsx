@@ -8,113 +8,113 @@ import CustomDrawerContent from '@/components/CustomDrawerContent';
 import { useTranslation } from 'react-i18next';
 
 const HomeLayout = () => {
-  const theme = useTheme();
-  const insets = useSafeAreaInsets();
-  const { t } = useTranslation();
+	const theme = useTheme();
+	const insets = useSafeAreaInsets();
+	const { t } = useTranslation();
 
-  return (
-    <Drawer
-      drawerContent={(props) => <CustomDrawerContent {...props} />}
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: theme.colors.background,
-        },
-        headerTitleStyle: { color: theme.colors.onBackground },
-        headerShadowVisible: false,
-        header: ({ navigation }) => (
-          <View
-            style={{
-              paddingTop: insets.top,
-              paddingHorizontal: 5,
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => navigation.toggleDrawer()}
-              style={{ maxWidth: 36 }}
-            >
-              <Ionicons
-                name='menu'
-                size={45}
-                color={theme.colors.onBackground}
-                style={{ alignSelf: 'center' }}
-              />
-            </TouchableOpacity>
-          </View>
-        ),
-        sceneStyle: {
-          backgroundColor: theme.colors.background,
-        },
-        drawerStyle: { backgroundColor: theme.colors.background },
-        drawerLabelStyle: { fontSize: 15, fontWeight: 'bold' },
-        drawerActiveTintColor: theme.colors.primary,
-        drawerInactiveTintColor: theme.colors.onBackground,
-        drawerInactiveBackgroundColor: 'transparent',
-      }}
-    >
-      <Drawer.Screen
-        name='home'
-        options={{
-          drawerLabel: t('drawer.home'),
-          title: t('drawer.home'),
-          drawerIcon: ({ focused, size, color }) => (
-            <Ionicons
-              name={focused ? 'home' : 'home-outline'}
-              size={size}
-              color={color}
-            />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name='addMember'
-        options={{
-          drawerLabel: t('drawer.addMember'),
-          title: t('drawer.addMember'),
-          drawerIcon: ({ focused, size, color }) => (
-            <Ionicons
-              name={focused ? 'person-add' : 'person-add-outline'}
-              size={size}
-              color={color}
-            />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name='searchMember'
-        options={{
-          drawerLabel: t('drawer.searchMember'),
-          title: t('drawer.searchMember'),
-          drawerIcon: ({ focused, size, color }) => (
-            <Ionicons
-              name={focused ? 'search' : 'search-outline'}
-              size={size}
-              color={color}
-            />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name='importExport'
-        options={{
-          drawerLabel: t('drawer.importExport'),
-          title: t('drawer.importExport'),
-          drawerIcon: ({ focused, size, color }) => (
-            <Ionicons
-              name={focused ? 'server' : 'server-outline'}
-              size={size}
-              color={color}
-            />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name='(profile)/profile'
-        options={{
-          drawerItemStyle: { display: 'none' },
-        }}
-      />
-    </Drawer>
-  );
+	return (
+		<Drawer
+			drawerContent={(props) => <CustomDrawerContent {...props} />}
+			screenOptions={{
+				headerStyle: {
+					backgroundColor: theme.colors.background,
+				},
+				headerTitleStyle: { color: theme.colors.onBackground },
+				headerShadowVisible: false,
+				header: ({ navigation }) => (
+					<View
+						style={{
+							paddingTop: insets.top,
+							paddingHorizontal: 5,
+						}}
+					>
+						<TouchableOpacity
+							onPress={() => navigation.toggleDrawer()}
+							style={{ maxWidth: 36 }}
+						>
+							<Ionicons
+								name='menu'
+								size={45}
+								color={theme.colors.onBackground}
+								style={{ alignSelf: 'center' }}
+							/>
+						</TouchableOpacity>
+					</View>
+				),
+				sceneStyle: {
+					backgroundColor: theme.colors.background,
+				},
+				drawerStyle: { backgroundColor: theme.colors.background },
+				drawerLabelStyle: { fontSize: 15, fontWeight: 'bold' },
+				drawerActiveTintColor: theme.colors.primary,
+				drawerInactiveTintColor: theme.colors.onBackground,
+				drawerInactiveBackgroundColor: 'transparent',
+			}}
+		>
+			<Drawer.Screen
+				name='home'
+				options={{
+					drawerLabel: t('drawer.home'),
+					title: t('drawer.home'),
+					drawerIcon: ({ focused, size, color }) => (
+						<Ionicons
+							name={focused ? 'home' : 'home-outline'}
+							size={size}
+							color={color}
+						/>
+					),
+				}}
+			/>
+			<Drawer.Screen
+				name='addMember'
+				options={{
+					drawerLabel: t('drawer.addMember'),
+					title: t('drawer.addMember'),
+					drawerIcon: ({ focused, size, color }) => (
+						<Ionicons
+							name={focused ? 'person-add' : 'person-add-outline'}
+							size={size}
+							color={color}
+						/>
+					),
+				}}
+			/>
+			<Drawer.Screen
+				name='searchMember'
+				options={{
+					drawerLabel: t('drawer.searchMember'),
+					title: t('drawer.searchMember'),
+					drawerIcon: ({ focused, size, color }) => (
+						<Ionicons
+							name={focused ? 'search' : 'search-outline'}
+							size={size}
+							color={color}
+						/>
+					),
+				}}
+			/>
+			<Drawer.Screen
+				name='importExport'
+				options={{
+					drawerLabel: t('drawer.importExport'),
+					title: t('drawer.importExport'),
+					drawerIcon: ({ focused, size, color }) => (
+						<Ionicons
+							name={focused ? 'server' : 'server-outline'}
+							size={size}
+							color={color}
+						/>
+					),
+				}}
+			/>
+			<Drawer.Screen
+				name='(profile)/profile'
+				options={{
+					drawerItemStyle: { display: 'none' },
+				}}
+			/>
+		</Drawer>
+	);
 };
 
 export default HomeLayout;

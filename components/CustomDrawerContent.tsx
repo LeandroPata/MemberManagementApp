@@ -7,11 +7,6 @@ import {
 	TouchableOpacity,
 } from 'react-native';
 import {
-	DrawerContentScrollView,
-	DrawerItem,
-	DrawerItemList,
-} from '@react-navigation/drawer';
-import {
 	Dialog,
 	List,
 	Portal,
@@ -19,7 +14,9 @@ import {
 	Switch,
 	useTheme,
 } from 'react-native-paper';
+import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { router, usePathname } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import auth from '@react-native-firebase/auth';
 import { useTranslation } from 'react-i18next';
@@ -30,14 +27,14 @@ import Animated, {
 } from 'react-native-reanimated';
 import { EventRegister } from 'react-native-event-listeners';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import i18next from 'i18next';
-import { FirebaseError } from 'firebase/app';
+import type { FirebaseError } from 'firebase/app';
 import storage from '@react-native-firebase/storage';
+import i18next from 'i18next';
 import RNFetchBlob from 'rn-fetch-blob';
 import Constants from 'expo-constants';
+import getFlagEmoji from './GetCountryFlag';
 import SnackbarInfo from './SnackbarInfo';
 import DialogConfirmation from './DialogConfirmation';
-import { router, usePathname } from 'expo-router';
 
 export default function CustomDrawerContent(props: any) {
 	const theme = useTheme();
@@ -414,28 +411,14 @@ export default function CustomDrawerContent(props: any) {
 							}}
 						>
 							<List.Item
-								title='English'
-								left={(props) => (
-									<Ionicons
-										{...props}
-										name='language-sharp'
-										size={25}
-									/>
-								)}
+								title={`${getFlagEmoji('GB')}     English`}
 								onPress={() => {
 									i18next.changeLanguage('en-US');
 									AsyncStorage.setItem('language', 'en-US');
 								}}
 							/>
 							<List.Item
-								title='Português'
-								left={(props) => (
-									<Ionicons
-										{...props}
-										name='language-sharp'
-										size={25}
-									/>
-								)}
+								title={`${getFlagEmoji('PT')}     Português`}
 								onPress={() => {
 									i18next.changeLanguage('pt-PT');
 									AsyncStorage.setItem('language', 'pt-PT');

@@ -37,11 +37,14 @@ import RNFetchBlob from 'rn-fetch-blob';
 import Constants from 'expo-constants';
 import SnackbarInfo from './SnackbarInfo';
 import DialogConfirmation from './DialogConfirmation';
+import { router, usePathname } from 'expo-router';
 
 export default function CustomDrawerContent(props: any) {
 	const theme = useTheme();
 	const insets = useSafeAreaInsets();
 	const { t } = useTranslation();
+
+	const [currentRoute, setCurrentRoute] = useState(usePathname());
 
 	const [expanded, setExpanded] = useState(false);
 	const [darkModeSwitch, setDarkModeSwitch] = useState(false);
@@ -82,8 +85,7 @@ export default function CustomDrawerContent(props: any) {
 
 	if (Platform.OS === 'android') {
 		// Enable LayoutAnimation for Android
-		UIManager.setLayoutAnimationEnabledExperimental &&
-			UIManager.setLayoutAnimationEnabledExperimental(true);
+		UIManager.setLayoutAnimationEnabledExperimental?.(true);
 	}
 
 	const toggleAccordion = () => {
@@ -232,6 +234,12 @@ export default function CustomDrawerContent(props: any) {
 		}
 	};
 
+	const drawerItemPress = (goToPathName: string) => {
+		props.navigation.closeDrawer();
+		setCurrentRoute(goToPathName);
+		router.replace(goToPathName);
+	};
+
 	return (
 		<>
 			<SnackbarInfo
@@ -282,7 +290,71 @@ export default function CustomDrawerContent(props: any) {
 					{...props}
 					scrollEnabled={false}
 				>
-					<DrawerItemList {...props} />
+					<DrawerItem
+						labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+						label={t('drawer.home')}
+						icon={({ focused, size, color }) => (
+							<Ionicons
+								name={focused ? 'home' : 'home-outline'}
+								size={size}
+								color={color}
+							/>
+						)}
+						inactiveTintColor={theme.colors.onBackground}
+						activeTintColor={theme.colors.primary}
+						inactiveBackgroundColor='transparent'
+						focused={currentRoute === '/(drawer)/(home)/home'}
+						onPress={() => drawerItemPress('/(drawer)/(home)/home')}
+					/>
+					<DrawerItem
+						labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+						label={t('drawer.add')}
+						icon={({ focused, size, color }) => (
+							<Ionicons
+								name={focused ? 'person-add' : 'person-add-outline'}
+								size={size}
+								color={color}
+							/>
+						)}
+						inactiveTintColor={theme.colors.onBackground}
+						activeTintColor={theme.colors.primary}
+						inactiveBackgroundColor='transparent'
+						focused={currentRoute === '/(drawer)/(home)/addMember'}
+						onPress={() => drawerItemPress('/(drawer)/(home)/addMember')}
+					/>
+					<DrawerItem
+						labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+						label={t('drawer.search')}
+						icon={({ focused, size, color }) => (
+							<Ionicons
+								name={focused ? 'search' : 'search-outline'}
+								size={size}
+								color={color}
+							/>
+						)}
+						inactiveTintColor={theme.colors.onBackground}
+						activeTintColor={theme.colors.primary}
+						inactiveBackgroundColor='transparent'
+						focused={currentRoute === '/(drawer)/(home)/searchMember'}
+						onPress={() => drawerItemPress('/(drawer)/(home)/searchMember')}
+					/>
+					<DrawerItem
+						labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+						label={t('drawer.importExport')}
+						icon={({ focused, size, color }) => (
+							<Ionicons
+								name={focused ? 'server' : 'server-outline'}
+								size={size}
+								color={color}
+							/>
+						)}
+						inactiveTintColor={theme.colors.onBackground}
+						activeTintColor={theme.colors.primary}
+						inactiveBackgroundColor='transparent'
+						focused={currentRoute === '/(drawer)/(home)/importExport'}
+						onPress={() => drawerItemPress('/(drawer)/(home)/importExport')}
+					/>
+					{/* <DrawerItemList {...props} /> */}
 				</DrawerContentScrollView>
 
 				<View style={{ paddingBottom: 20 + insets.bottom }}>

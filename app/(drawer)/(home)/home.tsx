@@ -17,7 +17,7 @@ export default function Home() {
 					icon='account-plus'
 					mode='elevated'
 					//loading={loginLoading}
-					onPress={() => router.push('/(home)/addMember')}
+					onPress={() => router.push('/(drawer)/(home)/addMember')}
 				>
 					{t('home.addMember')}
 				</Button>
@@ -28,7 +28,7 @@ export default function Home() {
 					icon='account-search'
 					mode='elevated'
 					//loading={loginLoading}
-					onPress={() => router.push('/(home)/searchMember')}
+					onPress={() => router.push('/(drawer)/(home)/searchMember')}
 				>
 					{t('home.searchMember')}
 				</Button>
@@ -39,7 +39,7 @@ export default function Home() {
 					icon='database'
 					mode='elevated'
 					//loading={loginLoading}
-					onPress={() => router.push('/(home)/importExport')}
+					onPress={() => router.push('/(drawer)/(home)/importExport')}
 				>
 					{t('home.importExport')}
 				</Button>

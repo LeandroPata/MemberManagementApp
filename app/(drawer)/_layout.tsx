@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import CustomDrawerContent from '@/components/CustomDrawerContent';
 import { useTranslation } from 'react-i18next';
 
-const HomeLayout = () => {
+const DrawerLayout = () => {
 	const theme = useTheme();
 	const insets = useSafeAreaInsets();
 	const { t } = useTranslation();
@@ -50,71 +50,8 @@ const HomeLayout = () => {
 				drawerInactiveTintColor: theme.colors.onBackground,
 				drawerInactiveBackgroundColor: 'transparent',
 			}}
-		>
-			<Drawer.Screen
-				name='home'
-				options={{
-					drawerLabel: t('drawer.home'),
-					title: t('drawer.home'),
-					drawerIcon: ({ focused, size, color }) => (
-						<Ionicons
-							name={focused ? 'home' : 'home-outline'}
-							size={size}
-							color={color}
-						/>
-					),
-				}}
-			/>
-			<Drawer.Screen
-				name='addMember'
-				options={{
-					drawerLabel: t('drawer.addMember'),
-					title: t('drawer.addMember'),
-					drawerIcon: ({ focused, size, color }) => (
-						<Ionicons
-							name={focused ? 'person-add' : 'person-add-outline'}
-							size={size}
-							color={color}
-						/>
-					),
-				}}
-			/>
-			<Drawer.Screen
-				name='searchMember'
-				options={{
-					drawerLabel: t('drawer.searchMember'),
-					title: t('drawer.searchMember'),
-					drawerIcon: ({ focused, size, color }) => (
-						<Ionicons
-							name={focused ? 'search' : 'search-outline'}
-							size={size}
-							color={color}
-						/>
-					),
-				}}
-			/>
-			<Drawer.Screen
-				name='importExport'
-				options={{
-					drawerLabel: t('drawer.importExport'),
-					title: t('drawer.importExport'),
-					drawerIcon: ({ focused, size, color }) => (
-						<Ionicons
-							name={focused ? 'server' : 'server-outline'}
-							size={size}
-							color={color}
-						/>
-					),
-				}}
-			/>
-			<Drawer.Screen
-				name='(profile)/profile'
-				options={{
-					drawerItemStyle: { display: 'none' },
-				}}
-			/>
-		</Drawer>
+		/>
 	);
 };
 
-export default HomeLayout;
+export default DrawerLayout;

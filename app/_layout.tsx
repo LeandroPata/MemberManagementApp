@@ -11,7 +11,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SystemUI from 'expo-system-ui';
 import { StatusBar } from 'expo-status-bar';
-import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import auth, { type FirebaseAuthTypes } from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import '@/locales/i18n';
 import { EventRegister } from 'react-native-event-listeners';
@@ -150,7 +150,7 @@ export default function RootLayout() {
 		const inAuthGroup = segments[0] === '(home)';
 
 		if (user && !inAuthGroup) {
-			router.replace('/(home)/home');
+			router.replace('/(drawer)/(home)/home');
 		} else if (!user && inAuthGroup) {
 			router.replace('/');
 		}
@@ -200,7 +200,7 @@ export default function RootLayout() {
 							options={{ headerShown: false }}
 						/>
 						<Stack.Screen
-							name='(home)'
+							name='(drawer)'
 							options={{ headerShown: false }}
 						/>
 					</Stack>

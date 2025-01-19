@@ -104,7 +104,7 @@ export default function Profile() {
 			setMemberNumberError(false);
 			setEmailError(false);
 		} else {
-			router.replace('/(home)/searchMember');
+			router.replace('/(drawer)/(home)/searchMember');
 		}
 		return true;
 	});
@@ -449,7 +449,7 @@ export default function Profile() {
 		}
 		setLoadingDelete(false);
 		setDialogConfirmationVisible(false);
-		router.replace('/(home)/searchMember');
+		router.replace('/(drawer)/(home)/searchMember');
 	};
 
 	return (

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
 	View,
 	StyleSheet,
@@ -9,22 +9,28 @@ import {
 import {
 	Avatar,
 	Button,
-	TextInput,
 	TouchableRipple,
 	Text,
 	useTheme,
+	Divider,
+	Searchbar,
 } from 'react-native-paper';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import firestore from '@react-native-firebase/firestore';
-import { FirebaseError } from 'firebase/app';
+import type { FirebaseError } from 'firebase/app';
 import { useTranslation } from 'react-i18next';
+import Fuse from 'fuse.js';
+import SearchList from '@/components/SearchList';
 
 export default function SearchMember() {
 	const theme = useTheme();
 	const { t } = useTranslation();
 
-	const [loading, setLoading] = useState(false);
-	const [search, setSearch] = useState(false);
+	const [memberList, setMemberList] = useState([]);
+	const [hintMemberList, setHintMemberList] = useState([]);
+
+	//const [loading, setLoading] = useState(false);
+	//const [search, setSearch] = useState(false);
 
 	const [name, setName] = useState('');
 	const [memberNumber, setMemberNumber] = useState('');
@@ -32,214 +38,173 @@ export default function SearchMember() {
 
 	const [refreshFlatlist, setRefreshFlatlist] = useState(false);
 
-	useEffect(() => {
-		if (search) {
-			setLoading(true);
+	useFocusEffect(
+		useCallback(() => {
+			// Screen focused
+			//console.log("Hello, I'm focused!");
+			getMemberList();
+			getAllMembers();
 
-			if (!name.trim() && !memberNumber.trim()) {
-				const subscriber = firestore()
-					.collection('members')
-					.orderBy('memberNumber', 'asc')
-					.onSnapshot((querySnapshot) => {
-						const members = [];
-						querySnapshot.forEach((documentSnapshot) => {
-							members.push({
-								key: documentSnapshot.id,
-								...documentSnapshot.data(),
-							});
-						});
-						setMembers(members);
-						//console.log(members);
+			// Screen unfocused in return
+			return () => {
+				//console.log('This route is now unfocused.');
+			};
+		}, [])
+	);
+
+	const getAllMembers = () => {
+		firestore()
+			.collection('members')
+			.orderBy('name', 'asc')
+			.get()
+			.then((querySnapshot) => {
+				const membersAll = [];
+				querySnapshot.forEach((doc) => {
+					membersAll.push({
+						key: doc.id,
+						name: doc.data().name,
+						memberNumber: doc.data().memberNumber,
+						profilePicture: doc.data().profilePicture,
 					});
-				setLoading(false);
-				return () => subscriber();
-			} else if (name?.trim() && memberNumber && memberNumber.trim()) {
-				const subscriber = firestore()
-					.collection('members')
-					.where('memberNumber', '==', Number(memberNumber))
-					.onSnapshot((querySnapshot) => {
-						const members = [];
-						querySnapshot.forEach((documentSnapshot) => {
-							if (documentSnapshot.data().name.includes(name)) {
-								members.push({
-									key: documentSnapshot.id,
-									...documentSnapshot.data(),
-								});
-							}
-						});
-						setMembers(members);
-						//console.log(members);
-					});
-				setLoading(false);
-				return () => subscriber();
-			} else if (name?.trim() && !memberNumber.trim()) {
-				const subscriber = firestore()
+				});
+				//console.log(membersAll);
+				setMembers(membersAll);
+			})
+			.catch((e: any) => {
+				const err = e as FirebaseError;
+				console.log(`Error getting all member list: ${err.message}`);
+			});
+	};
+
+	const getMemberList = async () => {
+		await firestore()
+			.collection('members')
+			.orderBy('name', 'asc')
+			.get()
+			.then((querySnapshot) => {
+				const membersName = [];
+				// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
+				querySnapshot.forEach((doc) => {
+					membersName.push({ key: doc.id, name: doc.data().name });
+				});
+				//console.log(membersName);
+				setMemberList(membersName);
+			})
+			.catch((e: any) => {
+				const err = e as FirebaseError;
+				console.log(`Error getting member list: ${err.message}`);
+			});
+	};
+
+	const filterMemberList = async (input: string) => {
+		const fuseOptions = {
+			includeScore: true,
+			shouldSort: true,
+			keys: ['name'],
+			minMatchCharLength: 2,
+			threshold: 0.3,
+		};
+		const fuse = new Fuse(memberList, fuseOptions);
+
+		const results = fuse.search(input, { limit: 4 });
+		setHintMemberList(results);
+		//console.log(results);
+	};
+
+	const getMembersByName = async (memberName: string, fuzzySearch = false) => {
+		const currentMembers = [];
+
+		if (!memberName && !name) {
+			if (memberNumber) getMembersByNumber(Number(memberNumber));
+			else getAllMembers();
+			return;
+		} else if (fuzzySearch && hintMemberList.length > 0) {
+			for (const hintMember of hintMemberList) {
+				//console.log(hintMember);
+				await firestore()
 					.collection('members')
 					.orderBy('name', 'asc')
-					.onSnapshot((querySnapshot) => {
-						const members = [];
-						querySnapshot.forEach((documentSnapshot) => {
-							if (documentSnapshot.data().name.includes(name)) {
-								members.push({
-									key: documentSnapshot.id,
-									...documentSnapshot.data(),
+					.where('name', '==', hintMember.item.name)
+					.get()
+					.then((querySnapshot) => {
+						if (querySnapshot) {
+							querySnapshot.forEach((doc) => {
+								//console.log(doc.data());
+								currentMembers.push({
+									key: doc.id,
+									name: doc.data().name,
+									memberNumber: doc.data().memberNumber,
+									profilePicture: doc.data().profilePicture,
 								});
-							}
-						});
-						setMembers(members);
-						//console.log(members);
-					});
-				setLoading(false);
-				return () => subscriber();
-			} else if (memberNumber?.trim() && !name.trim()) {
-				const subscriber = firestore()
-					.collection('members')
-					.orderBy('memberNumber', 'asc')
-					.where('memberNumber', '==', Number(memberNumber))
-					.onSnapshot((querySnapshot) => {
-						const members = [];
-						querySnapshot.forEach((documentSnapshot) => {
-							members.push({
-								key: documentSnapshot.id,
-								...documentSnapshot.data(),
-							});
-						});
-						setMembers(members);
-						//console.log(members);
-					});
-				setLoading(false);
-				return () => subscriber();
-			}
-		}
-		setLoading(false);
-	}, [search]);
-
-	const searchMember = async () => {
-		Keyboard.dismiss();
-		setLoading(true);
-
-		if (!name.trim() && !memberNumber.trim()) {
-			console.log('None');
-			firestore()
-				.collection('members')
-				.orderBy('memberNumber', 'asc')
-				.get()
-				.then((querySnapshot) => {
-					const members = [];
-					querySnapshot.forEach((documentSnapshot) => {
-						members.push({
-							key: documentSnapshot.id,
-							...documentSnapshot.data(),
-						});
-					});
-					setMembers(members);
-					//console.log(members);
-					if (members.length <= 0) {
-						console.log('No member found.');
-					} else {
-						setSearch(true);
-					}
-				})
-				.catch((e: any) => {
-					const err = e as FirebaseError;
-					//showSnackbar('Search failed: ' + err.message);
-					console.log(`Search failed: ${err.message}`);
-					setLoading(false);
-				});
-			setLoading(false);
-		} else if (name?.trim() && memberNumber && memberNumber.trim()) {
-			console.log('Both');
-			firestore()
-				.collection('members')
-				.where('memberNumber', '==', Number(memberNumber))
-				.get()
-				.then((querySnapshot) => {
-					const members = [];
-					querySnapshot.forEach((documentSnapshot) => {
-						if (documentSnapshot.data().name.includes(name)) {
-							members.push({
-								key: documentSnapshot.id,
-								...documentSnapshot.data(),
 							});
 						}
+					})
+					.catch((e: any) => {
+						const err = e as FirebaseError;
+						console.log(`Error getting member list: ${err.message}`);
 					});
-					setMembers(members);
-					//console.log(members);
-					if (members.length <= 0) {
-						console.log('No member found.');
-					} else {
-						setSearch(true);
-					}
-				})
-				.catch((e: any) => {
-					const err = e as FirebaseError;
-					//showSnackbar('Search failed: ' + err.message);
-					console.log(`Search failed: ${err.message}`);
-					setLoading(false);
-				});
-			setLoading(false);
-		} else if (name?.trim() && !memberNumber.trim()) {
-			console.log('Name');
-			firestore()
+			}
+		} else {
+			//console.log(memberName);
+			await firestore()
 				.collection('members')
 				.orderBy('name', 'asc')
+				.where('name', '==', memberName)
 				.get()
 				.then((querySnapshot) => {
-					const members = [];
-					querySnapshot.forEach((documentSnapshot) => {
-						if (documentSnapshot.data().name.includes(name)) {
-							members.push({
-								key: documentSnapshot.id,
-								...documentSnapshot.data(),
+					if (querySnapshot) {
+						querySnapshot.forEach((doc) => {
+							//console.log(doc.data());
+							currentMembers.push({
+								key: doc.id,
+								name: doc.data().name,
+								memberNumber: doc.data().memberNumber,
+								profilePicture: doc.data().profilePicture,
 							});
-						}
-					});
-					setMembers(members);
-					//console.log(members);
-					if (members.length <= 0) {
-						console.log('No member found.');
-					} else {
-						setSearch(true);
-					}
-				})
-				.catch((e: any) => {
-					const err = e as FirebaseError;
-					//showSnackbar('Search failed: ' + err.message);
-					console.log(`Search failed: ${err.message}`);
-					setLoading(false);
-				});
-			setLoading(false);
-		} else if (memberNumber?.trim() && !name.trim()) {
-			console.log('Number');
-			firestore()
-				.collection('members')
-				.orderBy('memberNumber', 'asc')
-				.where('memberNumber', '==', Number(memberNumber))
-				.get()
-				.then((querySnapshot) => {
-					const members = [];
-					querySnapshot.forEach((documentSnapshot) => {
-						members.push({
-							key: documentSnapshot.id,
-							...documentSnapshot.data(),
 						});
-					});
-					setMembers(members);
-					//console.log(members);
-					if (members.length <= 0) {
-						console.log('No member found.');
-					} else {
-						setSearch(true);
 					}
 				})
 				.catch((e: any) => {
 					const err = e as FirebaseError;
-					//showSnackbar('Search failed: ' + err.message);
-					console.log(`Search failed: ${err.message}`);
-					setLoading(false);
+					console.log(`Error getting member list: ${err.message}`);
 				});
 		}
-		setLoading(false);
+		setMembers(currentMembers);
+		setHintMemberList([]);
+	};
+
+	const getMembersByNumber = async (number: number) => {
+		const currentMembers = [];
+
+		if (!number || number <= 0) {
+			if (name) getMembersByName(name);
+			else getAllMembers();
+			return;
+		} else {
+			await firestore()
+				.collection('members')
+				.orderBy('memberNumber', 'asc')
+				.where('memberNumber', '==', number)
+				.get()
+				.then((querySnapshot) => {
+					if (querySnapshot) {
+						querySnapshot.forEach((doc) => {
+							//console.log(doc.data());
+							currentMembers.push({
+								key: doc.id,
+								name: doc.data().name,
+								memberNumber: doc.data().memberNumber,
+								profilePicture: doc.data().profilePicture,
+							});
+						});
+					}
+				})
+				.catch((e: any) => {
+					const err = e as FirebaseError;
+					console.log(`Error getting member list: ${err.message}`);
+				});
+		}
+		setMembers(currentMembers);
 	};
 
 	const orderMembersName = () => {
@@ -269,6 +234,7 @@ export default function SearchMember() {
 	};
 
 	const renderItem = ({ item }) => {
+		//console.log(item);
 		return (
 			<TouchableRipple
 				style={[styles.item, { backgroundColor: theme.colors.primary }]}
@@ -300,42 +266,73 @@ export default function SearchMember() {
 		);
 	};
 
+	const renderMemberHint = ({ item }) => {
+		//console.log(item.item.name + ' : ' + item.score);
+		//console.log(item);
+		return (
+			<>
+				<Divider bold={true} />
+				<TouchableRipple
+					onPress={() => {
+						Keyboard.dismiss();
+
+						setName(item.item.name);
+						getMembersByName(item.item.name);
+						//setMembers([currentMember]);
+					}}
+				>
+					<Text style={{ padding: 5 }}>{item.item.name}</Text>
+				</TouchableRipple>
+				<Divider bold={true} />
+			</>
+		);
+	};
+
 	return (
 		<View style={styles.container}>
 			<KeyboardAvoidingView
 				style={{ marginHorizontal: '3%' }}
 				behavior='padding'
 			>
-				<TextInput
-					style={styles.input}
+				<SearchList
+					style={{ marginBottom: 10 }}
+					icon='account'
 					value={name}
-					onChangeText={setName}
-					autoCapitalize='words'
-					keyboardType='default'
-					label={t('searchMember.name')}
+					placeholder={t('searchMember.name')}
+					data={hintMemberList}
+					onChangeText={(input) => {
+						setName(input);
+						if (input.trim()) filterMemberList(input);
+						else setHintMemberList([]);
+					}}
+					/* onEndEditing={() => {
+						getMembersByName(name, true);
+					}} */
+					onSubmitEditing={() => {
+						getMembersByName(name, true);
+					}}
+					renderItem={renderMemberHint}
+					onClearIconPress={() => {
+						setName('');
+						setHintMemberList([]);
+					}}
 				/>
-				<TextInput
-					style={styles.input}
+				<Searchbar
+					style={{ marginBottom: 10 }}
+					icon='numeric'
 					value={memberNumber}
 					onChangeText={setMemberNumber}
+					//onEndEditing={props.onEndEditing}
+					onSubmitEditing={() => {
+						getMembersByNumber(Number(memberNumber.trim()));
+					}}
 					autoCapitalize='none'
 					keyboardType='numeric'
-					label={t('searchMember.memberNumber')}
+					placeholder={t('searchMember.memberNumber')}
+					onClearIconPress={() => {
+						setMemberNumber('');
+					}}
 				/>
-
-				<View style={styles.buttonContainer}>
-					<Button
-						style={[styles.button, { marginTop: 8 }]}
-						contentStyle={styles.buttonContent}
-						labelStyle={styles.buttonText}
-						icon='account-search'
-						mode='elevated'
-						loading={loading}
-						onPress={searchMember}
-					>
-						{t('searchMember.searchMember')}
-					</Button>
-				</View>
 
 				<View
 					style={{

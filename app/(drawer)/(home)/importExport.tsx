@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, PermissionsAndroid, Platform } from 'react-native';
 import { Button } from 'react-native-paper';
-import { FirebaseError } from 'firebase/app';
+import type { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import * as DocumentPicker from 'expo-document-picker';
 import { useTranslation } from 'react-i18next';
-import SnackbarInfo from '@/components/SnackbarInfo';
 import RNFetchBlob from 'rn-fetch-blob';
+import SnackbarInfo from '@/components/SnackbarInfo';
 
 export default function importExport() {
 	const { t } = useTranslation();
@@ -56,14 +56,17 @@ export default function importExport() {
 
 		return data.map((doc) => {
 			const orderedDoc = {};
+
 			for (const key of orderedKeys) {
 				orderedDoc[key] = doc[key] || '';
 			}
+
 			for (const key of Object.keys(doc)) {
 				if (!orderedKeys.includes(key) && key !== 'profilePicture') {
 					orderedDoc[key] = doc[key];
 				}
 			}
+
 			//console.log(orderedDoc);
 			return orderedDoc;
 		});
@@ -202,6 +205,7 @@ export default function importExport() {
 						: 'text/csv',
 				copyToCacheDirectory: false,
 			});
+
 			return doc;
 		} catch (e: any) {
 			//showSnackbar('File not chosen: ' + e.message);
@@ -269,11 +273,7 @@ export default function importExport() {
 
 			console.log(grantedRead);
 			console.log(grantedWrite);
-		} catch (e: any) {
-			//showSnackbar('Error with permissions: ' + e.message);
-			console.log(`Error with permissions: ${e.message}`);
-			setImportLoading(false);
-		} finally {
+
 			if (
 				!(grantedRead === PermissionsAndroid.RESULTS.GRANTED) ||
 				!(grantedWrite === PermissionsAndroid.RESULTS.GRANTED)
@@ -282,6 +282,10 @@ export default function importExport() {
 				return false;
 			}
 			return true;
+		} catch (e: any) {
+			//showSnackbar('Error with permissions: ' + e.message);
+			console.log(`Error with permissions: ${e.message}`);
+			setImportLoading(false);
 		}
 	};
 
@@ -330,8 +334,8 @@ export default function importExport() {
 					// which I now realize will never happen and will always be the default,
 					// because the document ID is completely new, oh well
 					/* const url = await storage()
-            .ref('profilePicture/' + memberRef + '.jpg')
-            .getDownloadURL();
+						.ref('profilePicture/' + memberRef + '.jpg')
+						.getDownloadURL();
           console.log(url); */
 
 					member.profilePicture =

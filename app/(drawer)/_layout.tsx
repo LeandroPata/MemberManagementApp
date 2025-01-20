@@ -1,11 +1,11 @@
 import React from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { Keyboard, TouchableOpacity, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Drawer } from 'expo-router/drawer';
 import { Ionicons } from '@expo/vector-icons';
-import CustomDrawerContent from '@/components/CustomDrawerContent';
 import { useTranslation } from 'react-i18next';
+import CustomDrawerContent from '@/components/CustomDrawerContent';
 
 const DrawerLayout = () => {
 	const theme = useTheme();
@@ -29,7 +29,10 @@ const DrawerLayout = () => {
 						}}
 					>
 						<TouchableOpacity
-							onPress={() => navigation.toggleDrawer()}
+							onPress={() => {
+								Keyboard.dismiss();
+								navigation.toggleDrawer();
+							}}
 							style={{ maxWidth: 36 }}
 						>
 							<Ionicons

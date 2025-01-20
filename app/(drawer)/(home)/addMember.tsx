@@ -20,7 +20,7 @@ import {
 } from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
 import * as ImagePicker from 'expo-image-picker';
-import { FirebaseError } from 'firebase/app';
+import type { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import { useTranslation } from 'react-i18next';

@@ -8,13 +8,13 @@ import {
 	MD3DarkTheme as DefaultDarkTheme,
 } from 'react-native-paper';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import auth, { type FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SystemUI from 'expo-system-ui';
 import { StatusBar } from 'expo-status-bar';
-import auth, { type FirebaseAuthTypes } from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import '@/locales/i18n';
 import { EventRegister } from 'react-native-event-listeners';
+import '@/locales/i18n';
 
 export default function RootLayout() {
 	const router = useRouter();

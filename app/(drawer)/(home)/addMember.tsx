@@ -403,6 +403,7 @@ export default function AddMember() {
 									} else setMemberNumberError(false);
 									setMemberNumber(memberNumber.trim());
 								}}
+								maxLength={6}
 								error={memberNumberError}
 								autoCapitalize='none'
 								keyboardType='numeric'

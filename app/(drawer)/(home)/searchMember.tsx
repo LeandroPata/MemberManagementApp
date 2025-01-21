@@ -29,8 +29,8 @@ export default function SearchMember() {
 	const [memberList, setMemberList] = useState([]);
 	const [hintMemberList, setHintMemberList] = useState([]);
 
-	//const [loading, setLoading] = useState(false);
-	//const [search, setSearch] = useState(false);
+	const [loadingName, setLoadingName] = useState(false);
+	const [loadingNumber, setLoadingNumber] = useState(false);
 
 	const [name, setName] = useState('');
 	const [memberNumber, setMemberNumber] = useState('');
@@ -53,6 +53,9 @@ export default function SearchMember() {
 	);
 
 	const getAllMembers = () => {
+		setLoadingName(true);
+		setLoadingNumber(true);
+
 		firestore()
 			.collection('members')
 			.orderBy('name', 'asc')
@@ -69,10 +72,14 @@ export default function SearchMember() {
 				});
 				//console.log(membersAll);
 				setMembers(membersAll);
+				setLoadingName(false);
+				setLoadingNumber(false);
 			})
 			.catch((e: any) => {
 				const err = e as FirebaseError;
 				console.log(`Error getting all member list: ${err.message}`);
+				setLoadingName(false);
+				setLoadingNumber(false);
 			});
 	};
 
@@ -112,11 +119,14 @@ export default function SearchMember() {
 	};
 
 	const getMembersByName = async (memberName: string, fuzzySearch = false) => {
+		setLoadingName(true);
 		const currentMembers = [];
 
 		if (!memberName && !name) {
-			if (memberNumber) getMembersByNumber(Number(memberNumber));
-			else getAllMembers();
+			if (memberNumber) {
+				getMembersByNumber(Number(memberNumber));
+				setLoadingName(false);
+			} else getAllMembers();
 			return;
 		} else if (fuzzySearch && hintMemberList.length > 0) {
 			for (const hintMember of hintMemberList) {
@@ -142,6 +152,7 @@ export default function SearchMember() {
 					.catch((e: any) => {
 						const err = e as FirebaseError;
 						console.log(`Error getting member list: ${err.message}`);
+						setLoadingName(false);
 					});
 			}
 		} else {
@@ -167,18 +178,23 @@ export default function SearchMember() {
 				.catch((e: any) => {
 					const err = e as FirebaseError;
 					console.log(`Error getting member list: ${err.message}`);
+					setLoadingName(false);
 				});
 		}
 		setMembers(currentMembers);
 		setHintMemberList([]);
+		setLoadingName(false);
 	};
 
 	const getMembersByNumber = async (number: number) => {
+		setLoadingNumber(true);
 		const currentMembers = [];
 
 		if (!number || number <= 0) {
-			if (name) getMembersByName(name);
-			else getAllMembers();
+			if (name) {
+				getMembersByName(name);
+				setLoadingNumber(false);
+			} else getAllMembers();
 			return;
 		} else {
 			await firestore()
@@ -202,9 +218,11 @@ export default function SearchMember() {
 				.catch((e: any) => {
 					const err = e as FirebaseError;
 					console.log(`Error getting member list: ${err.message}`);
+					setLoadingNumber(false);
 				});
 		}
 		setMembers(currentMembers);
+		setLoadingNumber(false);
 	};
 
 	const orderMembersName = () => {
@@ -312,6 +330,7 @@ export default function SearchMember() {
 						getMembersByName(name, true);
 					}}
 					renderItem={renderMemberHint}
+					loading={loadingName}
 					onClearIconPress={() => {
 						setName('');
 						setHintMemberList([]);
@@ -321,11 +340,16 @@ export default function SearchMember() {
 					style={{ marginBottom: 10 }}
 					icon='numeric'
 					value={memberNumber}
-					onChangeText={setMemberNumber}
+					//onChangeText={setMemberNumber}
+					onChangeText={(input) => {
+						setMemberNumber(input.replace(/[^0-9]/g, ''));
+					}}
 					//onEndEditing={props.onEndEditing}
 					onSubmitEditing={() => {
 						getMembersByNumber(Number(memberNumber.trim()));
 					}}
+					maxLength={6}
+					loading={loadingNumber}
 					autoCapitalize='none'
 					keyboardType='numeric'
 					placeholder={t('searchMember.memberNumber')}
@@ -350,10 +374,7 @@ export default function SearchMember() {
 								{ fontSize: 15, paddingTop: 0, fontWeight: 'normal' },
 							]}
 							mode='elevated'
-							onPress={() => {
-								console.log('Order by name');
-								orderMembersName();
-							}}
+							onPress={() => orderMembersName()}
 						>
 							{t('searchMember.orderName')}
 						</Button>
@@ -367,10 +388,7 @@ export default function SearchMember() {
 								{ fontSize: 13, paddingTop: 0, fontWeight: 'normal' },
 							]}
 							mode='elevated'
-							onPress={() => {
-								console.log('Order by member number');
-								orderMembersNumber();
-							}}
+							onPress={() => orderMembersNumber()}
 						>
 							{t('searchMember.orderNumber')}
 						</Button>

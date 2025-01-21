@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
 	Platform,
 	UIManager,
@@ -14,7 +14,11 @@ import {
 	Switch,
 	useTheme,
 } from 'react-native-paper';
-import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
+import {
+	DrawerContentScrollView,
+	DrawerItem,
+	useDrawerStatus,
+} from '@react-navigation/drawer';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router, usePathname } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -40,6 +44,13 @@ export default function CustomDrawerContent(props: any) {
 	const theme = useTheme();
 	const insets = useSafeAreaInsets();
 	const { t } = useTranslation();
+
+	const isDrawerOpen = useDrawerStatus() === 'open';
+
+	useEffect(() => {
+		//console.log(isDrawerOpen);
+		if (!isDrawerOpen && expanded) toggleAccordion();
+	}, [isDrawerOpen]);
 
 	const [currentRoute, setCurrentRoute] = useState(usePathname());
 
@@ -305,7 +316,7 @@ export default function CustomDrawerContent(props: any) {
 					/>
 					<DrawerItem
 						labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
-						label={t('drawer.add')}
+						label={t('drawer.addMember')}
 						icon={({ focused, size, color }) => (
 							<Ionicons
 								name={focused ? 'person-add' : 'person-add-outline'}
@@ -321,7 +332,7 @@ export default function CustomDrawerContent(props: any) {
 					/>
 					<DrawerItem
 						labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
-						label={t('drawer.search')}
+						label={t('drawer.searchMember')}
 						icon={({ focused, size, color }) => (
 							<Ionicons
 								name={focused ? 'search' : 'search-outline'}

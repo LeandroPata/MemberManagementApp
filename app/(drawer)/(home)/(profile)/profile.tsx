@@ -166,6 +166,7 @@ export default function Profile() {
             setEndDate(new Date(documentSnapshot.data().endDate.toDate()));
             setProfilePicture(documentSnapshot.data().profilePicture); */
 					}
+					//console.log(documentSnapshot.data());
 				});
 		} catch (e: any) {
 			const err = e as FirebaseError;
@@ -526,7 +527,7 @@ export default function Profile() {
 										source={{
 											uri: profilePicture
 												? profilePicture
-												: process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL,
+												: profile.profilePicture,
 										}}
 									/>
 								</Pressable>
@@ -584,6 +585,7 @@ export default function Profile() {
 											} else setMemberNumberError(false);
 											setMemberNumber(memberNumber.trim());
 										}}
+										maxLength={6}
 										error={memberNumberError}
 										autoCapitalize='none'
 										keyboardType='numeric'

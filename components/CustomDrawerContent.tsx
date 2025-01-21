@@ -7,6 +7,7 @@ import {
 	TouchableOpacity,
 } from 'react-native';
 import {
+	Avatar,
 	Dialog,
 	List,
 	Portal,
@@ -298,6 +299,11 @@ export default function CustomDrawerContent(props: any) {
 					{...props}
 					scrollEnabled={false}
 				>
+					<Avatar.Image
+						size={120}
+						style={{ alignSelf: 'center', backgroundColor: 'transparent' }}
+						source={require('@/assets/images/react-logo.png')}
+					/>
 					<DrawerItem
 						labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
 						label={t('drawer.home')}

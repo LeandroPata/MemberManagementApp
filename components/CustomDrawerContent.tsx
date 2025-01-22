@@ -302,7 +302,7 @@ export default function CustomDrawerContent(props: any) {
 					<Avatar.Image
 						size={120}
 						style={{ alignSelf: 'center', backgroundColor: 'transparent' }}
-						source={require('@/assets/images/react-logo.png')}
+						source={require('@/assets/images/logoReact.png')}
 					/>
 					<DrawerItem
 						labelStyle={{ fontSize: 15, fontWeight: 'bold' }}

@@ -4,9 +4,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	...config,
 	name: 'MemberManagementApp',
 	slug: 'MemberManagementApp',
-	version: '0.11.3',
+	version: '0.11.5',
 	orientation: 'portrait',
-	icon: './assets/images/icon.png',
+	icon: './assets/images/logoReact.png',
 	scheme: 'myapp',
 	userInterfaceStyle: 'automatic',
 	newArchEnabled: false,
@@ -18,8 +18,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	},
 	android: {
 		adaptiveIcon: {
-			foregroundImage: './assets/images/adaptive-icon.png',
-			backgroundColor: '#ffffff',
+			foregroundImage: './assets/images/logoReact.png',
+			backgroundColor: '#fffbff',
 		},
 		package: 'com.leandropata.membermanagementapp',
 		permissions: [
@@ -45,17 +45,23 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	web: {
 		bundler: 'metro',
 		output: 'static',
-		favicon: './assets/images/favicon.png',
+		favicon: './assets/images/logoReact.png',
 	},
 	plugins: [
 		'expo-router',
 		[
 			'expo-splash-screen',
 			{
-				image: './assets/images/splash.png',
+				image: './assets/images/logoReact.png',
 				imageWidth: 200,
 				resizeMode: 'contain',
-				backgroundColor: '#ffffff',
+				backgroundColor: '#fffbff',
+				dark: {
+					image: './assets/images/logoReact.png',
+					imageWidth: 200,
+					resizeMode: 'contain',
+					backgroundColor: '#191918',
+				},
 			},
 		],
 		[

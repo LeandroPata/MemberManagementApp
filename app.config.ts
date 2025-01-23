@@ -4,7 +4,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	...config,
 	name: 'MemberManagementApp',
 	slug: 'MemberManagementApp',
-	version: '0.11.5',
+	version: '0.11.6',
 	orientation: 'portrait',
 	icon: './assets/images/logoReact.png',
 	scheme: 'myapp',
@@ -94,7 +94,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	},
 	extra: {
 		eas: {
-			projectId: '08a22d0f-3b5b-408b-a1ce-b7d51e0a8f82',
+			projectId: process.env.EXPO_PROJECT_ID,
 		},
 	},
 });

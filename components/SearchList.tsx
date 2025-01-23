@@ -98,7 +98,7 @@ const SearchList = (props: SearchListProps) => {
 						scrollEnabled={false}
 						data={props.data}
 						renderItem={props.renderItem}
-						keyExtractor={(item) => item.item.key}
+						//keyExtractor={(item) => item.item.key}
 						//extraData={refreshFlatlist}
 						numColumns={1}
 					/>

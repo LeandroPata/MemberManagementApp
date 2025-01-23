@@ -90,9 +90,11 @@ export default function SearchMember() {
 			.get()
 			.then((querySnapshot) => {
 				const membersName = [];
+
 				// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
 				querySnapshot.forEach((doc) => {
-					membersName.push({ key: doc.id, name: doc.data().name });
+					if (!membersName.includes(doc.data().name))
+						membersName.push(doc.data().name);
 				});
 				//console.log(membersName);
 				setMemberList(membersName);
@@ -114,6 +116,7 @@ export default function SearchMember() {
 		const fuse = new Fuse(memberList, fuseOptions);
 
 		const results = fuse.search(input, { limit: 4 });
+
 		setHintMemberList(results);
 		//console.log(results);
 	};
@@ -134,7 +137,7 @@ export default function SearchMember() {
 				await firestore()
 					.collection('members')
 					.orderBy('name', 'asc')
-					.where('name', '==', hintMember.item.name)
+					.where('name', '==', hintMember.item)
 					.get()
 					.then((querySnapshot) => {
 						if (querySnapshot) {
@@ -270,7 +273,7 @@ export default function SearchMember() {
 						source={{
 							uri: item.profilePicture
 								? item.profilePicture
-								: process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL,
+								: process.env.EXPO_PLACEHOLDER_PICTURE_URL,
 						}}
 					/>
 					<Text style={[styles.title, { color: theme.colors.onPrimary }]}>
@@ -285,7 +288,7 @@ export default function SearchMember() {
 	};
 
 	const renderMemberHint = ({ item }) => {
-		//console.log(item.item.name + ' : ' + item.score);
+		//console.log(item.item + ' : ' + item.score);
 		//console.log(item);
 		return (
 			<>
@@ -294,12 +297,11 @@ export default function SearchMember() {
 					onPress={() => {
 						Keyboard.dismiss();
 
-						setName(item.item.name);
-						getMembersByName(item.item.name);
-						//setMembers([currentMember]);
+						setName(item.item);
+						getMembersByName(item.item);
 					}}
 				>
-					<Text style={{ padding: 5 }}>{item.item.name}</Text>
+					<Text style={{ padding: 5 }}>{item.item}</Text>
 				</TouchableRipple>
 				<Divider bold={true} />
 			</>

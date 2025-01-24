@@ -5,9 +5,9 @@ import {
 	View,
 	StyleSheet,
 	TouchableOpacity,
+	Image,
 } from 'react-native';
 import {
-	Avatar,
 	Dialog,
 	List,
 	Portal,
@@ -299,9 +299,8 @@ export default function CustomDrawerContent(props: any) {
 					{...props}
 					scrollEnabled={false}
 				>
-					<Avatar.Image
-						size={120}
-						style={{ alignSelf: 'center', backgroundColor: 'transparent' }}
+					<Image
+						style={styles.image}
 						source={require('@/assets/images/logoReact.png')}
 					/>
 					<DrawerItem

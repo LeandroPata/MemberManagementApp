@@ -24,7 +24,7 @@ import DatePicker from 'react-native-date-picker';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { useBackHandler } from '@react-native-community/hooks';
-import { FirebaseError } from 'firebase/app';
+import type { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import { useTranslation } from 'react-i18next';

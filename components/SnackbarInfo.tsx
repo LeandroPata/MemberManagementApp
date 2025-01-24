@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text } from 'react-native';
-import { Portal, Snackbar } from 'react-native-paper';
+import { Portal, Snackbar, useTheme } from 'react-native-paper';
 
 /* // All the logic to implement the snackbar
 const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -25,6 +25,8 @@ type SnackbarInfoProps = {
 };
 
 const SnackbarInfo = (props: SnackbarInfoProps) => {
+	const theme = useTheme();
+
 	return (
 		<Portal>
 			<Snackbar
@@ -33,7 +35,9 @@ const SnackbarInfo = (props: SnackbarInfoProps) => {
 				onIconPress={props.onDismiss}
 				duration={5000}
 			>
-				<Text style={{ fontSize: 15 }}>{props.text}</Text>
+				<Text style={{ fontSize: 15, color: theme.colors.inverseOnSurface }}>
+					{props.text}
+				</Text>
 			</Snackbar>
 		</Portal>
 	);

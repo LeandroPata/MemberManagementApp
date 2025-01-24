@@ -243,6 +243,12 @@ export default function CustomDrawerContent(props: any) {
 		}
 	};
 
+	const signOut = () => {
+		setSignOutConfirmationVisible(false);
+		props.navigation.closeDrawer();
+		auth().signOut();
+	};
+
 	const drawerItemPress = (goToPathName: string) => {
 		props.navigation.closeDrawer();
 		setCurrentRoute(goToPathName);
@@ -275,10 +281,7 @@ export default function CustomDrawerContent(props: any) {
 					text={t('drawer.signOutDialog')}
 					visible={signOutConfirmationVisible}
 					onDismiss={onDismissDialogConfirmation}
-					onConfirmation={() => {
-						setSignOutConfirmationVisible(false);
-						auth().signOut();
-					}}
+					onConfirmation={signOut}
 				/>
 
 				<Portal>
@@ -483,5 +486,11 @@ export default function CustomDrawerContent(props: any) {
 const styles = StyleSheet.create({
 	content: {
 		overflow: 'hidden',
+	},
+	image: {
+		alignSelf: 'center',
+		resizeMode: 'contain',
+		width: '65%',
+		height: '65%',
 	},
 });

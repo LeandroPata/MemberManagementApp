@@ -303,7 +303,7 @@ export default function Index() {
 					</View>
 				</KeyboardAvoidingView>
 
-				<View style={[styles.buttonContainer, { marginTop: 50 }]}>
+				<View style={styles.buttonContainer}>
 					<Button
 						style={styles.button}
 						contentStyle={styles.buttonContent}

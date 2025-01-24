@@ -237,7 +237,7 @@ export default function Profile() {
 		// Delete previous picture if it is different from the placeholder
 		if (
 			profilePicture &&
-			profilePicture !== process.env.EXPO_PLACEHOLDER_PICTURE_URL &&
+			profilePicture !== process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL &&
 			profilePicture !== profile.profilePicture
 		) {
 			await reference
@@ -286,7 +286,7 @@ export default function Profile() {
 	const deletePicture = async () => {
 		if (
 			profilePicture &&
-			profilePicture !== process.env.EXPO_PLACEHOLDER_PICTURE_URL
+			profilePicture !== process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL
 		) {
 			await reference
 				.delete()

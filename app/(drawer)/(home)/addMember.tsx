@@ -53,7 +53,7 @@ export default function AddMember() {
 	const [birthDate, setBirthDate] = useState(new Date());
 	const [endDate, setEndDate] = useState(new Date());
 	const [profilePicture, setProfilePicture] = useState(
-		process.env.EXPO_PLACEHOLDER_PICTURE_URL
+		process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL
 	);
 
 	// All the logic to implement the snackbar
@@ -181,7 +181,7 @@ export default function AddMember() {
 	const uploadPicture = async (docID) => {
 		if (
 			profilePicture &&
-			profilePicture !== process.env.EXPO_PLACEHOLDER_PICTURE_URL
+			profilePicture !== process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL
 		) {
 			// Upload picture to Firebase if it is different from the placeholder
 
@@ -285,7 +285,7 @@ export default function AddMember() {
 					setZipCode('');
 					setBirthDate(new Date());
 					setEndDate(new Date());
-					setProfilePicture(process.env.EXPO_PLACEHOLDER_PICTURE_URL);
+					setProfilePicture(process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL);
 				});
 		} catch (e: any) {
 			const err = e as FirebaseError;

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
 	View,
 	StyleSheet,
@@ -273,7 +273,7 @@ export default function SearchMember() {
 						source={{
 							uri: item.profilePicture
 								? item.profilePicture
-								: process.env.EXPO_PLACEHOLDER_PICTURE_URL,
+								: process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL,
 						}}
 					/>
 					<Text style={[styles.title, { color: theme.colors.onPrimary }]}>

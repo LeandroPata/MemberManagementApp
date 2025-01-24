@@ -338,7 +338,8 @@ export default function importExport() {
 						.getDownloadURL();
           console.log(url); */
 
-					member.profilePicture = process.env.EXPO_PLACEHOLDER_PICTURE_URL;
+					member.profilePicture =
+						process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL;
 
 					batch.set(memberRef, member);
 				} else {

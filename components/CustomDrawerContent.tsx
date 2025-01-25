@@ -8,11 +8,15 @@ import {
 	Image,
 } from 'react-native';
 import {
+	Button,
 	Dialog,
+	HelperText,
 	List,
+	Modal,
 	Portal,
 	ProgressBar,
 	Switch,
+	TextInput,
 	useTheme,
 } from 'react-native-paper';
 import {
@@ -58,10 +62,22 @@ export default function CustomDrawerContent(props: any) {
 	const [expanded, setExpanded] = useState(false);
 	const [darkModeSwitch, setDarkModeSwitch] = useState(false);
 
+	const [changePasswordModal, setChangePasswordModal] = useState(false);
+
+	const [currentPassword, setCurrentPassword] = useState('');
+	const [newPassword, setNewPassword] = useState('');
+	const [confirmNewPassword, setConfirmNewPassword] = useState('');
+
+	const [currentPasswordError, setCurrentPasswordError] = useState(false);
+	const [newPasswordError, setNewPasswordError] = useState(false);
+	const [confirmNewPasswordError, setConfirmNewPasswordError] = useState(false);
+
 	const [updateVersion, setUpdateVersion] = useState('');
 	const [updateDownloadProgressVisible, setUpdateDownloadProgressVisible] =
 		useState(false);
 	const [updateDownloadProgress, setUpdateDownloadProgress] = useState(1);
+
+	const user = auth().currentUser;
 
 	// All the logic to implement the snackbar
 	const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -243,6 +259,84 @@ export default function CustomDrawerContent(props: any) {
 		}
 	};
 
+	const onChangePasswordModalDismiss = () => {
+		setChangePasswordModal(false);
+		setCurrentPassword('');
+		setCurrentPasswordError(false);
+		setNewPassword('');
+		setNewPasswordError(false);
+		setConfirmNewPassword('');
+		setConfirmNewPasswordError(false);
+	};
+
+	const checkCurrentPassword = async () => {
+		let passwordCheck = false;
+		if (!user || currentPassword.trim() === '') {
+			passwordCheck = false;
+			return passwordCheck;
+		}
+		const credential = auth.EmailAuthProvider.credential(
+			user.email,
+			currentPassword
+		);
+		await user
+			?.reauthenticateWithCredential(credential)
+			.then(() => {
+				console.log('Successfull reauthentication');
+				passwordCheck = true;
+			})
+			.catch((e: any) => {
+				const err = e as FirebaseError;
+				if (err.code === 'auth/invalid-credential') {
+					showSnackbar(t('drawer.passwordWrong'));
+					console.log(`Invalid credentials: ${err.message}`);
+					setCurrentPassword('');
+					setCurrentPasswordError(true);
+				} else {
+					//showSnackbar('Sign in failed: ' + err.message);
+					console.log(`Reauthentication failed: ${err.message}`);
+				}
+				passwordCheck = false;
+			});
+		return passwordCheck;
+	};
+
+	const changePassword = async () => {
+		if (
+			!newPassword.trim() ||
+			!confirmNewPassword.trim() ||
+			newPassword.trim().length < 6 ||
+			confirmNewPassword.trim().length < 6
+		) {
+			console.log('Invalid passwords');
+			showSnackbar('New passwords are invalid!');
+			setNewPasswordError(true);
+			setConfirmNewPasswordError(true);
+			return;
+		} else if (newPassword !== confirmNewPassword) {
+			console.log('Passwords do not match');
+			showSnackbar('Passwords do not match!');
+			setNewPasswordError(false);
+			setConfirmNewPasswordError(true);
+			return;
+		} else if (!(await checkCurrentPassword())) {
+			console.log('False');
+			return;
+		}
+
+		user
+			?.updatePassword(newPassword)
+			.then(() => {
+				console.log('Password updated');
+				showSnackbar('Password updated successfully!');
+			})
+			.catch((e: any) => {
+				const err = e as FirebaseError;
+				//showSnackbar('Sign in failed: ' + err.message);
+				console.log(`Updating password failed: ${err.message}`);
+			});
+	};
+
 	const signOut = () => {
 		setSignOutConfirmationVisible(false);
 		props.navigation.closeDrawer();
@@ -256,230 +350,346 @@ export default function CustomDrawerContent(props: any) {
 	};
 
 	return (
-		<>
+		<View style={{ flex: 1 }}>
+			<DialogConfirmation
+				text={t('drawer.checkUpdateDialog')}
+				visible={checkUpdateConfirmationVisible}
+				onDismiss={onDismissDialogConfirmation}
+				onConfirmation={checkUpdates}
+			/>
+
+			<DialogConfirmation
+				text={t('drawer.runUpdateDialog')}
+				visible={runUpdateConfirmationVisible}
+				onDismiss={onDismissDialogConfirmation}
+				onConfirmation={() => downloadUpdate(updateVersion)}
+			/>
+
+			<DialogConfirmation
+				text={t('drawer.signOutDialog')}
+				visible={signOutConfirmationVisible}
+				onDismiss={onDismissDialogConfirmation}
+				onConfirmation={signOut}
+			/>
+
+			<Portal>
+				<Dialog visible={updateDownloadProgressVisible}>
+					<Dialog.Title style={{ textAlign: 'center' }}>
+						{t('drawer.downloadingDialog')}
+					</Dialog.Title>
+					<Dialog.Content>
+						<ProgressBar
+							progress={updateDownloadProgress}
+							color={theme.colors.primary}
+						/>
+					</Dialog.Content>
+				</Dialog>
+				<Modal
+					visible={changePasswordModal}
+					onDismiss={onChangePasswordModalDismiss}
+					style={styles.modalContainer}
+					contentContainerStyle={[
+						styles.modalContentContainer,
+						{ backgroundColor: theme.colors.primaryContainer },
+					]}
+				>
+					<View
+						style={{
+							flex: 1,
+							justifyContent: 'space-evenly',
+						}}
+					>
+						<View>
+							<TextInput
+								style={styles.input}
+								value={currentPassword}
+								onChangeText={setCurrentPassword}
+								onEndEditing={() => {
+									if (
+										currentPassword.trim() === '' ||
+										currentPassword.trim().length < 6
+									)
+										setCurrentPasswordError(true);
+									else setCurrentPasswordError(false);
+								}}
+								error={currentPasswordError}
+								autoCapitalize='none'
+								label={t('drawer.currentPassword')}
+								secureTextEntry
+							/>
+							{currentPasswordError ? (
+								<HelperText
+									type='error'
+									visible={currentPasswordError}
+									style={styles.errorHelper}
+								>
+									{t('drawer.currentPasswordError')}
+								</HelperText>
+							) : null}
+						</View>
+						<View>
+							<TextInput
+								style={styles.input}
+								value={newPassword}
+								onChangeText={setNewPassword}
+								onEndEditing={() => {
+									if (
+										newPassword.trim() === '' ||
+										newPassword.trim().length < 6
+									)
+										setNewPasswordError(true);
+									else setNewPasswordError(false);
+								}}
+								error={newPasswordError}
+								autoCapitalize='none'
+								label={t('drawer.newPassword')}
+								secureTextEntry
+							/>
+							{newPasswordError ? (
+								<HelperText
+									type='error'
+									visible={newPasswordError}
+									style={styles.errorHelper}
+								>
+									{t('drawer.newPasswordError')}
+								</HelperText>
+							) : null}
+						</View>
+						<View>
+							<TextInput
+								style={styles.input}
+								value={confirmNewPassword}
+								onChangeText={setConfirmNewPassword}
+								onEndEditing={() => {
+									if (
+										confirmNewPassword.trim() === '' ||
+										confirmNewPassword.trim().length < 6 ||
+										newPassword !== confirmNewPassword
+									)
+										setConfirmNewPasswordError(true);
+									else setConfirmNewPasswordError(false);
+								}}
+								error={confirmNewPasswordError}
+								autoCapitalize='none'
+								label={t('drawer.confirmNewPassword')}
+								secureTextEntry
+							/>
+							{confirmNewPasswordError ? (
+								<HelperText
+									type='error'
+									visible={confirmNewPasswordError}
+									style={styles.errorHelper}
+								>
+									{t('drawer.confirmNewPasswordError')}
+								</HelperText>
+							) : null}
+						</View>
+					</View>
+					<Button onPress={changePassword}>Press</Button>
+				</Modal>
+			</Portal>
+
 			<SnackbarInfo
 				text={snackbarText}
 				visible={snackbarVisible}
 				onDismiss={onDismissSnackbar}
 			/>
-			<View style={{ flex: 1 }}>
-				<DialogConfirmation
-					text={t('drawer.checkUpdateDialog')}
-					visible={checkUpdateConfirmationVisible}
-					onDismiss={onDismissDialogConfirmation}
-					onConfirmation={checkUpdates}
+
+			<DrawerContentScrollView
+				{...props}
+				scrollEnabled={false}
+			>
+				<Image
+					style={styles.image}
+					source={require('@/assets/images/logoReact.png')}
 				/>
-
-				<DialogConfirmation
-					text={t('drawer.runUpdateDialog')}
-					visible={runUpdateConfirmationVisible}
-					onDismiss={onDismissDialogConfirmation}
-					onConfirmation={() => downloadUpdate(updateVersion)}
+				<DrawerItem
+					labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+					label={t('drawer.home')}
+					icon={({ focused, size, color }) => (
+						<Ionicons
+							name={focused ? 'home' : 'home-outline'}
+							size={size}
+							color={color}
+						/>
+					)}
+					inactiveTintColor={theme.colors.onBackground}
+					activeTintColor={theme.colors.primary}
+					inactiveBackgroundColor='transparent'
+					focused={currentRoute === '/(drawer)/(home)/home'}
+					onPress={() => drawerItemPress('/(drawer)/(home)/home')}
 				/>
-
-				<DialogConfirmation
-					text={t('drawer.signOutDialog')}
-					visible={signOutConfirmationVisible}
-					onDismiss={onDismissDialogConfirmation}
-					onConfirmation={signOut}
+				<DrawerItem
+					labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+					label={t('drawer.addMember')}
+					icon={({ focused, size, color }) => (
+						<Ionicons
+							name={focused ? 'person-add' : 'person-add-outline'}
+							size={size}
+							color={color}
+						/>
+					)}
+					inactiveTintColor={theme.colors.onBackground}
+					activeTintColor={theme.colors.primary}
+					inactiveBackgroundColor='transparent'
+					focused={currentRoute === '/(drawer)/(home)/addMember'}
+					onPress={() => drawerItemPress('/(drawer)/(home)/addMember')}
 				/>
+				<DrawerItem
+					labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+					label={t('drawer.searchMember')}
+					icon={({ focused, size, color }) => (
+						<Ionicons
+							name={focused ? 'search' : 'search-outline'}
+							size={size}
+							color={color}
+						/>
+					)}
+					inactiveTintColor={theme.colors.onBackground}
+					activeTintColor={theme.colors.primary}
+					inactiveBackgroundColor='transparent'
+					focused={currentRoute === '/(drawer)/(home)/searchMember'}
+					onPress={() => drawerItemPress('/(drawer)/(home)/searchMember')}
+				/>
+				<DrawerItem
+					labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+					label={t('drawer.importExport')}
+					icon={({ focused, size, color }) => (
+						<Ionicons
+							name={focused ? 'server' : 'server-outline'}
+							size={size}
+							color={color}
+						/>
+					)}
+					inactiveTintColor={theme.colors.onBackground}
+					activeTintColor={theme.colors.primary}
+					inactiveBackgroundColor='transparent'
+					focused={currentRoute === '/(drawer)/(home)/importExport'}
+					onPress={() => drawerItemPress('/(drawer)/(home)/importExport')}
+				/>
+				{/* <DrawerItemList {...props} /> */}
+			</DrawerContentScrollView>
 
-				<Portal>
-					<Dialog visible={updateDownloadProgressVisible}>
-						<Dialog.Title style={{ textAlign: 'center' }}>
-							{t('drawer.downloadingDialog')}
-						</Dialog.Title>
-						<Dialog.Content>
-							<ProgressBar
-								progress={updateDownloadProgress}
-								color={theme.colors.primary}
-							/>
-						</Dialog.Content>
-					</Dialog>
-				</Portal>
-
-				<DrawerContentScrollView
-					{...props}
-					scrollEnabled={false}
+			<View style={{ paddingBottom: 20 + insets.bottom }}>
+				<View
+					style={{
+						flexDirection: 'row',
+						justifyContent: 'space-between',
+						width: '95%',
+					}}
 				>
-					<Image
-						style={styles.image}
-						source={require('@/assets/images/logoReact.png')}
-					/>
-					<DrawerItem
-						labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
-						label={t('drawer.home')}
-						icon={({ focused, size, color }) => (
+					<List.Item
+						title={t('drawer.darkMode')}
+						titleStyle={{ fontSize: 15, fontWeight: 'bold' }}
+						left={(props) => (
 							<Ionicons
-								name={focused ? 'home' : 'home-outline'}
-								size={size}
-								color={color}
+								{...props}
+								name='moon-sharp'
+								size={25}
 							/>
 						)}
-						inactiveTintColor={theme.colors.onBackground}
-						activeTintColor={theme.colors.primary}
-						inactiveBackgroundColor='transparent'
-						focused={currentRoute === '/(drawer)/(home)/home'}
-						onPress={() => drawerItemPress('/(drawer)/(home)/home')}
 					/>
-					<DrawerItem
-						labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
-						label={t('drawer.addMember')}
-						icon={({ focused, size, color }) => (
+					<Switch
+						value={darkModeSwitch}
+						onValueChange={changeColorScheme}
+					/>
+				</View>
+				<TouchableOpacity
+					style={{ marginLeft: -4 }}
+					onPress={toggleAccordion}
+				>
+					<List.Item
+						title={t('drawer.language')}
+						titleStyle={{ fontSize: 15, fontWeight: 'bold' }}
+						left={(props) => (
 							<Ionicons
-								name={focused ? 'person-add' : 'person-add-outline'}
-								size={size}
-								color={color}
+								{...props}
+								name='language-sharp'
+								size={32}
 							/>
 						)}
-						inactiveTintColor={theme.colors.onBackground}
-						activeTintColor={theme.colors.primary}
-						inactiveBackgroundColor='transparent'
-						focused={currentRoute === '/(drawer)/(home)/addMember'}
-						onPress={() => drawerItemPress('/(drawer)/(home)/addMember')}
-					/>
-					<DrawerItem
-						labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
-						label={t('drawer.searchMember')}
-						icon={({ focused, size, color }) => (
+						right={(props) => (
 							<Ionicons
-								name={focused ? 'search' : 'search-outline'}
-								size={size}
-								color={color}
+								{...props}
+								name={expanded ? 'arrow-up' : 'arrow-down'}
+								size={25}
 							/>
 						)}
-						inactiveTintColor={theme.colors.onBackground}
-						activeTintColor={theme.colors.primary}
-						inactiveBackgroundColor='transparent'
-						focused={currentRoute === '/(drawer)/(home)/searchMember'}
-						onPress={() => drawerItemPress('/(drawer)/(home)/searchMember')}
 					/>
-					<DrawerItem
-						labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
-						label={t('drawer.importExport')}
-						icon={({ focused, size, color }) => (
-							<Ionicons
-								name={focused ? 'server' : 'server-outline'}
-								size={size}
-								color={color}
-							/>
-						)}
-						inactiveTintColor={theme.colors.onBackground}
-						activeTintColor={theme.colors.primary}
-						inactiveBackgroundColor='transparent'
-						focused={currentRoute === '/(drawer)/(home)/importExport'}
-						onPress={() => drawerItemPress('/(drawer)/(home)/importExport')}
-					/>
-					{/* <DrawerItemList {...props} /> */}
-				</DrawerContentScrollView>
-
-				<View style={{ paddingBottom: 20 + insets.bottom }}>
+				</TouchableOpacity>
+				<Animated.View style={[styles.content, animatedStyle]}>
 					<View
 						style={{
-							flexDirection: 'row',
-							justifyContent: 'space-between',
-							width: '95%',
+							width: '80%',
+							justifyContent: 'center',
+
+							alignSelf: 'center',
 						}}
 					>
 						<List.Item
-							title={t('drawer.darkMode')}
-							titleStyle={{ fontSize: 15, fontWeight: 'bold' }}
-							left={(props) => (
-								<Ionicons
-									{...props}
-									name='moon-sharp'
-									size={25}
-								/>
-							)}
+							title={`${getFlagEmoji('GB')}     English`}
+							onPress={() => {
+								i18next.changeLanguage('en-US');
+								AsyncStorage.setItem('language', 'en-US');
+							}}
 						/>
-						<Switch
-							value={darkModeSwitch}
-							onValueChange={changeColorScheme}
+						<List.Item
+							title={`${getFlagEmoji('PT')}     Português`}
+							onPress={() => {
+								i18next.changeLanguage('pt-PT');
+								AsyncStorage.setItem('language', 'pt-PT');
+							}}
 						/>
 					</View>
-					<TouchableOpacity
-						style={{ marginLeft: -4 }}
-						onPress={toggleAccordion}
-					>
-						<List.Item
-							title={t('drawer.language')}
-							titleStyle={{ fontSize: 15, fontWeight: 'bold' }}
-							left={(props) => (
-								<Ionicons
-									{...props}
-									name='language-sharp'
-									size={32}
-								/>
-							)}
-							right={(props) => (
-								<Ionicons
-									{...props}
-									name={expanded ? 'arrow-up' : 'arrow-down'}
-									size={25}
-								/>
-							)}
+				</Animated.View>
+
+				<DrawerItem
+					labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+					label={t('drawer.checkUpdate')}
+					icon={({ color }) => (
+						<Ionicons
+							name={'cloud-download-outline'}
+							color={color}
+							size={27}
 						/>
-					</TouchableOpacity>
-					<Animated.View style={[styles.content, animatedStyle]}>
-						<View
-							style={{
-								width: '80%',
-								justifyContent: 'center',
-
-								alignSelf: 'center',
-							}}
-						>
-							<List.Item
-								title={`${getFlagEmoji('GB')}     English`}
-								onPress={() => {
-									i18next.changeLanguage('en-US');
-									AsyncStorage.setItem('language', 'en-US');
-								}}
-							/>
-							<List.Item
-								title={`${getFlagEmoji('PT')}     Português`}
-								onPress={() => {
-									i18next.changeLanguage('pt-PT');
-									AsyncStorage.setItem('language', 'pt-PT');
-								}}
-							/>
-						</View>
-					</Animated.View>
-
-					<DrawerItem
-						labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
-						label={t('drawer.checkUpdate')}
-						icon={({ color }) => (
-							<Ionicons
-								name={'cloud-download-outline'}
-								color={color}
-								size={32}
-							/>
-						)}
-						inactiveTintColor={theme.colors.onBackground}
-						activeTintColor={theme.colors.primary}
-						inactiveBackgroundColor='transparent'
-						onPress={() => setCheckUpdateConfirmationVisible(true)}
-					/>
-
-					<DrawerItem
-						labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
-						label={t('drawer.signOut')}
-						icon={({ focused, color }) => (
-							<Ionicons
-								name={'log-out-outline'}
-								color={color}
-								size={32}
-							/>
-						)}
-						inactiveTintColor={theme.colors.onBackground}
-						activeTintColor={theme.colors.primary}
-						inactiveBackgroundColor='transparent'
-						onPress={() => setSignOutConfirmationVisible(true)}
-					/>
-				</View>
+					)}
+					inactiveTintColor={theme.colors.onBackground}
+					activeTintColor={theme.colors.primary}
+					inactiveBackgroundColor='transparent'
+					onPress={() => setCheckUpdateConfirmationVisible(true)}
+				/>
+				<DrawerItem
+					labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+					label={t('drawer.changePassword')}
+					icon={({ color }) => (
+						<Ionicons
+							name={'lock-open-outline'}
+							color={color}
+							size={28}
+						/>
+					)}
+					inactiveTintColor={theme.colors.onBackground}
+					activeTintColor={theme.colors.primary}
+					inactiveBackgroundColor='transparent'
+					onPress={() => setChangePasswordModal(true)}
+				/>
+				<DrawerItem
+					labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+					label={t('drawer.signOut')}
+					icon={({ color }) => (
+						<Ionicons
+							name={'log-out-outline'}
+							color={color}
+							size={32}
+						/>
+					)}
+					inactiveTintColor={theme.colors.onBackground}
+					activeTintColor={theme.colors.primary}
+					inactiveBackgroundColor='transparent'
+					onPress={() => setSignOutConfirmationVisible(true)}
+				/>
 			</View>
-		</>
+		</View>
 	);
 }
 
@@ -490,7 +700,24 @@ const styles = StyleSheet.create({
 	image: {
 		alignSelf: 'center',
 		resizeMode: 'contain',
-		width: '65%',
-		height: '65%',
+		width: '50%',
+		height: '50%',
+	},
+	modalContainer: {
+		marginHorizontal: 30,
+	},
+	modalContentContainer: {
+		height: '50%',
+		paddingVertical: 10,
+		paddingHorizontal: 15,
+		borderRadius: 20,
+		justifyContent: 'center',
+	},
+	input: {
+		marginVertical: 2,
+	},
+	errorHelper: {
+		fontWeight: 'bold',
+		fontSize: 15,
 	},
 });

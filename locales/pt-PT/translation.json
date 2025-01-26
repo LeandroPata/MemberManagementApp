@@ -27,7 +27,15 @@
 		"checkUpdateDialog": "Verificar se existem atualizações?",
 		"runUpdateDialog": "Existe uma nova atualização, atualizar?",
 		"noUpdate": "Versão mais atualizada já instalada!",
+		"passiveUpdateCheck": "Uma nova versão está disponível!",
 		"downloadingDialog": "A transferir...",
+		"currentPassword": "Password Atual",
+		"currentPasswordError": "Password é inválida!",
+		"newPassword": "Nova Password",
+		"newPasswordError": "A nova password tem de conter pelo menos 6 caracteres!",
+		"confirmNewPassword": "Confirmar Nova Password",
+		"confirmNewPasswordError": "As passwords não são iguais!",
+		"changePassword": "Mudar Password",
 		"signOutDialog": "Sair da conta?"
 	},
 	"home": {

@@ -6,6 +6,7 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 	Image,
+	useWindowDimensions,
 } from 'react-native';
 import {
 	Button,
@@ -314,7 +315,6 @@ export default function CustomDrawerContent(props: any) {
 			.catch((e: any) => {
 				const err = e as FirebaseError;
 				if (err.code === 'auth/invalid-credential') {
-					showSnackbar(t('drawer.passwordWrong'));
 					console.log(`Invalid credentials: ${err.message}`);
 					setCurrentPassword('');
 					setCurrentPasswordError(true);
@@ -328,20 +328,23 @@ export default function CustomDrawerContent(props: any) {
 	};
 
 	const changePassword = async () => {
-		if (
-			!newPassword.trim() ||
+		if (!currentPassword.trim() || currentPassword.trim().length < 6) {
+			console.log('Invalid current password');
+			setCurrentPasswordError(true);
+			return;
+		} else if (!newPassword.trim() || newPassword.trim().length < 6) {
+			console.log('Invalid new password');
+			setNewPasswordError(true);
+			return;
+		} else if (
 			!confirmNewPassword.trim() ||
-			newPassword.trim().length < 6 ||
 			confirmNewPassword.trim().length < 6
 		) {
-			console.log('Invalid passwords');
-			showSnackbar('New passwords are invalid!');
-			setNewPasswordError(true);
+			console.log('Invalid confirmed new password');
 			setConfirmNewPasswordError(true);
 			return;
 		} else if (newPassword !== confirmNewPassword) {
 			console.log('Passwords do not match');
-			showSnackbar('Passwords do not match!');
 			setNewPasswordError(false);
 			setConfirmNewPasswordError(true);
 			return;
@@ -376,7 +379,7 @@ export default function CustomDrawerContent(props: any) {
 	};
 
 	return (
-		<View style={{ flex: 1 }}>
+		<>
 			<DialogConfirmation
 				text={t('drawer.checkUpdateDialog')}
 				visible={checkUpdateConfirmationVisible}
@@ -416,7 +419,10 @@ export default function CustomDrawerContent(props: any) {
 					style={styles.modalContainer}
 					contentContainerStyle={[
 						styles.modalContentContainer,
-						{ backgroundColor: theme.colors.primaryContainer },
+						{
+							backgroundColor: theme.colors.primaryContainer,
+							minHeight: useWindowDimensions().height / 2,
+						},
 					]}
 				>
 					<View
@@ -488,9 +494,10 @@ export default function CustomDrawerContent(props: any) {
 								onChangeText={setConfirmNewPassword}
 								onEndEditing={() => {
 									if (
-										confirmNewPassword.trim() === '' ||
-										confirmNewPassword.trim().length < 6 ||
-										newPassword !== confirmNewPassword
+										newPassword.trim() !== '' &&
+										(confirmNewPassword.trim() === '' ||
+											confirmNewPassword.trim().length < 6 ||
+											newPassword !== confirmNewPassword)
 									)
 										setConfirmNewPasswordError(true);
 									else setConfirmNewPasswordError(false);
@@ -511,7 +518,16 @@ export default function CustomDrawerContent(props: any) {
 							) : null}
 						</View>
 					</View>
-					<Button onPress={changePassword}>Press</Button>
+					<Button
+						style={styles.button}
+						contentStyle={styles.buttonContent}
+						labelStyle={styles.buttonText}
+						icon='check-bold'
+						mode='elevated'
+						onPress={changePassword}
+					>
+						{t('drawer.changePassword')}
+					</Button>
 				</Modal>
 			</Portal>
 
@@ -520,202 +536,203 @@ export default function CustomDrawerContent(props: any) {
 				visible={snackbarVisible}
 				onDismiss={onDismissSnackbar}
 			/>
-
-			<DrawerContentScrollView
-				{...props}
-				scrollEnabled={false}
-			>
-				<Image
-					style={styles.image}
-					source={require('@/assets/images/logoReact.png')}
-				/>
-				<DrawerItem
-					labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
-					label={t('drawer.home')}
-					icon={({ focused, size, color }) => (
-						<Ionicons
-							name={focused ? 'home' : 'home-outline'}
-							size={size}
-							color={color}
-						/>
-					)}
-					inactiveTintColor={theme.colors.onBackground}
-					activeTintColor={theme.colors.primary}
-					inactiveBackgroundColor='transparent'
-					focused={currentRoute === '/(drawer)/(home)/home'}
-					onPress={() => drawerItemPress('/(drawer)/(home)/home')}
-				/>
-				<DrawerItem
-					labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
-					label={t('drawer.addMember')}
-					icon={({ focused, size, color }) => (
-						<Ionicons
-							name={focused ? 'person-add' : 'person-add-outline'}
-							size={size}
-							color={color}
-						/>
-					)}
-					inactiveTintColor={theme.colors.onBackground}
-					activeTintColor={theme.colors.primary}
-					inactiveBackgroundColor='transparent'
-					focused={currentRoute === '/(drawer)/(home)/addMember'}
-					onPress={() => drawerItemPress('/(drawer)/(home)/addMember')}
-				/>
-				<DrawerItem
-					labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
-					label={t('drawer.searchMember')}
-					icon={({ focused, size, color }) => (
-						<Ionicons
-							name={focused ? 'search' : 'search-outline'}
-							size={size}
-							color={color}
-						/>
-					)}
-					inactiveTintColor={theme.colors.onBackground}
-					activeTintColor={theme.colors.primary}
-					inactiveBackgroundColor='transparent'
-					focused={currentRoute === '/(drawer)/(home)/searchMember'}
-					onPress={() => drawerItemPress('/(drawer)/(home)/searchMember')}
-				/>
-				<DrawerItem
-					labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
-					label={t('drawer.importExport')}
-					icon={({ focused, size, color }) => (
-						<Ionicons
-							name={focused ? 'server' : 'server-outline'}
-							size={size}
-							color={color}
-						/>
-					)}
-					inactiveTintColor={theme.colors.onBackground}
-					activeTintColor={theme.colors.primary}
-					inactiveBackgroundColor='transparent'
-					focused={currentRoute === '/(drawer)/(home)/importExport'}
-					onPress={() => drawerItemPress('/(drawer)/(home)/importExport')}
-				/>
-				{/* <DrawerItemList {...props} /> */}
-			</DrawerContentScrollView>
-
-			<View style={{ paddingBottom: 20 + insets.bottom }}>
-				<View
-					style={{
-						flexDirection: 'row',
-						justifyContent: 'space-between',
-						width: '95%',
-					}}
+			<View style={{ flex: 1 }}>
+				<DrawerContentScrollView
+					{...props}
+					scrollEnabled={false}
 				>
-					<List.Item
-						title={t('drawer.darkMode')}
-						titleStyle={{ fontSize: 15, fontWeight: 'bold' }}
-						left={(props) => (
+					<Image
+						style={styles.image}
+						source={require('@/assets/images/logoReact.png')}
+					/>
+					<DrawerItem
+						labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+						label={t('drawer.home')}
+						icon={({ focused, size, color }) => (
 							<Ionicons
-								{...props}
-								name='moon-sharp'
-								size={25}
+								name={focused ? 'home' : 'home-outline'}
+								size={size}
+								color={color}
 							/>
 						)}
+						inactiveTintColor={theme.colors.onBackground}
+						activeTintColor={theme.colors.primary}
+						inactiveBackgroundColor='transparent'
+						focused={currentRoute === '/(drawer)/(home)/home'}
+						onPress={() => drawerItemPress('/(drawer)/(home)/home')}
 					/>
-					<Switch
-						value={darkModeSwitch}
-						onValueChange={changeColorScheme}
-					/>
-				</View>
-				<TouchableOpacity
-					style={{ marginLeft: -4 }}
-					onPress={toggleAccordion}
-				>
-					<List.Item
-						title={t('drawer.language')}
-						titleStyle={{ fontSize: 15, fontWeight: 'bold' }}
-						left={(props) => (
+					<DrawerItem
+						labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+						label={t('drawer.addMember')}
+						icon={({ focused, size, color }) => (
 							<Ionicons
-								{...props}
-								name='language-sharp'
-								size={32}
+								name={focused ? 'person-add' : 'person-add-outline'}
+								size={size}
+								color={color}
 							/>
 						)}
-						right={(props) => (
+						inactiveTintColor={theme.colors.onBackground}
+						activeTintColor={theme.colors.primary}
+						inactiveBackgroundColor='transparent'
+						focused={currentRoute === '/(drawer)/(home)/addMember'}
+						onPress={() => drawerItemPress('/(drawer)/(home)/addMember')}
+					/>
+					<DrawerItem
+						labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+						label={t('drawer.searchMember')}
+						icon={({ focused, size, color }) => (
 							<Ionicons
-								{...props}
-								name={expanded ? 'arrow-up' : 'arrow-down'}
-								size={25}
+								name={focused ? 'search' : 'search-outline'}
+								size={size}
+								color={color}
 							/>
 						)}
+						inactiveTintColor={theme.colors.onBackground}
+						activeTintColor={theme.colors.primary}
+						inactiveBackgroundColor='transparent'
+						focused={currentRoute === '/(drawer)/(home)/searchMember'}
+						onPress={() => drawerItemPress('/(drawer)/(home)/searchMember')}
 					/>
-				</TouchableOpacity>
-				<Animated.View style={[styles.content, animatedStyle]}>
+					<DrawerItem
+						labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+						label={t('drawer.importExport')}
+						icon={({ focused, size, color }) => (
+							<Ionicons
+								name={focused ? 'server' : 'server-outline'}
+								size={size}
+								color={color}
+							/>
+						)}
+						inactiveTintColor={theme.colors.onBackground}
+						activeTintColor={theme.colors.primary}
+						inactiveBackgroundColor='transparent'
+						focused={currentRoute === '/(drawer)/(home)/importExport'}
+						onPress={() => drawerItemPress('/(drawer)/(home)/importExport')}
+					/>
+					{/* <DrawerItemList {...props} /> */}
+				</DrawerContentScrollView>
+
+				<View style={{ paddingBottom: 20 + insets.bottom }}>
 					<View
 						style={{
-							width: '80%',
-							justifyContent: 'center',
-
-							alignSelf: 'center',
+							flexDirection: 'row',
+							justifyContent: 'space-between',
+							width: '95%',
 						}}
 					>
 						<List.Item
-							title={`${getFlagEmoji('GB')}     English`}
-							onPress={() => {
-								i18next.changeLanguage('en-US');
-								AsyncStorage.setItem('language', 'en-US');
-							}}
+							title={t('drawer.darkMode')}
+							titleStyle={{ fontSize: 15, fontWeight: 'bold' }}
+							left={(props) => (
+								<Ionicons
+									{...props}
+									name='moon-sharp'
+									size={25}
+								/>
+							)}
 						/>
-						<List.Item
-							title={`${getFlagEmoji('PT')}     Português`}
-							onPress={() => {
-								i18next.changeLanguage('pt-PT');
-								AsyncStorage.setItem('language', 'pt-PT');
-							}}
+						<Switch
+							value={darkModeSwitch}
+							onValueChange={changeColorScheme}
 						/>
 					</View>
-				</Animated.View>
+					<TouchableOpacity
+						style={{ marginLeft: -4 }}
+						onPress={toggleAccordion}
+					>
+						<List.Item
+							title={t('drawer.language')}
+							titleStyle={{ fontSize: 15, fontWeight: 'bold' }}
+							left={(props) => (
+								<Ionicons
+									{...props}
+									name='language-sharp'
+									size={32}
+								/>
+							)}
+							right={(props) => (
+								<Ionicons
+									{...props}
+									name={expanded ? 'arrow-up' : 'arrow-down'}
+									size={25}
+								/>
+							)}
+						/>
+					</TouchableOpacity>
+					<Animated.View style={[styles.content, animatedStyle]}>
+						<View
+							style={{
+								width: '80%',
+								justifyContent: 'center',
 
-				<DrawerItem
-					labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
-					label={t('drawer.checkUpdate')}
-					icon={({ color }) => (
-						<Ionicons
-							name={'cloud-download-outline'}
-							color={color}
-							size={27}
-						/>
-					)}
-					inactiveTintColor={theme.colors.onBackground}
-					activeTintColor={theme.colors.primary}
-					inactiveBackgroundColor='transparent'
-					onPress={() => setCheckUpdateConfirmationVisible(true)}
-				/>
-				<DrawerItem
-					labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
-					label={t('drawer.changePassword')}
-					icon={({ color }) => (
-						<Ionicons
-							name={'lock-open-outline'}
-							color={color}
-							size={28}
-						/>
-					)}
-					inactiveTintColor={theme.colors.onBackground}
-					activeTintColor={theme.colors.primary}
-					inactiveBackgroundColor='transparent'
-					onPress={() => setChangePasswordModal(true)}
-				/>
-				<DrawerItem
-					labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
-					label={t('drawer.signOut')}
-					icon={({ color }) => (
-						<Ionicons
-							name={'log-out-outline'}
-							color={color}
-							size={32}
-						/>
-					)}
-					inactiveTintColor={theme.colors.onBackground}
-					activeTintColor={theme.colors.primary}
-					inactiveBackgroundColor='transparent'
-					onPress={() => setSignOutConfirmationVisible(true)}
-				/>
+								alignSelf: 'center',
+							}}
+						>
+							<List.Item
+								title={`${getFlagEmoji('GB')}     English`}
+								onPress={() => {
+									i18next.changeLanguage('en-US');
+									AsyncStorage.setItem('language', 'en-US');
+								}}
+							/>
+							<List.Item
+								title={`${getFlagEmoji('PT')}     Português`}
+								onPress={() => {
+									i18next.changeLanguage('pt-PT');
+									AsyncStorage.setItem('language', 'pt-PT');
+								}}
+							/>
+						</View>
+					</Animated.View>
+
+					<DrawerItem
+						labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+						label={t('drawer.checkUpdate')}
+						icon={({ color }) => (
+							<Ionicons
+								name={'cloud-download-outline'}
+								color={color}
+								size={27}
+							/>
+						)}
+						inactiveTintColor={theme.colors.onBackground}
+						activeTintColor={theme.colors.primary}
+						inactiveBackgroundColor='transparent'
+						onPress={() => setCheckUpdateConfirmationVisible(true)}
+					/>
+					<DrawerItem
+						labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+						label={t('drawer.changePassword')}
+						icon={({ color }) => (
+							<Ionicons
+								name={'lock-open-outline'}
+								color={color}
+								size={28}
+							/>
+						)}
+						inactiveTintColor={theme.colors.onBackground}
+						activeTintColor={theme.colors.primary}
+						inactiveBackgroundColor='transparent'
+						onPress={() => setChangePasswordModal(true)}
+					/>
+					<DrawerItem
+						labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+						label={t('drawer.signOut')}
+						icon={({ color }) => (
+							<Ionicons
+								name={'log-out-outline'}
+								color={color}
+								size={32}
+							/>
+						)}
+						inactiveTintColor={theme.colors.onBackground}
+						activeTintColor={theme.colors.primary}
+						inactiveBackgroundColor='transparent'
+						onPress={() => setSignOutConfirmationVisible(true)}
+					/>
+				</View>
 			</View>
-		</View>
+		</>
 	);
 }
 
@@ -733,8 +750,7 @@ const styles = StyleSheet.create({
 		marginHorizontal: 30,
 	},
 	modalContentContainer: {
-		height: '50%',
-		paddingVertical: 10,
+		paddingVertical: 5,
 		paddingHorizontal: 15,
 		borderRadius: 20,
 		justifyContent: 'center',
@@ -745,5 +761,19 @@ const styles = StyleSheet.create({
 	errorHelper: {
 		fontWeight: 'bold',
 		fontSize: 15,
+	},
+	button: {
+		marginVertical: 8,
+		justifyContent: 'center',
+	},
+	buttonContent: {
+		minWidth: 50,
+		minHeight: 20,
+	},
+	buttonText: {
+		fontSize: 25,
+		fontWeight: 'bold',
+		overflow: 'visible',
+		paddingTop: 10,
 	},
 });

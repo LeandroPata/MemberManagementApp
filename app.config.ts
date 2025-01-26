@@ -4,9 +4,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	...config,
 	name: 'MemberManagementApp',
 	slug: 'MemberManagementApp',
-	version: '0.11.9',
+	version: '1.0.0',
 	orientation: 'portrait',
-	icon: './assets/images/logoReact.png',
+	icon: './assets/images/iconReact.png',
 	scheme: 'myapp',
 	userInterfaceStyle: 'automatic',
 	newArchEnabled: false,
@@ -18,7 +18,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	},
 	android: {
 		adaptiveIcon: {
-			foregroundImage: './assets/images/logoReact.png',
+			foregroundImage: './assets/images/iconReact.png',
 			backgroundColor: '#fffbff',
 		},
 		package: 'com.leandropata.membermanagementapp',

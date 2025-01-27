@@ -19,6 +19,7 @@ import {
 	Switch,
 	TextInput,
 	useTheme,
+	Text,
 } from 'react-native-paper';
 import {
 	DrawerContentScrollView,
@@ -64,7 +65,7 @@ export default function CustomDrawerContent(props: any) {
 		useCallback(() => {
 			// Screen focused
 			//console.log("Hello, I'm focused!");
-			console.log(firstTimeCount);
+			//console.log(firstTimeCount);
 			if (!firstTimeCount) {
 				setFirstTimeCount(1);
 				checkUpdates(true);
@@ -730,6 +731,9 @@ export default function CustomDrawerContent(props: any) {
 						inactiveBackgroundColor='transparent'
 						onPress={() => setSignOutConfirmationVisible(true)}
 					/>
+					<Text style={styles.title}>
+						Version: {Constants.expoConfig?.version}
+					</Text>
 				</View>
 			</View>
 		</>
@@ -775,5 +779,10 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 		overflow: 'visible',
 		paddingTop: 10,
+	},
+	title: {
+		fontSize: 13,
+		textAlign: 'center',
+		textAlignVertical: 'center',
 	},
 });

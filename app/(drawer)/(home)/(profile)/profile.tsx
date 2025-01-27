@@ -37,7 +37,7 @@ export default function Profile() {
 	const theme = useTheme();
 	const { t } = useTranslation();
 
-	const [autoNumber, setAutoNumber] = useState(true);
+	const [autoNumber, setAutoNumber] = useState(false);
 	const [profile, setProfile] = useState(null);
 	const [editing, setEditing] = useState(false);
 
@@ -285,8 +285,11 @@ export default function Profile() {
 
 	const deletePicture = async () => {
 		if (
-			profilePicture &&
-			profilePicture !== process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL
+			(profile.profilePicture &&
+				profile.profilePicture !==
+					process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL) ||
+			(profilePicture &&
+				profilePicture !== process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL)
 		) {
 			await reference
 				.delete()
@@ -410,7 +413,11 @@ export default function Profile() {
 					zipCode: zipCode.trim(),
 					birthDate: Timestamp.fromDate(birthDate),
 					endDate: Timestamp.fromDate(endDate),
-					profilePicture: url ? url : profilePicture,
+					profilePicture: url
+						? url
+						: profilePicture
+						? profilePicture
+						: profile.profilePicture,
 				})
 				.then(() => {
 					showSnackbar(t('profile.updatedMember'));
@@ -564,15 +571,16 @@ export default function Profile() {
 											value={autoNumber}
 											onValueChange={(input) => {
 												setAutoNumber(input);
+												setMemberNumber('');
 												setMemberNumberError(false);
 											}}
 										/>
 									</View>
 									<TextInput
-										disabled={autoNumber}
+										disabled={Boolean(!editing || (editing && autoNumber))}
 										style={[styles.input, { flex: 3 }]}
 										value={
-											memberNumber
+											memberNumber || editing
 												? memberNumber
 												: profile.memberNumber.toString()
 										}
@@ -596,7 +604,7 @@ export default function Profile() {
 								<TextInput
 									disabled={!editing}
 									style={styles.input}
-									value={name ? name : profile.name}
+									value={name || editing ? name : profile.name}
 									onChangeText={setName}
 									onEndEditing={() => {
 										if (!name.trim()) {
@@ -615,14 +623,14 @@ export default function Profile() {
 										visible={nameError}
 										style={styles.errorHelper}
 									>
-										Name is invalid!
+										{t('profile.nameError')}
 									</HelperText>
 								) : null}
 
 								<TextInput
 									disabled={!editing}
 									style={styles.input}
-									value={email ? email : profile.email}
+									value={email || editing ? email : profile.email}
 									onChangeText={setEmail}
 									onEndEditing={() => {
 										if (email?.trim() && !email.match(emailRegex)) {
@@ -641,14 +649,16 @@ export default function Profile() {
 										visible={emailError}
 										style={styles.errorHelper}
 									>
-										Email is invalid!
+										{t('profile.emailError')}
 									</HelperText>
 								) : null}
 
 								<TextInput
 									disabled={!editing}
 									style={styles.input}
-									value={phoneNumber ? phoneNumber : profile.phoneNumber}
+									value={
+										phoneNumber || editing ? phoneNumber : profile.phoneNumber
+									}
 									onChangeText={(input) => {
 										setPhoneNumber(input.replace(/[^0-9+\-\s]/g, ''));
 									}}
@@ -676,7 +686,7 @@ export default function Profile() {
 								<TextInput
 									disabled={!editing}
 									style={styles.input}
-									value={country ? country : profile.country}
+									value={country || editing ? country : profile.country}
 									onChangeText={setCountry}
 									onEndEditing={() => {
 										setCountry(country.trim());
@@ -689,7 +699,7 @@ export default function Profile() {
 								<TextInput
 									disabled={!editing}
 									style={styles.input}
-									value={address ? address : profile.address}
+									value={address || editing ? address : profile.address}
 									onChangeText={setAddress}
 									onEndEditing={() => {
 										setAddress(address.trim());
@@ -702,7 +712,7 @@ export default function Profile() {
 								<TextInput
 									disabled={!editing}
 									style={styles.input}
-									value={zipCode ? zipCode : profile.zipCode}
+									value={zipCode || editing ? zipCode : profile.zipCode}
 									onChangeText={(input) => {
 										setZipCode(input.replace(/[^0-9\-]/g, ''));
 										if (input.length > 4 && !input.includes('-')) {

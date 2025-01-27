@@ -35,8 +35,10 @@
 		"newPasswordError": "A nova password tem de conter pelo menos 6 caracteres!",
 		"confirmNewPassword": "Confirmar Nova Password",
 		"confirmNewPasswordError": "As passwords não são iguais!",
+		"passwordUpdated": "Password atualizada com sucesso!",
 		"changePassword": "Mudar Password",
-		"signOutDialog": "Sair da conta?"
+		"signOutDialog": "Sair da conta?",
+		"version": "Versão"
 	},
 	"home": {
 		"addMember": "Adicionar Membro",
@@ -59,7 +61,7 @@
 		"address": "Morada",
 		"zipCode": "Código Postal",
 		"birthDate": "Data de Nascimento",
-		"endDate": "Data Final",
+		"endDate": "Fim da Filiação",
 		"addMember": "Adicionar Membro",
 		"gallery": "Galeria",
 		"camera": "Tirar Foto",
@@ -96,7 +98,7 @@
 		"address": "Morada",
 		"zipCode": "Código Postal",
 		"birthDate": "Data de Nascimento",
-		"endDate": "Data Final",
+		"endDate": "Fim da Filiação",
 		"gallery": "Galeria",
 		"camera": "Tirar Foto",
 		"cameraPermission": "Permissão para aceder à camera negada!",

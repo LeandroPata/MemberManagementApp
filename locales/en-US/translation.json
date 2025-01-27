@@ -35,8 +35,10 @@
 		"newPasswordError": "New password must be at least 6 characters!",
 		"confirmNewPassword": "Confirm New Password",
 		"confirmNewPasswordError": "Passwords do not match!",
+		"passwordUpdated": "Password updated successfully!",
 		"changePassword": "Change Password",
-		"signOutDialog": "Sign Out?"
+		"signOutDialog": "Sign Out?",
+		"version": "Version"
 	},
 	"home": {
 		"addMember": "Add Member",
@@ -59,7 +61,7 @@
 		"address": "Address",
 		"zipCode": "Zip Code",
 		"birthDate": "Birth Date",
-		"endDate": "End Date",
+		"endDate": "Membership End",
 		"addMember": "Add Member",
 		"gallery": "From Gallery",
 		"camera": "Take Picture",
@@ -96,7 +98,7 @@
 		"address": "Address",
 		"zipCode": "Zip Code",
 		"birthDate": "Birth Date",
-		"endDate": "End Date",
+		"endDate": "Membership End",
 		"gallery": "From Gallery",
 		"camera": "Take Picture",
 		"cameraPermission": "Permission to access camera denied!",

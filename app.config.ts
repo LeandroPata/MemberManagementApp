@@ -4,7 +4,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	...config,
 	name: 'MemberManagementApp',
 	slug: 'MemberManagementApp',
-	version: '1.0.3',
+	version: '1.0.5',
 	orientation: 'portrait',
 	icon: './assets/images/iconReact.png',
 	scheme: 'myapp',
@@ -18,7 +18,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	},
 	android: {
 		adaptiveIcon: {
-			foregroundImage: './assets/images/iconReact.png',
+			foregroundImage: './assets/images/adaptiveIconReact.png',
 			backgroundColor: '#fffbff',
 		},
 		package: 'com.leandropata.membermanagementapp',
@@ -53,12 +53,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 			'expo-splash-screen',
 			{
 				image: './assets/images/logoReact.png',
-				imageWidth: 200,
+				imageWidth: 250,
 				resizeMode: 'contain',
 				backgroundColor: '#fffbff',
 				dark: {
 					image: './assets/images/logoReact.png',
-					imageWidth: 200,
+					imageWidth: 250,
 					resizeMode: 'contain',
 					backgroundColor: '#191918',
 				},

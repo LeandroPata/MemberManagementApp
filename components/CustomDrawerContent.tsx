@@ -358,7 +358,7 @@ export default function CustomDrawerContent(props: any) {
 			?.updatePassword(newPassword)
 			.then(() => {
 				console.log('Password updated');
-				showSnackbar('Password updated successfully!');
+				showSnackbar(t('drawer.passwordUpdated'));
 			})
 			.catch((e: any) => {
 				const err = e as FirebaseError;
@@ -732,7 +732,7 @@ export default function CustomDrawerContent(props: any) {
 						onPress={() => setSignOutConfirmationVisible(true)}
 					/>
 					<Text style={styles.title}>
-						Version: {Constants.expoConfig?.version}
+						{t('drawer.version')}: {Constants.expoConfig?.version}
 					</Text>
 				</View>
 			</View>

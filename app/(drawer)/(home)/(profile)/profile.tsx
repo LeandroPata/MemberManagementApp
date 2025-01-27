@@ -673,7 +673,9 @@ export default function Profile() {
 								<TextInput
 									disabled={!editing}
 									style={styles.input}
-									value={occupation ? occupation : profile.occupation}
+									value={
+										occupation || editing ? occupation : profile.occupation
+									}
 									onChangeText={setOccupation}
 									onEndEditing={() => {
 										setOccupation(occupation.trim());

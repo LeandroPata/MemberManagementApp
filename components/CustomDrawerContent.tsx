@@ -537,6 +537,7 @@ export default function CustomDrawerContent(props: any) {
 				visible={snackbarVisible}
 				onDismiss={onDismissSnackbar}
 			/>
+
 			<View style={{ flex: 1 }}>
 				<DrawerContentScrollView
 					{...props}

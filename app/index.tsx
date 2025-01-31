@@ -172,11 +172,6 @@ export default function Index() {
 
 	return (
 		<>
-			<SnackbarInfo
-				text={snackbarText}
-				visible={snackbarVisible}
-				onDismiss={onDismissSnackbar}
-			/>
 			<Portal>
 				<Modal
 					visible={showModal}
@@ -235,6 +230,13 @@ export default function Index() {
 					</View>
 				</Modal>
 			</Portal>
+
+			<SnackbarInfo
+				text={snackbarText}
+				visible={snackbarVisible}
+				onDismiss={onDismissSnackbar}
+			/>
+
 			<View style={[styles.container, { paddingTop: insets.top }]}>
 				<KeyboardAvoidingView
 					style={{ flex: 1, marginHorizontal: 20 }}

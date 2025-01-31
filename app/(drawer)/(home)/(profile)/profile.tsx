@@ -462,19 +462,6 @@ export default function Profile() {
 
 	return (
 		<>
-			<SnackbarInfo
-				text={snackbarText}
-				visible={snackbarVisible}
-				onDismiss={onDismissSnackbar}
-			/>
-
-			<DialogConfirmation
-				text={t('profile.deleteConfirmation')}
-				visible={dialogConfirmationVisible}
-				onDismiss={onDismissDialogConfirmation}
-				onConfirmation={deleteMember}
-			/>
-
 			<Portal>
 				<Modal
 					visible={pictureModal}
@@ -509,6 +496,19 @@ export default function Profile() {
 					</Button>
 				</Modal>
 			</Portal>
+
+			<DialogConfirmation
+				text={t('profile.deleteConfirmation')}
+				visible={dialogConfirmationVisible}
+				onDismiss={onDismissDialogConfirmation}
+				onConfirmation={deleteMember}
+			/>
+
+			<SnackbarInfo
+				text={snackbarText}
+				visible={snackbarVisible}
+				onDismiss={onDismissSnackbar}
+			/>
 
 			<View style={styles.container}>
 				{loading || !profile ? (

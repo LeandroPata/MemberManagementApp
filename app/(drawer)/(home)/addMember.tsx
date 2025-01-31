@@ -299,11 +299,6 @@ export default function AddMember() {
 
 	return (
 		<>
-			<SnackbarInfo
-				text={snackbarText}
-				visible={snackbarVisible}
-				onDismiss={onDismissSnackbar}
-			/>
 			<Portal>
 				<Modal
 					visible={pictureModal}
@@ -338,6 +333,12 @@ export default function AddMember() {
 					</Button>
 				</Modal>
 			</Portal>
+
+			<SnackbarInfo
+				text={snackbarText}
+				visible={snackbarVisible}
+				onDismiss={onDismissSnackbar}
+			/>
 
 			<View style={styles.container}>
 				<ScrollView>

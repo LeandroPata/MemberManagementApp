@@ -105,7 +105,7 @@ export default function SearchMember() {
 			});
 	};
 
-	const filterMemberList = async (input: string) => {
+	const filterMemberList = async (input: string, limit = true) => {
 		const fuseOptions = {
 			includeScore: true,
 			shouldSort: true,
@@ -115,10 +115,17 @@ export default function SearchMember() {
 		};
 		const fuse = new Fuse(memberList, fuseOptions);
 
-		const results = fuse.search(input, { limit: 4 });
+		if (limit) {
+			const results = fuse.search(input, { limit: 4 });
 
-		setHintMemberList(results);
-		//console.log(results);
+			//console.log(results);
+			setHintMemberList(results);
+		} else {
+			const results = fuse.search(input);
+
+			//console.log(results);
+			return results;
+		}
 	};
 
 	const getMembersByName = async (memberName: string, fuzzySearch = false) => {
@@ -131,8 +138,10 @@ export default function SearchMember() {
 				setLoadingName(false);
 			} else getAllMembers();
 			return;
-		} else if (fuzzySearch && hintMemberList.length > 0) {
-			for (const hintMember of hintMemberList) {
+		} else if (fuzzySearch) {
+			const list = await filterMemberList(memberName, false);
+
+			for (const hintMember of list) {
 				//console.log(hintMember);
 				await firestore()
 					.collection('members')

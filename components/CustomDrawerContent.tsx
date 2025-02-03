@@ -625,6 +625,7 @@ export default function CustomDrawerContent(props: any) {
 							focused={currentRoute === '/(drawer)/(home)/searchMember'}
 							onPress={() => drawerItemPress('/(drawer)/(home)/searchMember')}
 						/>
+
 						<DrawerItem
 							labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
 							label={t('drawer.importExport')}

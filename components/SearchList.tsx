@@ -7,13 +7,13 @@ import React, {
 import {
 	Animated,
 	FlatList,
+	View,
 	type GestureResponderEvent,
 	type KeyboardTypeOptions,
 	type ListRenderItem,
 	type StyleProp,
 	type TextInput,
 	type TextStyle,
-	View,
 	type ViewStyle,
 } from 'react-native';
 import { Searchbar, useTheme } from 'react-native-paper';
@@ -27,6 +27,8 @@ type SearchListProps = ComponentPropsWithRef<typeof TextInput> & {
 	onChangeText?: (query: string) => void;
 	onEndEditing?: (() => void) | undefined;
 	onSubmitEditing?: (() => void) | undefined;
+	onFocus?: (() => void) | undefined;
+	onBlur?: (() => void) | undefined;
 	autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters' | undefined;
 	keyboardType?: KeyboardTypeOptions | undefined;
 	placeholder?: string;
@@ -69,6 +71,8 @@ const SearchList = (props: SearchListProps) => {
 				onChangeText={props.onChangeText}
 				onEndEditing={props.onEndEditing}
 				onSubmitEditing={props.onSubmitEditing}
+				onFocus={props.onFocus}
+				onBlur={props.onBlur}
 				autoCapitalize={props.autoCapitalize}
 				keyboardType={props.keyboardType}
 				placeholder={props.placeholder}
@@ -78,8 +82,10 @@ const SearchList = (props: SearchListProps) => {
 			{flatlistVisible ? (
 				<Animated.View
 					style={{
-						overflow: 'hidden',
+						//overflow: 'hidden',
 						height: height,
+						minHeight: 31,
+						maxHeight: 31 * 5,
 						position: 'absolute',
 						top: 55,
 						zIndex: 10,
@@ -95,11 +101,10 @@ const SearchList = (props: SearchListProps) => {
 				>
 					<FlatList
 						keyboardShouldPersistTaps='handled'
-						scrollEnabled={false}
+						scrollEnabled={true}
 						data={props.data}
 						renderItem={props.renderItem}
 						//keyExtractor={(item) => item.item.key}
-						//extraData={refreshFlatlist}
 						numColumns={1}
 					/>
 				</Animated.View>

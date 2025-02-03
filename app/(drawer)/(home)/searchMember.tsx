@@ -105,7 +105,7 @@ export default function SearchMember() {
 			});
 	};
 
-	const filterMemberList = async (input: string, limit = true) => {
+	const filterMemberList = async (input: string) => {
 		const fuseOptions = {
 			includeScore: true,
 			shouldSort: true,
@@ -115,17 +115,10 @@ export default function SearchMember() {
 		};
 		const fuse = new Fuse(memberList, fuseOptions);
 
-		if (limit) {
-			const results = fuse.search(input, { limit: 4 });
+		const results = fuse.search(input);
 
-			//console.log(results);
-			setHintMemberList(results);
-		} else {
-			const results = fuse.search(input);
-
-			//console.log(results);
-			return results;
-		}
+		//console.log(results);
+		setHintMemberList(results);
 	};
 
 	const getMembersByName = async (memberName: string, fuzzySearch = false) => {
@@ -139,34 +132,32 @@ export default function SearchMember() {
 			} else getAllMembers();
 			return;
 		} else if (fuzzySearch) {
-			const list = await filterMemberList(memberName, false);
-
-			for (const hintMember of list) {
-				//console.log(hintMember);
-				await firestore()
-					.collection('members')
-					.orderBy('name', 'asc')
-					.where('name', '==', hintMember.item)
-					.get()
-					.then((querySnapshot) => {
-						if (querySnapshot) {
-							querySnapshot.forEach((doc) => {
+			await firestore()
+				.collection('members')
+				.orderBy('name', 'asc')
+				.get()
+				.then((querySnapshot) => {
+					if (querySnapshot.docs.length) {
+						querySnapshot.forEach((doc) => {
+							for (const hintMember of hintMemberList) {
+								//console.log(hintMember);
 								//console.log(doc.data());
-								currentMembers.push({
-									key: doc.id,
-									name: doc.data().name,
-									memberNumber: doc.data().memberNumber,
-									profilePicture: doc.data().profilePicture,
-								});
-							});
-						}
-					})
-					.catch((e: any) => {
-						const err = e as FirebaseError;
-						console.log(`Error getting member list: ${err.message}`);
-						setLoadingName(false);
-					});
-			}
+								if (doc.data().name === hintMember.item)
+									currentMembers.push({
+										key: doc.id,
+										name: doc.data().name,
+										memberNumber: doc.data().memberNumber,
+										profilePicture: doc.data().profilePicture,
+									});
+							}
+						});
+					}
+				})
+				.catch((e: any) => {
+					const err = e as FirebaseError;
+					console.log(`Error getting member list: ${err.message}`);
+					setLoadingName(false);
+				});
 		} else {
 			//console.log(memberName);
 			await firestore()
@@ -175,7 +166,7 @@ export default function SearchMember() {
 				.where('name', '==', memberName)
 				.get()
 				.then((querySnapshot) => {
-					if (querySnapshot) {
+					if (querySnapshot.docs.length) {
 						querySnapshot.forEach((doc) => {
 							//console.log(doc.data());
 							currentMembers.push({
@@ -215,7 +206,7 @@ export default function SearchMember() {
 				.where('memberNumber', '==', number)
 				.get()
 				.then((querySnapshot) => {
-					if (querySnapshot) {
+					if (querySnapshot.docs.length) {
 						querySnapshot.forEach((doc) => {
 							//console.log(doc.data());
 							currentMembers.push({
@@ -319,56 +310,57 @@ export default function SearchMember() {
 
 	return (
 		<View style={styles.container}>
+			<SearchList
+				style={{ marginBottom: 10 }}
+				icon='account'
+				value={name}
+				placeholder={t('searchMember.name')}
+				data={hintMemberList}
+				onChangeText={(input) => {
+					setName(input);
+					if (input.trim()) filterMemberList(input);
+					else setHintMemberList([]);
+				}}
+				/* onEndEditing={() => {
+						getMembersByName(name, true);
+					}} */
+				onSubmitEditing={() => {
+					getMembersByName(name, true);
+				}}
+				onFocus={() => filterMemberList(name)}
+				onBlur={() => setHintMemberList([])}
+				renderItem={renderMemberHint}
+				loading={loadingName}
+				onClearIconPress={() => {
+					setName('');
+					setHintMemberList([]);
+				}}
+			/>
+			<Searchbar
+				style={{ marginBottom: 10 }}
+				icon='numeric'
+				value={memberNumber}
+				//onChangeText={setMemberNumber}
+				onChangeText={(input) => {
+					setMemberNumber(input.replace(/[^0-9]/g, ''));
+				}}
+				//onEndEditing={props.onEndEditing}
+				onSubmitEditing={() => {
+					getMembersByNumber(Number(memberNumber.trim()));
+				}}
+				maxLength={6}
+				loading={loadingNumber}
+				autoCapitalize='none'
+				keyboardType='numeric'
+				placeholder={t('searchMember.memberNumber')}
+				onClearIconPress={() => {
+					setMemberNumber('');
+				}}
+			/>
 			<KeyboardAvoidingView
 				style={{ marginHorizontal: '3%' }}
 				behavior='padding'
 			>
-				<SearchList
-					style={{ marginBottom: 10 }}
-					icon='account'
-					value={name}
-					placeholder={t('searchMember.name')}
-					data={hintMemberList}
-					onChangeText={(input) => {
-						setName(input);
-						if (input.trim()) filterMemberList(input);
-						else setHintMemberList([]);
-					}}
-					/* onEndEditing={() => {
-						getMembersByName(name, true);
-					}} */
-					onSubmitEditing={() => {
-						getMembersByName(name, true);
-					}}
-					renderItem={renderMemberHint}
-					loading={loadingName}
-					onClearIconPress={() => {
-						setName('');
-						setHintMemberList([]);
-					}}
-				/>
-				<Searchbar
-					style={{ marginBottom: 10 }}
-					icon='numeric'
-					value={memberNumber}
-					//onChangeText={setMemberNumber}
-					onChangeText={(input) => {
-						setMemberNumber(input.replace(/[^0-9]/g, ''));
-					}}
-					//onEndEditing={props.onEndEditing}
-					onSubmitEditing={() => {
-						getMembersByNumber(Number(memberNumber.trim()));
-					}}
-					maxLength={6}
-					loading={loadingNumber}
-					autoCapitalize='none'
-					keyboardType='numeric'
-					placeholder={t('searchMember.memberNumber')}
-					onClearIconPress={() => {
-						setMemberNumber('');
-					}}
-				/>
-
 				<View
 					style={{
 						flexDirection: 'row',

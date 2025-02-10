@@ -4,7 +4,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	...config,
 	name: 'MemberManagementApp',
 	slug: 'MemberManagementApp',
-	version: '1.0.10',
+	version: '1.0.12',
 	orientation: 'portrait',
 	icon: './assets/images/iconReact.png',
 	scheme: 'myapp',
@@ -24,7 +24,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 		package: 'com.leandropata.membermanagementapp',
 		permissions: [
 			'android.permission.READ_EXTERNAL_STORAGE',
-			'android.permission.WRITE_EXTERNAL_STORAGE',
 			'android.permission.REQUEST_INSTALL_PACKAGES',
 		],
 		intentFilters: [

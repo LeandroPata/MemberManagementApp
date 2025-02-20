@@ -2,17 +2,25 @@
 
 This is a personal project created to improve member management.
 
-It was developed with the intent to accurately, quickly and easily create a member profile, checking a member's information and other features.
+It was developed with the intent to accurately, quickly and easily create a member profile, checking a member's information and other features, while making the information available anywhere by storing it in a cloud database.
 
 ## Features
 
 ### Main Features
 
-- Add new Members to a database
+- Add new Members to a cloud database
 - Consult a specific member's information
 - Edit a member's information
 - Delete members
 - Import/Export of members information to/from .csv files in order to facilitate sharing and/or editing
+
+<p align='middle'>
+  <img align='top' src='assets/samples/mainMenu.png' alt = 'MainMenu' width=190>
+  <img align='top' src='assets/samples/addMember.png' alt = 'AddMemberMenu' width=190>
+  <img align='top' src='assets/samples/searchMember.png' alt = 'SearchMemberMenu' width=190>
+  <img align='top' src='assets/samples/profile.png' alt = 'Profile' width=190>
+  <img align='top' src='assets/samples/importExport.png' alt = 'ImportExportMenu' width=190>
+</p>
 
 ### General Features
 
@@ -21,6 +29,11 @@ It was developed with the intent to accurately, quickly and easily create a memb
 - Translation to different languages
 - Light/Dark Theme
 - Checking for updates (as it is a personal project, publishing in App Stores isn't feasible, so a different update checking system was implemented, not possible for iOS)
+
+<p align='middle'>
+  <img align='top' src='assets/samples/drawerLight.png' alt = 'DrawerLightMode' width=190>
+  <img align='top' src='assets/samples/drawerDark.png' alt = 'DrawerDarkMode' width=190>
+</p>
 
 ## Tecnical Notes
 

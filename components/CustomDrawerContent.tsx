@@ -193,10 +193,10 @@ export default function CustomDrawerContent(props: any) {
 		RNFetchBlob.fs
 			.ls(RNFetchBlob.fs.dirs.CacheDir)
 			.then((files) => {
-				console.log(files);
+				//console.log(files);
 				for (const file of files) {
 					if (file.endsWith('.apk')) {
-						console.log(file);
+						//console.log(file);
 						deleteFile(`${RNFetchBlob.fs.dirs.CacheDir}/${file}`);
 					}
 				}
@@ -220,7 +220,7 @@ export default function CustomDrawerContent(props: any) {
 					if (compareVersions(ref.name)) {
 						update = true;
 						setUpdateVersion(ref.name);
-						console.log(ref.name);
+						//console.log(ref.name);
 					}
 				}
 			})
@@ -295,7 +295,7 @@ export default function CustomDrawerContent(props: any) {
 			const downloadProgress =
 				(taskSnapshot.bytesTransferred * 100) / taskSnapshot.totalBytes / 100;
 			setUpdateDownloadProgress(Number(downloadProgress.toFixed(2)));
-			console.log(Number(downloadProgress.toFixed(2)));
+			//console.log(Number(downloadProgress.toFixed(2)));
 		});
 
 		await task

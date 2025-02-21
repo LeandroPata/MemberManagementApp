@@ -133,7 +133,7 @@ export default function AddMember() {
 				aspect: [3, 4],
 			});
 
-			console.log(result);
+			//console.log(result);
 
 			if (!result.canceled) {
 				setProfilePicture(result.assets[0].uri);
@@ -166,7 +166,7 @@ export default function AddMember() {
 				aspect: [3, 4],
 			});
 
-			console.log(result);
+			//console.log(result);
 
 			if (!result.canceled) {
 				setProfilePicture(result.assets[0].uri);
@@ -209,7 +209,7 @@ export default function AddMember() {
 
 			// Get download url
 			const url = await reference.getDownloadURL();
-			console.log(url);
+			//console.log(url);
 			setProfilePicture(url);
 			return url;
 		}

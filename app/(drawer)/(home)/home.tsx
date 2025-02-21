@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 import { Button } from 'react-native-paper';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +9,12 @@ export default function Home() {
 
 	return (
 		<View style={styles.container}>
+			<View style={styles.imageContainer}>
+				<Image
+					style={styles.image}
+					source={require('@/assets/images/logoReact.png')}
+				/>
+			</View>
 			<View style={styles.buttonContainer}>
 				<Button
 					style={styles.button}
@@ -51,7 +57,7 @@ export default function Home() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		justifyContent: 'center',
+		//justifyContent: 'center',
 	},
 	buttonContainer: {
 		marginHorizontal: 20,
@@ -70,5 +76,16 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 		overflow: 'visible',
 		paddingTop: 10,
+	},
+	imageContainer: {
+		justifyContent: 'center',
+		alignSelf: 'center',
+		width: '50%',
+		height: '35%',
+	},
+	image: {
+		resizeMode: 'contain',
+		width: '100%',
+		height: '100%',
 	},
 });

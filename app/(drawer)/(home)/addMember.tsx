@@ -17,6 +17,7 @@ import {
 	Modal,
 	useTheme,
 	HelperText,
+	Checkbox,
 } from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
 import * as ImagePicker from 'expo-image-picker';
@@ -25,12 +26,14 @@ import firestore, { Timestamp } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import { useTranslation } from 'react-i18next';
 import SnackbarInfo from '@/components/SnackbarInfo';
+import YearPicker from '@/components/YearPicker';
 
 export default function AddMember() {
 	const theme = useTheme();
 	const { t } = useTranslation();
 
 	const [autoNumber, setAutoNumber] = useState(true);
+	const [paid, setPaid] = useState(false);
 
 	const [loading, setLoading] = useState(false);
 
@@ -39,7 +42,8 @@ export default function AddMember() {
 	const [emailError, setEmailError] = useState(false);
 
 	const [birthDateModal, setBirthDateModal] = useState(false);
-	const [endDateModal, setEndDateModal] = useState(false);
+	const [paidDateModal, setPaidDateModal] = useState(false);
+
 	const [pictureModal, setPictureModal] = useState(false);
 
 	const [name, setName] = useState('');
@@ -51,7 +55,8 @@ export default function AddMember() {
 	const [address, setAddress] = useState('');
 	const [zipCode, setZipCode] = useState('');
 	const [birthDate, setBirthDate] = useState(new Date());
-	const [endDate, setEndDate] = useState(new Date());
+	const [paidDate, setPaidDate] = useState(new Date());
+	const [endDate, setEndDate] = useState(new Date().getFullYear());
 	const [profilePicture, setProfilePicture] = useState(
 		process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL
 	);
@@ -65,6 +70,13 @@ export default function AddMember() {
 		setSnackbarVisible(true);
 	};
 	const onDismissSnackbar = () => setSnackbarVisible(false);
+
+	// All the logic to implement the YearPicker
+	const [endDateModal, setEndDateModal] = useState(false);
+
+	const onYearReceived = (year: number) => {
+		setEndDate(year);
+	};
 
 	const emailRegex = /.+@.+\..+/g;
 	let minNumber = 0;
@@ -334,6 +346,14 @@ export default function AddMember() {
 				</Modal>
 			</Portal>
 
+			<YearPicker
+				visible={endDateModal}
+				onDismiss={() => {
+					setEndDateModal(false);
+				}}
+				onConfirm={onYearReceived}
+			/>
+
 			<SnackbarInfo
 				text={snackbarText}
 				visible={snackbarVisible}
@@ -564,33 +584,58 @@ export default function AddMember() {
 							/>
 						</>
 
-						<>
-							<Button
-								style={{ marginVertical: 5 }}
-								labelStyle={styles.dateText}
-								onPress={() => setEndDateModal(true)}
-							>
-								{`${t('addMember.endDate')}: ${endDate.toLocaleDateString(
-									'pt-pt'
-								)}`}
-							</Button>
-							<DatePicker
-								modal
-								mode='date'
-								locale='pt-pt'
-								open={endDateModal}
-								date={endDate}
-								minimumDate={new Date()}
-								theme={theme.dark ? 'dark' : 'light'}
-								onConfirm={(endDate) => {
-									setEndDateModal(false);
-									setEndDate(endDate);
-								}}
-								onCancel={() => {
-									setEndDateModal(false);
+						<View
+							style={{
+								flexDirection: 'row',
+								flexWrap: 'wrap',
+								justifyContent: 'center',
+								alignItems: 'center',
+							}}
+						>
+							<Checkbox.Item
+								uncheckedColor={theme.colors.primary}
+								label='Paid?'
+								labelStyle={[styles.dateText, { color: theme.colors.primary }]}
+								status={paid ? 'checked' : 'unchecked'}
+								onPress={() => {
+									setPaid(!paid);
 								}}
 							/>
-						</>
+							{paid ? (
+								<>
+									<Button
+										labelStyle={styles.dateText}
+										onPress={() => setPaidDateModal(true)}
+									>
+										{`on ${paidDate.toLocaleDateString('pt-pt')}`}
+									</Button>
+									<DatePicker
+										modal
+										mode='date'
+										locale='pt-pt'
+										open={paidDateModal}
+										date={paidDate}
+										//minimumDate={new Date()}
+										theme={theme.dark ? 'dark' : 'light'}
+										onConfirm={(date) => {
+											setPaidDateModal(false);
+											setPaidDate(date);
+										}}
+										onCancel={() => {
+											setPaidDateModal(false);
+										}}
+									/>
+									<View style={{ flexDirection: 'column' }}>
+										<Button
+											labelStyle={styles.dateText}
+											onPress={() => setEndDateModal(true)}
+										>
+											{`until ${endDate}`}
+										</Button>
+									</View>
+								</>
+							) : null}
+						</View>
 					</KeyboardAvoidingView>
 				</ScrollView>
 

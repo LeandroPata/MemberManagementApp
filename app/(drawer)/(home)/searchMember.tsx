@@ -62,6 +62,7 @@ export default function SearchMember() {
 			.get()
 			.then((querySnapshot) => {
 				const membersAll = [];
+				// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
 				querySnapshot.forEach((doc) => {
 					membersAll.push({
 						key: doc.id,
@@ -138,6 +139,7 @@ export default function SearchMember() {
 				.get()
 				.then((querySnapshot) => {
 					if (querySnapshot.docs.length) {
+						// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
 						querySnapshot.forEach((doc) => {
 							for (const hintMember of hintMemberList) {
 								//console.log(hintMember);
@@ -167,6 +169,7 @@ export default function SearchMember() {
 				.get()
 				.then((querySnapshot) => {
 					if (querySnapshot.docs.length) {
+						// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
 						querySnapshot.forEach((doc) => {
 							//console.log(doc.data());
 							currentMembers.push({
@@ -207,6 +210,7 @@ export default function SearchMember() {
 				.get()
 				.then((querySnapshot) => {
 					if (querySnapshot.docs.length) {
+						// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
 						querySnapshot.forEach((doc) => {
 							//console.log(doc.data());
 							currentMembers.push({

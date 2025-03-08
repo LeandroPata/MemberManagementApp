@@ -4,8 +4,33 @@ import { Button } from 'react-native-paper';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
+import firestore, { Timestamp } from '@react-native-firebase/firestore';
+import type { FirebaseError } from 'firebase/app';
+
 export default function Home() {
 	const { t } = useTranslation();
+
+	/* const convertDB = async () => {
+		await firestore()
+			.collection('members')
+			.orderBy('name', 'asc')
+			.get()
+			.then((querySnapshot) => {
+				// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
+				querySnapshot.forEach((doc) => {
+					const docRef = firestore().collection('members').doc(doc.id);
+					docRef.update({
+						paidDate: Timestamp.fromDate(new Date()),
+						endDate: new Date().getFullYear(),
+					});
+				});
+			})
+			.catch((e: any) => {
+				const err = e as FirebaseError;
+				//showSnackbar('File upload failed: ' + err.message);
+				console.log(`Updating db failed: ${err.message}`);
+			});
+	}; */
 
 	return (
 		<View style={styles.container}>

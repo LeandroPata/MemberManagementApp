@@ -18,7 +18,7 @@ import {
 	Text,
 	useTheme,
 	HelperText,
-	Dialog,
+	Checkbox,
 } from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
@@ -30,6 +30,7 @@ import storage from '@react-native-firebase/storage';
 import { useTranslation } from 'react-i18next';
 import SnackbarInfo from '@/components/SnackbarInfo';
 import DialogConfirmation from '@/components/DialogConfirmation';
+import YearPicker from '@/components/YearPicker';
 
 export default function Profile() {
 	const { profileID } = useLocalSearchParams();
@@ -38,6 +39,7 @@ export default function Profile() {
 	const { t } = useTranslation();
 
 	const [autoNumber, setAutoNumber] = useState(false);
+	const [paid, setPaid] = useState(false);
 	const [profile, setProfile] = useState(null);
 	const [editing, setEditing] = useState(false);
 
@@ -50,7 +52,8 @@ export default function Profile() {
 	const [emailError, setEmailError] = useState(false);
 
 	const [birthDateModal, setBirthDateModal] = useState(false);
-	const [endDateModal, setEndDateModal] = useState(false);
+	const [paidDateModal, setPaidDateModal] = useState(false);
+
 	const [pictureModal, setPictureModal] = useState(false);
 
 	const [name, setName] = useState('');
@@ -62,7 +65,8 @@ export default function Profile() {
 	const [address, setAddress] = useState('');
 	const [zipCode, setZipCode] = useState('');
 	const [birthDate, setBirthDate] = useState(new Date());
-	const [endDate, setEndDate] = useState(new Date());
+	const [paidDate, setPaidDate] = useState(new Date());
+	const [endDate, setEndDate] = useState(new Date().getFullYear());
 	const [profilePicture, setProfilePicture] = useState<string | null>(null);
 
 	// All the logic to implement SnackbarInfo
@@ -79,6 +83,13 @@ export default function Profile() {
 	const [dialogConfirmationVisible, setDialogConfirmationVisible] =
 		useState(false);
 	const onDismissDialogConfirmation = () => setDialogConfirmationVisible(false);
+
+	// All the logic to implement the YearPicker
+	const [endDateModal, setEndDateModal] = useState(false);
+
+	const onYearReceived = (year: number) => {
+		setEndDate(year);
+	};
 
 	const emailRegex = /.+@.+\..+/g;
 	const reference = storage().ref(`profilePicture/${profileID}.jpg`);
@@ -97,8 +108,10 @@ export default function Profile() {
 			setAddress('');
 			setZipCode('');
 			setBirthDate(new Date());
-			setEndDate(new Date());
+			setPaidDate(new Date());
+			setEndDate(new Date().getFullYear());
 			setProfilePicture('');
+			setPaid(!!profile?.paidDate);
 
 			setNameError(false);
 			setMemberNumberError(false);
@@ -127,13 +140,15 @@ export default function Profile() {
 				setAddress('');
 				setZipCode('');
 				setBirthDate(new Date());
-				setEndDate(new Date());
+				setPaidDate(new Date());
+				setEndDate(new Date().getFullYear());
 				setProfilePicture('');
 
 				setEditing(false);
 				setPictureModal(false);
 				setDialogConfirmationVisible(false);
 				setBirthDateModal(false);
+				setPaidDateModal(false);
 				setEndDateModal(false);
 
 				setNameError(false);
@@ -154,6 +169,7 @@ export default function Profile() {
 				.then((documentSnapshot) => {
 					if (documentSnapshot?.data()) {
 						setProfile(documentSnapshot.data());
+						setPaid(!!documentSnapshot.data()?.paidDate);
 						/* setName(documentSnapshot.data().name);
             setMemberNumber(documentSnapshot.data().memberNumber.toString());
             setEmail(documentSnapshot.data().email);
@@ -313,6 +329,7 @@ export default function Profile() {
 				.get()
 				.then((querySnapshot) => {
 					let i = 1;
+					// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
 					querySnapshot.forEach((documentSnapshot) => {
 						if (i === Number(memberNumber.trim())) {
 							minNumber = i;
@@ -342,6 +359,7 @@ export default function Profile() {
 					.orderBy('memberNumber', 'asc')
 					.get()
 					.then((querySnapshot) => {
+						// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
 						querySnapshot.forEach((documentSnapshot) => {
 							if (
 								memberNumber.trim() === documentSnapshot.data().memberNumber
@@ -412,7 +430,8 @@ export default function Profile() {
 					address: address.trim(),
 					zipCode: zipCode.trim(),
 					birthDate: Timestamp.fromDate(birthDate),
-					endDate: Timestamp.fromDate(endDate),
+					paidDate: paid ? Timestamp.fromDate(paidDate) : null,
+					endDate: paid ? endDate : 0,
 					profilePicture: url
 						? url
 						: profilePicture
@@ -502,6 +521,14 @@ export default function Profile() {
 				visible={dialogConfirmationVisible}
 				onDismiss={onDismissDialogConfirmation}
 				onConfirmation={deleteMember}
+			/>
+
+			<YearPicker
+				visible={endDateModal}
+				onDismiss={() => {
+					setEndDateModal(false);
+				}}
+				onConfirm={onYearReceived}
 			/>
 
 			<SnackbarInfo
@@ -770,39 +797,68 @@ export default function Profile() {
 									/>
 								</>
 
-								<>
-									<Button
+								<View
+									style={{
+										flexDirection: 'row',
+										flexWrap: 'wrap',
+										justifyContent: 'center',
+										alignItems: 'center',
+									}}
+								>
+									<Checkbox.Item
 										disabled={!editing}
-										style={{ marginVertical: 5 }}
-										labelStyle={styles.dateText}
-										onPress={() => setEndDateModal(true)}
-									>
-										{`${t('profile.endDate')}: ${
-											endDate.toLocaleDateString('pt-pt') !==
-											new Date().toLocaleDateString('pt-pt')
-												? endDate.toLocaleDateString('pt-pt')
-												: new Date(profile.endDate.toDate()).toLocaleDateString(
-														'pt-pt'
-												  )
-										}`}
-									</Button>
-									<DatePicker
-										modal
-										mode='date'
-										locale='pt-pt'
-										open={endDateModal}
-										date={endDate}
-										minimumDate={new Date()}
-										theme={theme.dark ? 'dark' : 'light'}
-										onConfirm={(endDate) => {
-											setEndDateModal(false);
-											setEndDate(endDate);
-										}}
-										onCancel={() => {
-											setEndDateModal(false);
+										uncheckedColor={theme.colors.primary}
+										label={paid ? 'Paid' : ' Not Paid'}
+										labelStyle={[
+											styles.dateText,
+											{
+												color: !editing
+													? theme.colors.onSurfaceDisabled
+													: theme.colors.primary,
+											},
+										]}
+										status={paid ? 'checked' : 'unchecked'}
+										onPress={() => {
+											setPaid(!paid);
 										}}
 									/>
-								</>
+									{paid ? (
+										<>
+											<Button
+												disabled={!editing}
+												labelStyle={styles.dateText}
+												onPress={() => setPaidDateModal(true)}
+											>
+												{`on ${paidDate.toLocaleDateString('pt-pt')}`}
+											</Button>
+											<DatePicker
+												modal
+												mode='date'
+												locale='pt-pt'
+												open={paidDateModal}
+												date={paidDate}
+												//minimumDate={new Date()}
+												theme={theme.dark ? 'dark' : 'light'}
+												onConfirm={(date) => {
+													setPaidDateModal(false);
+													setPaidDate(date);
+												}}
+												onCancel={() => {
+													setPaidDateModal(false);
+												}}
+											/>
+											<View style={{ flexDirection: 'column' }}>
+												<Button
+													disabled={!editing}
+													labelStyle={styles.dateText}
+													onPress={() => setEndDateModal(true)}
+												>
+													{`until ${endDate}`}
+												</Button>
+											</View>
+										</>
+									) : null}
+								</View>
 							</KeyboardAvoidingView>
 						</ScrollView>
 
@@ -838,7 +894,12 @@ export default function Profile() {
 											setAddress(profile.address);
 											setZipCode(profile.zipCode);
 											setBirthDate(new Date(profile.birthDate.toDate()));
-											setEndDate(new Date(profile.endDate.toDate()));
+											setPaidDate(
+												profile.paidDate
+													? new Date(profile.paidDate.toDate())
+													: new Date()
+											);
+											setEndDate(profile.endDate || new Date().getFullYear());
 											setProfilePicture('');
 										}}
 									>

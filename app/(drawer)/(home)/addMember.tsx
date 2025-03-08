@@ -89,6 +89,7 @@ export default function AddMember() {
 				.get()
 				.then((querySnapshot) => {
 					let i = 1;
+					// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
 					querySnapshot.forEach((documentSnapshot) => {
 						if (i === Number(memberNumber.trim())) {
 							minNumber = i;
@@ -116,6 +117,7 @@ export default function AddMember() {
 				.orderBy('memberNumber', 'asc')
 				.get()
 				.then((querySnapshot) => {
+					// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
 					querySnapshot.forEach((documentSnapshot) => {
 						if (memberNumber.trim() === documentSnapshot.data().memberNumber) {
 							numberAvailable++;
@@ -282,7 +284,8 @@ export default function AddMember() {
 					zipCode: zipCode.trim(),
 					birthDate: Timestamp.fromDate(birthDate),
 					addedDate: Timestamp.fromDate(new Date()),
-					endDate: Timestamp.fromDate(endDate),
+					paidDate: paid ? Timestamp.fromDate(paidDate) : null,
+					endDate: paid ? endDate : '',
 					profilePicture: url ? url : profilePicture,
 				})
 				.then(() => {
@@ -296,7 +299,8 @@ export default function AddMember() {
 					setAddress('');
 					setZipCode('');
 					setBirthDate(new Date());
-					setEndDate(new Date());
+					setPaidDate(new Date());
+					setEndDate(new Date().getFullYear());
 					setProfilePicture(process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL);
 				});
 		} catch (e: any) {

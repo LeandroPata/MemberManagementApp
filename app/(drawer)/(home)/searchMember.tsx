@@ -335,6 +335,7 @@ export default function SearchMember() {
 				onBlur={() => setHintMemberList([])}
 				renderItem={renderMemberHint}
 				loading={loadingName}
+				autoCapitalize='words'
 				onClearIconPress={() => {
 					setName('');
 					setHintMemberList([]);

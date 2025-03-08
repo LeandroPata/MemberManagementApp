@@ -285,7 +285,7 @@ export default function AddMember() {
 					birthDate: Timestamp.fromDate(birthDate),
 					addedDate: Timestamp.fromDate(new Date()),
 					paidDate: paid ? Timestamp.fromDate(paidDate) : null,
-					endDate: paid ? endDate : '',
+					endDate: paid ? endDate : 0,
 					profilePicture: url ? url : profilePicture,
 				})
 				.then(() => {

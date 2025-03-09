@@ -65,7 +65,11 @@
 		"addMember": "Adicionar Membro",
 		"gallery": "Galeria",
 		"camera": "Tirar Foto",
-		"cameraPermission": "Permissão para aceder à camera negada!"
+		"cameraPermission": "Permissão para aceder à camera negada!",
+		"paid": "Pago",
+		"notPaid": "Não Pago",
+		"on": "em",
+		"until": "até"
 	},
 	"searchMember": {
 		"name": "Nome",
@@ -109,6 +113,10 @@
 		"no": "Não",
 		"deleteConfirmation": "Tem a certeza que quer apagar este membro?",
 		"updatedMember": "Membro Atualizado!",
-		"deletedMember": "Membro Apagado!"
+		"deletedMember": "Membro Apagado!",
+		"paid": "Pago",
+		"notPaid": "Não Pago",
+		"on": "em",
+		"until": "até"
 	}
 }

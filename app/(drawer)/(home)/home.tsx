@@ -4,8 +4,8 @@ import { Button } from 'react-native-paper';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import firestore, { Timestamp } from '@react-native-firebase/firestore';
-import type { FirebaseError } from 'firebase/app';
+/* import firestore, { Timestamp } from '@react-native-firebase/firestore';
+import type { FirebaseError } from 'firebase/app'; */
 
 export default function Home() {
 	const { t } = useTranslation();

@@ -457,7 +457,7 @@ export default function AddMember() {
 								visible={nameError}
 								style={styles.errorHelper}
 							>
-								Name is invalid!
+								{t('addMember.nameError')}
 							</HelperText>
 						) : null}
 
@@ -482,7 +482,7 @@ export default function AddMember() {
 								visible={emailError}
 								style={styles.errorHelper}
 							>
-								Email is invalid!
+								{t('addMember.emailError')}
 							</HelperText>
 						) : null}
 
@@ -598,7 +598,7 @@ export default function AddMember() {
 						>
 							<Checkbox.Item
 								uncheckedColor={theme.colors.primary}
-								label='Paid?'
+								label={paid ? t('addMember.paid') : t('addMember.notPaid')}
 								labelStyle={[styles.dateText, { color: theme.colors.primary }]}
 								status={paid ? 'checked' : 'unchecked'}
 								onPress={() => {
@@ -611,7 +611,9 @@ export default function AddMember() {
 										labelStyle={styles.dateText}
 										onPress={() => setPaidDateModal(true)}
 									>
-										{`on ${paidDate.toLocaleDateString('pt-pt')}`}
+										{`${t('addMember.on')} ${paidDate.toLocaleDateString(
+											'pt-pt'
+										)}`}
 									</Button>
 									<DatePicker
 										modal
@@ -634,7 +636,7 @@ export default function AddMember() {
 											labelStyle={styles.dateText}
 											onPress={() => setEndDateModal(true)}
 										>
-											{`until ${endDate}`}
+											{`${t('addMember.until')} ${endDate}`}
 										</Button>
 									</View>
 								</>

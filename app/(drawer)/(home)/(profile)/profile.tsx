@@ -109,7 +109,7 @@ export default function Profile() {
 			setZipCode('');
 			setBirthDate(new Date());
 			setPaidDate(new Date());
-			setEndDate(new Date().getFullYear());
+			setEndDate(0);
 			setProfilePicture('');
 			setPaid(!!profile?.paidDate);
 
@@ -808,7 +808,7 @@ export default function Profile() {
 									<Checkbox.Item
 										disabled={!editing}
 										uncheckedColor={theme.colors.primary}
-										label={paid ? 'Paid' : ' Not Paid'}
+										label={paid ? t('profile.paid') : t('profile.notPaid')}
 										labelStyle={[
 											styles.dateText,
 											{
@@ -829,7 +829,16 @@ export default function Profile() {
 												labelStyle={styles.dateText}
 												onPress={() => setPaidDateModal(true)}
 											>
-												{`on ${paidDate.toLocaleDateString('pt-pt')}`}
+												{`${t('profile.on')} ${
+													paidDate.toLocaleDateString('pt-pt') !==
+													new Date().toLocaleDateString('pt-pt')
+														? paidDate.toLocaleDateString('pt-pt')
+														: profile.paidDate
+														? new Date(
+																profile.paidDate.toDate()
+														  ).toLocaleDateString('pt-pt')
+														: new Date().toLocaleDateString('pt-pt')
+												}`}
 											</Button>
 											<DatePicker
 												modal
@@ -853,7 +862,9 @@ export default function Profile() {
 													labelStyle={styles.dateText}
 													onPress={() => setEndDateModal(true)}
 												>
-													{`until ${endDate}`}
+													{`${t('profile.until')} ${
+														endDate || editing ? endDate : profile.endDate
+													}`}
 												</Button>
 											</View>
 										</>

@@ -1,11 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import {
-	View,
-	StyleSheet,
-	KeyboardAvoidingView,
-	FlatList,
-	Keyboard,
-} from 'react-native';
+import { View, KeyboardAvoidingView, FlatList, Keyboard } from 'react-native';
 import {
 	Avatar,
 	Button,
@@ -21,6 +15,7 @@ import type { FirebaseError } from 'firebase/app';
 import { useTranslation } from 'react-i18next';
 import Fuse from 'fuse.js';
 import SearchList from '@/components/SearchList';
+import { globalStyles } from '@/styles/global';
 
 export default function SearchMember() {
 	const theme = useTheme();
@@ -262,7 +257,7 @@ export default function SearchMember() {
 		//console.log(item);
 		return (
 			<TouchableRipple
-				style={[styles.item, { backgroundColor: theme.colors.primary }]}
+				style={[globalStyles.item, { backgroundColor: theme.colors.primary }]}
 				onPress={() => {
 					router.push({
 						pathname: '/profile',
@@ -280,10 +275,20 @@ export default function SearchMember() {
 								: process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL,
 						}}
 					/>
-					<Text style={[styles.title, { color: theme.colors.onPrimary }]}>
+					<Text
+						style={[
+							globalStyles.text.search,
+							{ color: theme.colors.onPrimary },
+						]}
+					>
 						{`${t('searchMember.name')}: ${item.name}`}
 					</Text>
-					<Text style={[styles.title, { color: theme.colors.onPrimary }]}>
+					<Text
+						style={[
+							globalStyles.text.search,
+							{ color: theme.colors.onPrimary },
+						]}
+					>
 						{`${t('searchMember.memberNumber')}: ${item.memberNumber}`}
 					</Text>
 				</View>
@@ -313,9 +318,9 @@ export default function SearchMember() {
 	};
 
 	return (
-		<View style={styles.container}>
+		<View style={globalStyles.container.global}>
 			<SearchList
-				style={{ marginBottom: 10 }}
+				style={globalStyles.searchBar}
 				icon='account'
 				value={name}
 				placeholder={t('searchMember.name')}
@@ -342,7 +347,7 @@ export default function SearchMember() {
 				}}
 			/>
 			<Searchbar
-				style={{ marginBottom: 10 }}
+				style={globalStyles.searchBar}
 				icon='numeric'
 				value={memberNumber}
 				//onChangeText={setMemberNumber}
@@ -376,11 +381,8 @@ export default function SearchMember() {
 				>
 					<View style={{ width: '49%' }}>
 						<Button
-							style={styles.button}
-							labelStyle={[
-								styles.buttonText,
-								{ fontSize: 15, paddingTop: 0, fontWeight: 'normal' },
-							]}
+							style={globalStyles.button.search}
+							labelStyle={globalStyles.buttonText.search}
 							mode='elevated'
 							onPress={() => orderMembersName()}
 						>
@@ -390,11 +392,8 @@ export default function SearchMember() {
 
 					<View style={{ width: '49%' }}>
 						<Button
-							style={styles.button}
-							labelStyle={[
-								styles.buttonText,
-								{ fontSize: 13, paddingTop: 0, fontWeight: 'normal' },
-							]}
+							style={globalStyles.button.search}
+							labelStyle={[globalStyles.buttonText.search, { fontSize: 13 }]}
 							mode='elevated'
 							onPress={() => orderMembersNumber()}
 						>
@@ -414,42 +413,3 @@ export default function SearchMember() {
 		</View>
 	);
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		justifyContent: 'center',
-	},
-	buttonContainer: {
-		marginHorizontal: 20,
-		alignItems: 'center',
-	},
-	button: {
-		justifyContent: 'center',
-	},
-	buttonContent: {
-		minWidth: 250,
-		minHeight: 50,
-	},
-	buttonText: {
-		fontSize: 25,
-		fontWeight: 'bold',
-		overflow: 'visible',
-		paddingTop: 10,
-	},
-	input: {
-		marginVertical: 2,
-	},
-	item: {
-		borderRadius: 5,
-		paddingHorizontal: 10,
-		paddingVertical: 5,
-		marginVertical: '1%',
-		marginHorizontal: '1%',
-		width: '48%',
-	},
-	title: {
-		fontSize: 15,
-		fontWeight: 'bold',
-	},
-});

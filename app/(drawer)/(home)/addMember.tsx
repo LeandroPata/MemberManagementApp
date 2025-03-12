@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
 	View,
-	StyleSheet,
 	KeyboardAvoidingView,
 	Pressable,
 	ScrollView,
@@ -27,6 +26,7 @@ import storage from '@react-native-firebase/storage';
 import { useTranslation } from 'react-i18next';
 import SnackbarInfo from '@/components/SnackbarInfo';
 import YearPicker from '@/components/YearPicker';
+import { globalStyles } from '@/styles/global';
 
 export default function AddMember() {
 	const theme = useTheme();
@@ -321,16 +321,16 @@ export default function AddMember() {
 					onDismiss={() => {
 						setPictureModal(false);
 					}}
-					style={styles.modalContainer}
+					style={globalStyles.modalContainer.global}
 					contentContainerStyle={[
-						styles.modalContentContainer,
+						globalStyles.modalContentContainer.global,
 						{ backgroundColor: theme.colors.primaryContainer },
 					]}
 				>
 					<Button
-						style={styles.button}
-						contentStyle={styles.buttonContent}
-						labelStyle={styles.buttonText}
+						style={globalStyles.button.global}
+						contentStyle={globalStyles.buttonContent.global}
+						labelStyle={globalStyles.buttonText.global}
 						icon='file-image'
 						mode='elevated'
 						onPress={pickImage}
@@ -338,9 +338,9 @@ export default function AddMember() {
 						{t('addMember.gallery')}
 					</Button>
 					<Button
-						style={styles.button}
-						contentStyle={styles.buttonContent}
-						labelStyle={styles.buttonText}
+						style={globalStyles.button.global}
+						contentStyle={globalStyles.buttonContent.global}
+						labelStyle={globalStyles.buttonText.global}
 						icon='camera'
 						mode='elevated'
 						onPress={takePicture}
@@ -364,11 +364,11 @@ export default function AddMember() {
 				onDismiss={onDismissSnackbar}
 			/>
 
-			<View style={styles.container}>
+			<View style={globalStyles.container.global}>
 				<ScrollView>
 					<KeyboardAvoidingView style={{ paddingHorizontal: 10 }}>
 						<Pressable
-							style={styles.pictureButton}
+							style={globalStyles.pictureButton}
 							onPress={() => {
 								setPictureModal(true);
 							}}
@@ -397,7 +397,7 @@ export default function AddMember() {
 							>
 								<Text
 									style={[
-										styles.title,
+										globalStyles.text.global,
 										{
 											fontSize: 15,
 											color: theme.colors.onBackground,
@@ -417,7 +417,7 @@ export default function AddMember() {
 							</View>
 							<TextInput
 								disabled={autoNumber}
-								style={[styles.input, { flex: 3 }]}
+								style={[globalStyles.input, { flex: 3 }]}
 								value={memberNumber}
 								onChangeText={(input) => {
 									setMemberNumber(input.replace(/[^0-9]/g, ''));
@@ -437,7 +437,7 @@ export default function AddMember() {
 						</View>
 
 						<TextInput
-							style={styles.input}
+							style={globalStyles.input}
 							value={name}
 							onChangeText={setName}
 							onEndEditing={() => {
@@ -455,14 +455,14 @@ export default function AddMember() {
 							<HelperText
 								type='error'
 								visible={nameError}
-								style={styles.errorHelper}
+								style={globalStyles.errorHelper}
 							>
 								{t('addMember.nameError')}
 							</HelperText>
 						) : null}
 
 						<TextInput
-							style={styles.input}
+							style={globalStyles.input}
 							value={email}
 							onChangeText={setEmail}
 							onEndEditing={() => {
@@ -480,14 +480,14 @@ export default function AddMember() {
 							<HelperText
 								type='error'
 								visible={emailError}
-								style={styles.errorHelper}
+								style={globalStyles.errorHelper}
 							>
 								{t('addMember.emailError')}
 							</HelperText>
 						) : null}
 
 						<TextInput
-							style={styles.input}
+							style={globalStyles.input}
 							value={phoneNumber}
 							onChangeText={(input) => {
 								setPhoneNumber(input.replace(/[^0-9+\-\s]/g, ''));
@@ -501,7 +501,7 @@ export default function AddMember() {
 							label={t('addMember.phoneNumber')}
 						/>
 						<TextInput
-							style={styles.input}
+							style={globalStyles.input}
 							value={occupation}
 							onChangeText={setOccupation}
 							onEndEditing={() => {
@@ -513,7 +513,7 @@ export default function AddMember() {
 							label={t('addMember.occupation')}
 						/>
 						<TextInput
-							style={styles.input}
+							style={globalStyles.input}
 							value={country}
 							onChangeText={setCountry}
 							onEndEditing={() => {
@@ -525,7 +525,7 @@ export default function AddMember() {
 							label={t('addMember.country')}
 						/>
 						<TextInput
-							style={styles.input}
+							style={globalStyles.input}
 							value={address}
 							onChangeText={setAddress}
 							onEndEditing={() => {
@@ -537,7 +537,7 @@ export default function AddMember() {
 							label={t('addMember.address')}
 						/>
 						<TextInput
-							style={styles.input}
+							style={globalStyles.input}
 							value={zipCode}
 							onChangeText={(input) => {
 								setZipCode(input.replace(/[^0-9\-]/g, ''));
@@ -562,7 +562,7 @@ export default function AddMember() {
 						<>
 							<Button
 								style={{ marginVertical: 5 }}
-								labelStyle={styles.dateText}
+								labelStyle={globalStyles.text.date}
 								onPress={() => setBirthDateModal(true)}
 							>
 								{`${t('addMember.birthDate')}: ${birthDate.toLocaleDateString(
@@ -599,7 +599,10 @@ export default function AddMember() {
 							<Checkbox.Item
 								uncheckedColor={theme.colors.primary}
 								label={paid ? t('addMember.paid') : t('addMember.notPaid')}
-								labelStyle={[styles.dateText, { color: theme.colors.primary }]}
+								labelStyle={[
+									globalStyles.text.date,
+									{ color: theme.colors.primary },
+								]}
 								status={paid ? 'checked' : 'unchecked'}
 								onPress={() => {
 									setPaid(!paid);
@@ -608,7 +611,7 @@ export default function AddMember() {
 							{paid ? (
 								<>
 									<Button
-										labelStyle={styles.dateText}
+										labelStyle={globalStyles.text.date}
 										onPress={() => setPaidDateModal(true)}
 									>
 										{`${t('addMember.on')} ${paidDate.toLocaleDateString(
@@ -633,7 +636,7 @@ export default function AddMember() {
 									/>
 									<View style={{ flexDirection: 'column' }}>
 										<Button
-											labelStyle={styles.dateText}
+											labelStyle={globalStyles.text.date}
 											onPress={() => setEndDateModal(true)}
 										>
 											{`${t('addMember.until')} ${endDate}`}
@@ -645,11 +648,11 @@ export default function AddMember() {
 					</KeyboardAvoidingView>
 				</ScrollView>
 
-				<View style={styles.buttonContainer}>
+				<View style={globalStyles.buttonContainer}>
 					<Button
-						style={styles.button}
-						contentStyle={styles.buttonContent}
-						labelStyle={styles.buttonText}
+						style={globalStyles.button.global}
+						contentStyle={globalStyles.buttonContent.global}
+						labelStyle={globalStyles.buttonText.global}
 						icon='account-plus'
 						mode='elevated'
 						loading={loading}
@@ -662,58 +665,3 @@ export default function AddMember() {
 		</>
 	);
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		justifyContent: 'center',
-	},
-	modalContainer: {
-		marginHorizontal: 30,
-		alignItems: 'center',
-	},
-	modalContentContainer: {
-		paddingVertical: 10,
-		paddingHorizontal: 15,
-		borderRadius: 20,
-	},
-	buttonContainer: {
-		marginHorizontal: 20,
-		alignItems: 'center',
-	},
-	button: {
-		marginVertical: 8,
-		justifyContent: 'center',
-	},
-	buttonContent: {
-		minWidth: 280,
-		minHeight: 80,
-	},
-	buttonText: {
-		fontSize: 25,
-		fontWeight: 'bold',
-		overflow: 'visible',
-		paddingTop: 10,
-	},
-	input: {
-		marginVertical: 2,
-	},
-	pictureButton: {
-		padding: 15,
-		alignSelf: 'center',
-	},
-	title: {
-		fontSize: 20,
-		fontWeight: 'bold',
-		marginVertical: 3,
-	},
-	dateText: {
-		fontWeight: 'bold',
-		textAlignVertical: 'center',
-		fontSize: 20,
-	},
-	errorHelper: {
-		fontWeight: 'bold',
-		fontSize: 15,
-	},
-});

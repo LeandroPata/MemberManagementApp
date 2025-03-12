@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
 import { Button, Modal, Portal, useTheme } from 'react-native-paper';
 import WheelPicker from 'react-native-wheely';
+import { globalStyles } from '@/styles/global';
 
 type YearPickerProps = {
 	visible: boolean;
@@ -38,16 +38,16 @@ const YearPicker = (props: YearPickerProps) => {
 			<Modal
 				visible={props.visible}
 				onDismiss={props.onDismiss}
-				style={styles.modalContainer}
+				style={globalStyles.modalContainer.global}
 				contentContainerStyle={[
-					styles.modalContentContainer,
+					globalStyles.modalContentContainer.yearPicker,
 					{ backgroundColor: theme.colors.elevation.level4 },
 				]}
 			>
 				<WheelPicker
-					containerStyle={styles.wheelPickerContainer}
+					containerStyle={globalStyles.wheelPickerContainer}
 					itemTextStyle={[
-						styles.wheelPickerText,
+						globalStyles.wheelPickerText,
 						{ color: theme.colors.onSurface },
 					]}
 					selectedIndicatorStyle={{
@@ -64,28 +64,3 @@ const YearPicker = (props: YearPickerProps) => {
 };
 
 export default YearPicker;
-
-const styles = StyleSheet.create({
-	modalContainer: {
-		marginHorizontal: 30,
-		alignItems: 'center',
-	},
-	modalContentContainer: {
-		paddingVertical: 10,
-		paddingHorizontal: 10,
-		borderRadius: 20,
-		minWidth: '40%',
-		alignItems: 'center',
-	},
-	wheelPickerContainer: {
-		maxWidth: '20%',
-	},
-	wheelPickerItem: {
-		maxWidth: '10%',
-		backgroundColor: 'blue',
-	},
-	wheelPickerText: {
-		fontSize: 15,
-		fontWeight: 'bold',
-	},
-});

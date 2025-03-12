@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, PermissionsAndroid, Platform } from 'react-native';
+import { View, PermissionsAndroid, Platform } from 'react-native';
 import { Button } from 'react-native-paper';
 import type { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
@@ -8,6 +8,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import { useTranslation } from 'react-i18next';
 import RNFetchBlob from 'rn-fetch-blob';
 import SnackbarInfo from '@/components/SnackbarInfo';
+import { globalStyles } from '@/styles/global';
 
 export default function importExport() {
 	const { t } = useTranslation();
@@ -456,12 +457,12 @@ export default function importExport() {
 				onDismiss={onDismissSnackbar}
 			/>
 
-			<View style={styles.container}>
-				<View style={styles.buttonContainer}>
+			<View style={globalStyles.container.global}>
+				<View style={globalStyles.buttonContainer}>
 					<Button
-						style={styles.button}
-						contentStyle={styles.buttonContent}
-						labelStyle={styles.buttonText}
+						style={globalStyles.button.global}
+						contentStyle={globalStyles.buttonContent.global}
+						labelStyle={globalStyles.buttonText.global}
 						icon='database-import'
 						mode='elevated'
 						loading={importLoading}
@@ -470,9 +471,9 @@ export default function importExport() {
 						{t('importExport.importMembers')}
 					</Button>
 					<Button
-						style={styles.button}
-						contentStyle={styles.buttonContent}
-						labelStyle={styles.buttonText}
+						style={globalStyles.button.global}
+						contentStyle={globalStyles.buttonContent.global}
+						labelStyle={globalStyles.buttonText.global}
 						icon='database-export'
 						mode='elevated'
 						loading={exportLoading}
@@ -485,28 +486,3 @@ export default function importExport() {
 		</>
 	);
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		justifyContent: 'center',
-	},
-	buttonContainer: {
-		marginHorizontal: 20,
-		alignItems: 'center',
-	},
-	button: {
-		marginVertical: 8,
-		justifyContent: 'center',
-	},
-	buttonContent: {
-		minWidth: 280,
-		minHeight: 80,
-	},
-	buttonText: {
-		fontSize: 25,
-		fontWeight: 'bold',
-		overflow: 'visible',
-		paddingTop: 10,
-	},
-});

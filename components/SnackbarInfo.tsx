@@ -1,3 +1,4 @@
+import { globalStyles } from '@/styles/global';
 import React from 'react';
 import { Text } from 'react-native';
 import { Portal, Snackbar, useTheme } from 'react-native-paper';
@@ -35,7 +36,12 @@ const SnackbarInfo = (props: SnackbarInfoProps) => {
 				onIconPress={props.onDismiss}
 				duration={5000}
 			>
-				<Text style={{ fontSize: 15, color: theme.colors.inverseOnSurface }}>
+				<Text
+					style={[
+						globalStyles.text.snackbar,
+						{ color: theme.colors.inverseOnSurface },
+					]}
+				>
 					{props.text}
 				</Text>
 			</Snackbar>

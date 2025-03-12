@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import {
 	View,
-	StyleSheet,
 	KeyboardAvoidingView,
 	Pressable,
 	ScrollView,
@@ -31,6 +30,7 @@ import { useTranslation } from 'react-i18next';
 import SnackbarInfo from '@/components/SnackbarInfo';
 import DialogConfirmation from '@/components/DialogConfirmation';
 import YearPicker from '@/components/YearPicker';
+import { globalStyles } from '@/styles/global';
 
 export default function Profile() {
 	const { profileID } = useLocalSearchParams();
@@ -487,16 +487,16 @@ export default function Profile() {
 					onDismiss={() => {
 						setPictureModal(false);
 					}}
-					style={styles.modalContainer}
+					style={globalStyles.modalContainer.global}
 					contentContainerStyle={[
-						styles.modalContentContainer,
+						globalStyles.modalContentContainer.global,
 						{ backgroundColor: theme.colors.primaryContainer },
 					]}
 				>
 					<Button
-						style={styles.button}
-						contentStyle={styles.buttonContent}
-						labelStyle={styles.buttonText}
+						style={globalStyles.button.global}
+						contentStyle={globalStyles.buttonContent.global}
+						labelStyle={globalStyles.buttonText.global}
 						icon='file-image'
 						mode='elevated'
 						onPress={pickImage}
@@ -504,9 +504,9 @@ export default function Profile() {
 						{t('profile.gallery')}
 					</Button>
 					<Button
-						style={styles.button}
-						contentStyle={styles.buttonContent}
-						labelStyle={styles.buttonText}
+						style={globalStyles.button.global}
+						contentStyle={globalStyles.buttonContent.global}
+						labelStyle={globalStyles.buttonText.global}
 						icon='camera'
 						mode='elevated'
 						onPress={takePicture}
@@ -537,7 +537,7 @@ export default function Profile() {
 				onDismiss={onDismissSnackbar}
 			/>
 
-			<View style={styles.container}>
+			<View style={globalStyles.container.global}>
 				{loading || !profile ? (
 					<ActivityIndicator
 						size={75}
@@ -550,7 +550,7 @@ export default function Profile() {
 							<KeyboardAvoidingView style={{ marginHorizontal: 20 }}>
 								<Pressable
 									disabled={!editing}
-									style={styles.pictureButton}
+									style={globalStyles.pictureButton}
 									onPress={() => {
 										setPictureModal(true);
 									}}
@@ -583,7 +583,7 @@ export default function Profile() {
 									>
 										<Text
 											style={[
-												styles.title,
+												globalStyles.text.global,
 												{
 													fontSize: 15,
 													color: theme.colors.onBackground,
@@ -605,7 +605,7 @@ export default function Profile() {
 									</View>
 									<TextInput
 										disabled={Boolean(!editing || (editing && autoNumber))}
-										style={[styles.input, { flex: 3 }]}
+										style={[globalStyles.input, { flex: 3 }]}
 										value={
 											memberNumber || editing
 												? memberNumber
@@ -630,7 +630,7 @@ export default function Profile() {
 
 								<TextInput
 									disabled={!editing}
-									style={styles.input}
+									style={globalStyles.input}
 									value={name || editing ? name : profile.name}
 									onChangeText={setName}
 									onEndEditing={() => {
@@ -648,7 +648,7 @@ export default function Profile() {
 									<HelperText
 										type='error'
 										visible={nameError}
-										style={styles.errorHelper}
+										style={globalStyles.errorHelper}
 									>
 										{t('profile.nameError')}
 									</HelperText>
@@ -656,7 +656,7 @@ export default function Profile() {
 
 								<TextInput
 									disabled={!editing}
-									style={styles.input}
+									style={globalStyles.input}
 									value={email || editing ? email : profile.email}
 									onChangeText={setEmail}
 									onEndEditing={() => {
@@ -674,7 +674,7 @@ export default function Profile() {
 									<HelperText
 										type='error'
 										visible={emailError}
-										style={styles.errorHelper}
+										style={globalStyles.errorHelper}
 									>
 										{t('profile.emailError')}
 									</HelperText>
@@ -682,7 +682,7 @@ export default function Profile() {
 
 								<TextInput
 									disabled={!editing}
-									style={styles.input}
+									style={globalStyles.input}
 									value={
 										phoneNumber || editing ? phoneNumber : profile.phoneNumber
 									}
@@ -699,7 +699,7 @@ export default function Profile() {
 								/>
 								<TextInput
 									disabled={!editing}
-									style={styles.input}
+									style={globalStyles.input}
 									value={
 										occupation || editing ? occupation : profile.occupation
 									}
@@ -714,7 +714,7 @@ export default function Profile() {
 								/>
 								<TextInput
 									disabled={!editing}
-									style={styles.input}
+									style={globalStyles.input}
 									value={country || editing ? country : profile.country}
 									onChangeText={setCountry}
 									onEndEditing={() => {
@@ -727,7 +727,7 @@ export default function Profile() {
 								/>
 								<TextInput
 									disabled={!editing}
-									style={styles.input}
+									style={globalStyles.input}
 									value={address || editing ? address : profile.address}
 									onChangeText={setAddress}
 									onEndEditing={() => {
@@ -740,7 +740,7 @@ export default function Profile() {
 								/>
 								<TextInput
 									disabled={!editing}
-									style={styles.input}
+									style={globalStyles.input}
 									value={zipCode || editing ? zipCode : profile.zipCode}
 									onChangeText={(input) => {
 										setZipCode(input.replace(/[^0-9\-]/g, ''));
@@ -766,7 +766,7 @@ export default function Profile() {
 									<Button
 										disabled={!editing}
 										style={{ marginVertical: 5 }}
-										labelStyle={styles.dateText}
+										labelStyle={globalStyles.text.date}
 										onPress={() => setBirthDateModal(true)}
 									>
 										{`${t('profile.birthDate')}: ${
@@ -810,7 +810,7 @@ export default function Profile() {
 										uncheckedColor={theme.colors.primary}
 										label={paid ? t('profile.paid') : t('profile.notPaid')}
 										labelStyle={[
-											styles.dateText,
+											globalStyles.text.date,
 											{
 												color: !editing
 													? theme.colors.onSurfaceDisabled
@@ -826,7 +826,7 @@ export default function Profile() {
 										<>
 											<Button
 												disabled={!editing}
-												labelStyle={styles.dateText}
+												labelStyle={globalStyles.text.date}
 												onPress={() => setPaidDateModal(true)}
 											>
 												{`${t('profile.on')} ${
@@ -859,7 +859,7 @@ export default function Profile() {
 											<View style={{ flexDirection: 'column' }}>
 												<Button
 													disabled={!editing}
-													labelStyle={styles.dateText}
+													labelStyle={globalStyles.text.date}
 													onPress={() => setEndDateModal(true)}
 												>
 													{`${t('profile.until')} ${
@@ -873,12 +873,12 @@ export default function Profile() {
 							</KeyboardAvoidingView>
 						</ScrollView>
 
-						<View style={styles.buttonContainer}>
+						<View style={globalStyles.buttonContainer}>
 							{editing ? (
 								<Button
-									style={styles.button}
-									contentStyle={styles.buttonContent}
-									labelStyle={styles.buttonText}
+									style={globalStyles.button.profile}
+									contentStyle={globalStyles.buttonContent.global}
+									labelStyle={globalStyles.buttonText.global}
 									icon='content-save'
 									mode='elevated'
 									loading={loadingSave}
@@ -889,9 +889,9 @@ export default function Profile() {
 							) : (
 								<>
 									<Button
-										style={styles.button}
-										contentStyle={styles.buttonContent}
-										labelStyle={styles.buttonText}
+										style={globalStyles.button.profile}
+										contentStyle={globalStyles.buttonContent.global}
+										labelStyle={globalStyles.buttonText.global}
 										icon='account-edit'
 										mode='elevated'
 										onPress={() => {
@@ -917,9 +917,9 @@ export default function Profile() {
 										{t('profile.editMember')}
 									</Button>
 									<Button
-										style={styles.button}
-										contentStyle={styles.buttonContent}
-										labelStyle={styles.buttonText}
+										style={globalStyles.button.profile}
+										contentStyle={globalStyles.buttonContent.global}
+										labelStyle={globalStyles.buttonText.global}
 										icon='account-remove'
 										mode='elevated'
 										loading={loadingDelete}
@@ -938,59 +938,3 @@ export default function Profile() {
 		</>
 	);
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		justifyContent: 'center',
-		//alignItems: 'center',
-	},
-	modalContainer: {
-		marginHorizontal: 30,
-		alignItems: 'center',
-	},
-	modalContentContainer: {
-		paddingVertical: 10,
-		paddingHorizontal: 15,
-		borderRadius: 20,
-	},
-	buttonContainer: {
-		marginHorizontal: 20,
-		alignItems: 'center',
-	},
-	button: {
-		marginVertical: 5,
-		justifyContent: 'center',
-	},
-	buttonContent: {
-		minWidth: 280,
-		minHeight: 80,
-	},
-	buttonText: {
-		fontSize: 25,
-		fontWeight: 'bold',
-		overflow: 'visible',
-		paddingTop: 10,
-	},
-	input: {
-		marginVertical: 2,
-	},
-	pictureButton: {
-		padding: 15,
-		alignSelf: 'center',
-	},
-	title: {
-		fontSize: 20,
-		fontWeight: 'bold',
-		marginVertical: 3,
-	},
-	dateText: {
-		fontWeight: 'bold',
-		textAlignVertical: 'center',
-		fontSize: 20,
-	},
-	errorHelper: {
-		fontWeight: 'bold',
-		fontSize: 15,
-	},
-});

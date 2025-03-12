@@ -3,7 +3,6 @@ import {
 	Platform,
 	UIManager,
 	View,
-	StyleSheet,
 	TouchableOpacity,
 	Image,
 	useWindowDimensions,
@@ -47,6 +46,7 @@ import Constants from 'expo-constants';
 import getFlagEmoji from './GetCountryFlag';
 import SnackbarInfo from './SnackbarInfo';
 import DialogConfirmation from './DialogConfirmation';
+import { globalStyles } from '@/styles/global';
 
 export default function CustomDrawerContent(props: any) {
 	const theme = useTheme();
@@ -454,9 +454,9 @@ export default function CustomDrawerContent(props: any) {
 				<Modal
 					visible={changePasswordModal}
 					onDismiss={onChangePasswordModalDismiss}
-					style={styles.modalContainer}
+					style={globalStyles.modalContainer.drawer}
 					contentContainerStyle={[
-						styles.modalContentContainer,
+						globalStyles.modalContentContainer.global,
 						{
 							backgroundColor: theme.colors.primaryContainer,
 							minHeight: useWindowDimensions().height / 2,
@@ -471,7 +471,7 @@ export default function CustomDrawerContent(props: any) {
 					>
 						<View>
 							<TextInput
-								style={styles.input}
+								style={globalStyles.input}
 								value={currentPassword}
 								onChangeText={setCurrentPassword}
 								onEndEditing={() => {
@@ -491,7 +491,7 @@ export default function CustomDrawerContent(props: any) {
 								<HelperText
 									type='error'
 									visible={currentPasswordError}
-									style={styles.errorHelper}
+									style={globalStyles.errorHelper}
 								>
 									{t('drawer.currentPasswordError')}
 								</HelperText>
@@ -499,7 +499,7 @@ export default function CustomDrawerContent(props: any) {
 						</View>
 						<View>
 							<TextInput
-								style={styles.input}
+								style={globalStyles.input}
 								value={newPassword}
 								onChangeText={setNewPassword}
 								onEndEditing={() => {
@@ -519,7 +519,7 @@ export default function CustomDrawerContent(props: any) {
 								<HelperText
 									type='error'
 									visible={newPasswordError}
-									style={styles.errorHelper}
+									style={globalStyles.errorHelper}
 								>
 									{t('drawer.newPasswordError')}
 								</HelperText>
@@ -527,7 +527,7 @@ export default function CustomDrawerContent(props: any) {
 						</View>
 						<View>
 							<TextInput
-								style={styles.input}
+								style={globalStyles.input}
 								value={confirmNewPassword}
 								onChangeText={setConfirmNewPassword}
 								onEndEditing={() => {
@@ -549,7 +549,7 @@ export default function CustomDrawerContent(props: any) {
 								<HelperText
 									type='error'
 									visible={confirmNewPasswordError}
-									style={styles.errorHelper}
+									style={globalStyles.errorHelper}
 								>
 									{t('drawer.confirmNewPasswordError')}
 								</HelperText>
@@ -557,9 +557,9 @@ export default function CustomDrawerContent(props: any) {
 						</View>
 					</View>
 					<Button
-						style={styles.button}
-						contentStyle={styles.buttonContent}
-						labelStyle={styles.buttonText}
+						style={globalStyles.button.global}
+						contentStyle={globalStyles.buttonContent.modal}
+						labelStyle={globalStyles.buttonText.modal}
 						icon='check-bold'
 						mode='elevated'
 						onPress={changePassword}
@@ -586,7 +586,7 @@ export default function CustomDrawerContent(props: any) {
 					<View style={{ flex: 1, justifyContent: 'flex-start' }}>
 						<Image
 							style={[
-								styles.image,
+								globalStyles.image.drawer,
 								{
 									height: useWindowDimensions().height / 10,
 									marginTop: -insets.top,
@@ -603,7 +603,7 @@ export default function CustomDrawerContent(props: any) {
 						<DrawerItem
 							labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
 							label={t('drawer.home')}
-							style={{ minHeight: 10 }}
+							style={globalStyles.drawerStyle}
 							icon={({ focused, size, color }) => (
 								<Ionicons
 									name={focused ? 'home' : 'home-outline'}
@@ -622,7 +622,7 @@ export default function CustomDrawerContent(props: any) {
 						<DrawerItem
 							labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
 							label={t('drawer.addMember')}
-							style={{ minHeight: 10 }}
+							style={globalStyles.drawerStyle}
 							icon={({ focused, size, color }) => (
 								<Ionicons
 									name={focused ? 'person-add' : 'person-add-outline'}
@@ -641,7 +641,7 @@ export default function CustomDrawerContent(props: any) {
 						<DrawerItem
 							labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
 							label={t('drawer.searchMember')}
-							style={{ minHeight: 10 }}
+							style={globalStyles.drawerStyle}
 							icon={({ focused, size, color }) => (
 								<Ionicons
 									name={focused ? 'search' : 'search-outline'}
@@ -660,7 +660,7 @@ export default function CustomDrawerContent(props: any) {
 						<DrawerItem
 							labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
 							label={t('drawer.importExport')}
-							style={{ minHeight: 10 }}
+							style={globalStyles.drawerStyle}
 							icon={({ focused, size, color }) => (
 								<Ionicons
 									name={focused ? 'server' : 'server-outline'}
@@ -732,12 +732,11 @@ export default function CustomDrawerContent(props: any) {
 							/>
 						</TouchableOpacity>
 
-						<Animated.View style={[styles.content, animatedStyle]}>
+						<Animated.View style={[globalStyles.content, animatedStyle]}>
 							<View
 								style={{
 									width: '80%',
 									justifyContent: 'center',
-
 									alignSelf: 'center',
 								}}
 							>
@@ -761,7 +760,7 @@ export default function CustomDrawerContent(props: any) {
 						<DrawerItem
 							labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
 							label={t('drawer.checkUpdate')}
-							style={{ minHeight: 10 }}
+							style={globalStyles.drawerStyle}
 							icon={({ color }) => (
 								<Ionicons
 									name={'cloud-download-outline'}
@@ -779,7 +778,7 @@ export default function CustomDrawerContent(props: any) {
 						<DrawerItem
 							labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
 							label={t('drawer.changePassword')}
-							style={{ minHeight: 10 }}
+							style={globalStyles.drawerStyle}
 							icon={({ color }) => (
 								<Ionicons
 									name={'lock-open-outline'}
@@ -797,7 +796,7 @@ export default function CustomDrawerContent(props: any) {
 						<DrawerItem
 							labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
 							label={t('drawer.signOut')}
-							style={{ minHeight: 10 }}
+							style={globalStyles.drawerStyle}
 							icon={({ color }) => (
 								<Ionicons
 									name={'log-out-outline'}
@@ -821,7 +820,7 @@ export default function CustomDrawerContent(props: any) {
 				/>
 
 				<View style={{ paddingBottom: insets.bottom + 5 }}>
-					<Text style={styles.title}>
+					<Text style={globalStyles.text.footer}>
 						{t('drawer.version')}: {Constants.expoConfig?.version}
 					</Text>
 				</View>
@@ -829,48 +828,3 @@ export default function CustomDrawerContent(props: any) {
 		</>
 	);
 }
-
-const styles = StyleSheet.create({
-	content: {
-		overflow: 'hidden',
-	},
-	image: {
-		alignSelf: 'center',
-		resizeMode: 'contain',
-	},
-	modalContainer: {
-		marginHorizontal: 30,
-	},
-	modalContentContainer: {
-		paddingVertical: 5,
-		paddingHorizontal: 15,
-		borderRadius: 20,
-		justifyContent: 'center',
-	},
-	input: {
-		marginVertical: 2,
-	},
-	errorHelper: {
-		fontWeight: 'bold',
-		fontSize: 15,
-	},
-	button: {
-		marginVertical: 8,
-		justifyContent: 'center',
-	},
-	buttonContent: {
-		minWidth: 50,
-		minHeight: 20,
-	},
-	buttonText: {
-		fontSize: 25,
-		fontWeight: 'bold',
-		overflow: 'visible',
-		paddingTop: 10,
-	},
-	title: {
-		fontSize: 13,
-		textAlign: 'center',
-		textAlignVertical: 'center',
-	},
-});

@@ -458,7 +458,7 @@ export default function importExport() {
 			/>
 
 			<View style={globalStyles.container.global}>
-				<View style={globalStyles.buttonContainer}>
+				<View style={globalStyles.container.button}>
 					<Button
 						style={globalStyles.button.global}
 						contentStyle={globalStyles.buttonContent.global}

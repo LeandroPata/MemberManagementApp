@@ -451,6 +451,7 @@ export default function CustomDrawerContent(props: any) {
 						/>
 					</Dialog.Content>
 				</Dialog>
+
 				<Modal
 					visible={changePasswordModal}
 					onDismiss={onChangePasswordModalDismiss}
@@ -491,7 +492,7 @@ export default function CustomDrawerContent(props: any) {
 								<HelperText
 									type='error'
 									visible={currentPasswordError}
-									style={globalStyles.errorHelper}
+									style={globalStyles.text.errorHelper}
 								>
 									{t('drawer.currentPasswordError')}
 								</HelperText>
@@ -519,7 +520,7 @@ export default function CustomDrawerContent(props: any) {
 								<HelperText
 									type='error'
 									visible={newPasswordError}
-									style={globalStyles.errorHelper}
+									style={globalStyles.text.errorHelper}
 								>
 									{t('drawer.newPasswordError')}
 								</HelperText>
@@ -549,7 +550,7 @@ export default function CustomDrawerContent(props: any) {
 								<HelperText
 									type='error'
 									visible={confirmNewPasswordError}
-									style={globalStyles.errorHelper}
+									style={globalStyles.text.errorHelper}
 								>
 									{t('drawer.confirmNewPasswordError')}
 								</HelperText>

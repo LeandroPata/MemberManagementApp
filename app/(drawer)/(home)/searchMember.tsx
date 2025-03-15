@@ -382,7 +382,7 @@ export default function SearchMember() {
 					<View style={{ width: '49%' }}>
 						<Button
 							style={globalStyles.button.search}
-							labelStyle={globalStyles.buttonText.search}
+							labelStyle={[globalStyles.buttonText.search, { paddingTop: 0 }]}
 							mode='elevated'
 							onPress={() => orderMembersName()}
 						>
@@ -393,7 +393,10 @@ export default function SearchMember() {
 					<View style={{ width: '49%' }}>
 						<Button
 							style={globalStyles.button.search}
-							labelStyle={[globalStyles.buttonText.search, { fontSize: 13 }]}
+							labelStyle={[
+								globalStyles.buttonText.search,
+								{ fontSize: 13, paddingTop: 0 },
+							]}
 							mode='elevated'
 							onPress={() => orderMembersNumber()}
 						>

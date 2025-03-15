@@ -140,10 +140,6 @@ export const globalStyles = StyleSheet.create({
 			alignItems: 'center',
 		},
 	},
-	buttonContainer: {
-		marginHorizontal: 20,
-		alignItems: 'center',
-	},
 	button: {
 		global: {
 			marginVertical: 8,
@@ -188,16 +184,6 @@ export const globalStyles = StyleSheet.create({
 	input: {
 		marginVertical: 2,
 	},
-	errorHelper: {
-		fontSize: 15,
-		fontWeight: 'bold',
-	},
-	imageContainer: {
-		justifyContent: 'center',
-		alignSelf: 'center',
-		width: '50%',
-		height: '35%',
-	},
 	image: {
 		global: {
 			resizeMode: 'contain',
@@ -221,7 +207,7 @@ export const globalStyles = StyleSheet.create({
 		},
 		search: {
 			fontSize: 15,
-			fontWeight: 'bold',
+			fontWeight: 'normal',
 		},
 		footer: {
 			fontSize: 13,
@@ -233,7 +219,14 @@ export const globalStyles = StyleSheet.create({
 			textAlignVertical: 'center',
 			fontSize: 20,
 		},
-		snackbar: {
+		snackbarInfo: {
+			fontSize: 15,
+		},
+		errorHelper: {
+			fontSize: 15,
+			fontWeight: 'bold',
+		},
+		dialog: {
 			fontSize: 15,
 		},
 	},

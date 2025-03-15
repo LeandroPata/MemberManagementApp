@@ -35,13 +35,13 @@ export default function Home() {
 
 	return (
 		<View style={globalStyles.container.home}>
-			<View style={globalStyles.imageContainer}>
+			<View style={globalStyles.container.image}>
 				<Image
 					style={globalStyles.image.global}
 					source={require('@/assets/images/logoReact.png')}
 				/>
 			</View>
-			<View style={globalStyles.buttonContainer}>
+			<View style={globalStyles.container.button}>
 				<Button
 					style={globalStyles.button.global}
 					contentStyle={globalStyles.buttonContent.global}

@@ -648,7 +648,7 @@ export default function Profile() {
 									<HelperText
 										type='error'
 										visible={nameError}
-										style={globalStyles.errorHelper}
+										style={globalStyles.text.errorHelper}
 									>
 										{t('profile.nameError')}
 									</HelperText>
@@ -674,7 +674,7 @@ export default function Profile() {
 									<HelperText
 										type='error'
 										visible={emailError}
-										style={globalStyles.errorHelper}
+										style={globalStyles.text.errorHelper}
 									>
 										{t('profile.emailError')}
 									</HelperText>
@@ -873,7 +873,7 @@ export default function Profile() {
 							</KeyboardAvoidingView>
 						</ScrollView>
 
-						<View style={globalStyles.buttonContainer}>
+						<View style={globalStyles.container.button}>
 							{editing ? (
 								<Button
 									style={globalStyles.button.profile}

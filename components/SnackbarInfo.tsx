@@ -1,7 +1,7 @@
-import { globalStyles } from '@/styles/global';
 import React from 'react';
 import { Text } from 'react-native';
 import { Portal, Snackbar, useTheme } from 'react-native-paper';
+import { globalStyles } from '@/styles/global';
 
 /* // All the logic to implement the snackbar
 const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -38,7 +38,7 @@ const SnackbarInfo = (props: SnackbarInfoProps) => {
 			>
 				<Text
 					style={[
-						globalStyles.text.snackbar,
+						globalStyles.text.snackbarInfo,
 						{ color: theme.colors.inverseOnSurface },
 					]}
 				>

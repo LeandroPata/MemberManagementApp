@@ -455,7 +455,7 @@ export default function AddMember() {
 							<HelperText
 								type='error'
 								visible={nameError}
-								style={globalStyles.errorHelper}
+								style={globalStyles.text.errorHelper}
 							>
 								{t('addMember.nameError')}
 							</HelperText>
@@ -480,7 +480,7 @@ export default function AddMember() {
 							<HelperText
 								type='error'
 								visible={emailError}
-								style={globalStyles.errorHelper}
+								style={globalStyles.text.errorHelper}
 							>
 								{t('addMember.emailError')}
 							</HelperText>
@@ -648,7 +648,7 @@ export default function AddMember() {
 					</KeyboardAvoidingView>
 				</ScrollView>
 
-				<View style={globalStyles.buttonContainer}>
+				<View style={globalStyles.container.button}>
 					<Button
 						style={globalStyles.button.global}
 						contentStyle={globalStyles.buttonContent.global}

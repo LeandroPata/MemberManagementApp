@@ -206,7 +206,7 @@ export default function Index() {
 						</HelperText>
 					) : null}
 
-					<View style={[globalStyles.buttonContainer, { marginTop: 15 }]}>
+					<View style={[globalStyles.container.button, { marginTop: 15 }]}>
 						<Button
 							style={globalStyles.button.global.global}
 							contentStyle={{ minWidth: 150, minHeight: 30 }}
@@ -237,7 +237,7 @@ export default function Index() {
 					style={{ flex: 1, marginHorizontal: 20 }}
 					behavior='padding'
 				>
-					<View style={globalStyles.imageContainer}>
+					<View style={globalStyles.container.image}>
 						<Image
 							style={globalStyles.image.global}
 							source={require('@/assets/images/logoReact.png')}
@@ -300,9 +300,9 @@ export default function Index() {
 					</View>
 				</KeyboardAvoidingView>
 
-				<View style={globalStyles.buttonContainer}>
+				<View style={globalStyles.container.button}>
 					<Button
-						style={globalStyles.button.global.global}
+						style={globalStyles.button.global}
 						contentStyle={globalStyles.buttonContent.global}
 						labelStyle={globalStyles.buttonText.global}
 						icon='login'
@@ -315,7 +315,7 @@ export default function Index() {
 						{t('index.login')}
 					</Button>
 					<Button
-						style={globalStyles.button.global.global}
+						style={globalStyles.button.global}
 						contentStyle={globalStyles.buttonContent.global}
 						labelStyle={globalStyles.buttonText.global}
 						icon='briefcase-plus'

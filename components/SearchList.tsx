@@ -91,7 +91,7 @@ const SearchList = (props: SearchListProps) => {
 						zIndex: 10,
 						elevation: 10,
 						backgroundColor: theme.colors.elevation.level3,
-						width: '89%',
+						width: '85%',
 						alignSelf: 'center',
 						borderBottomRightRadius: 15,
 						borderBottomLeftRadius: 15,

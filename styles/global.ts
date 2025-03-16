@@ -132,6 +132,12 @@ export const globalStyles = StyleSheet.create({
 			paddingHorizontal: 15,
 			borderRadius: 20,
 		},
+		drawer: {
+			paddingVertical: 5,
+			paddingHorizontal: 15,
+			borderRadius: 20,
+			justifyContent: 'center',
+		},
 		yearPicker: {
 			paddingVertical: 10,
 			paddingHorizontal: 10,

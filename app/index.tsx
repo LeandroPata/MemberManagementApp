@@ -208,13 +208,9 @@ export default function Index() {
 
 					<View style={[globalStyles.container.button, { marginTop: 15 }]}>
 						<Button
-							style={globalStyles.button.global.global}
-							contentStyle={{ minWidth: 150, minHeight: 30 }}
-							labelStyle={{
-								fontSize: 15,
-								fontWeight: 'bold',
-								overflow: 'visible',
-							}}
+							style={globalStyles.button.global}
+							contentStyle={globalStyles.buttonContent.modal}
+							labelStyle={globalStyles.buttonText.modal}
 							icon='check'
 							mode='elevated'
 							loading={confirmSignupLoading}

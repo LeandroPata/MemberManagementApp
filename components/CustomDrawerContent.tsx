@@ -284,7 +284,7 @@ export default function CustomDrawerContent(props: any) {
 			`updates/${updateFolderName}/${updateFileName}`
 		);
 
-		console.log(`updates/${updateFolderName}/${updateFileName}`);
+		//console.log(`updates/${updateFolderName}/${updateFileName}`);
 
 		const apkPath = `${RNFetchBlob.fs.dirs.CacheDir}/${updateFileName}`;
 
@@ -457,7 +457,7 @@ export default function CustomDrawerContent(props: any) {
 					onDismiss={onChangePasswordModalDismiss}
 					style={globalStyles.modalContainer.drawer}
 					contentContainerStyle={[
-						globalStyles.modalContentContainer.global,
+						globalStyles.modalContentContainer.drawer,
 						{
 							backgroundColor: theme.colors.primaryContainer,
 							minHeight: useWindowDimensions().height / 2,

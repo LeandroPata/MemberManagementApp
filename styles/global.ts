@@ -235,6 +235,10 @@ export const globalStyles = StyleSheet.create({
 		dialog: {
 			fontSize: 15,
 		},
+		drawer: {
+			fontSize: 15,
+			fontWeight: 'bold',
+		},
 	},
 	item: {
 		borderRadius: 5,

@@ -6,6 +6,7 @@ import { Drawer } from 'expo-router/drawer';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import CustomDrawerContent from '@/components/CustomDrawerContent';
+import { globalStyles } from '@/styles/global';
 
 const DrawerLayout = () => {
 	const theme = useTheme();
@@ -51,7 +52,7 @@ const DrawerLayout = () => {
 					backgroundColor: theme.colors.background,
 					paddingTop: insets.top,
 				},
-				drawerLabelStyle: { fontSize: 15, fontWeight: 'bold' },
+				drawerLabelStyle: globalStyles.text.drawer,
 				drawerActiveTintColor: theme.colors.primary,
 				drawerInactiveTintColor: theme.colors.onBackground,
 				drawerInactiveBackgroundColor: 'transparent',

@@ -602,7 +602,7 @@ export default function CustomDrawerContent(props: any) {
 						/>
 
 						<DrawerItem
-							labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+							labelStyle={globalStyles.text.drawer}
 							label={t('drawer.home')}
 							style={globalStyles.drawerStyle}
 							icon={({ focused, size, color }) => (
@@ -621,7 +621,7 @@ export default function CustomDrawerContent(props: any) {
 						/>
 
 						<DrawerItem
-							labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+							labelStyle={globalStyles.text.drawer}
 							label={t('drawer.addMember')}
 							style={globalStyles.drawerStyle}
 							icon={({ focused, size, color }) => (
@@ -640,7 +640,7 @@ export default function CustomDrawerContent(props: any) {
 						/>
 
 						<DrawerItem
-							labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+							labelStyle={globalStyles.text.drawer}
 							label={t('drawer.searchMember')}
 							style={globalStyles.drawerStyle}
 							icon={({ focused, size, color }) => (
@@ -659,7 +659,7 @@ export default function CustomDrawerContent(props: any) {
 						/>
 
 						<DrawerItem
-							labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+							labelStyle={globalStyles.text.drawer}
 							label={t('drawer.importExport')}
 							style={globalStyles.drawerStyle}
 							icon={({ focused, size, color }) => (
@@ -694,7 +694,7 @@ export default function CustomDrawerContent(props: any) {
 						>
 							<List.Item
 								title={t('drawer.darkMode')}
-								titleStyle={{ fontSize: 15, fontWeight: 'bold' }}
+								titleStyle={globalStyles.text.drawer}
 								left={(props) => (
 									<Ionicons
 										{...props}
@@ -715,7 +715,7 @@ export default function CustomDrawerContent(props: any) {
 						>
 							<List.Item
 								title={t('drawer.language')}
-								titleStyle={{ fontSize: 15, fontWeight: 'bold' }}
+								titleStyle={globalStyles.text.drawer}
 								left={(props) => (
 									<Ionicons
 										{...props}
@@ -759,7 +759,7 @@ export default function CustomDrawerContent(props: any) {
 						</Animated.View>
 
 						<DrawerItem
-							labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+							labelStyle={globalStyles.text.drawer}
 							label={t('drawer.checkUpdate')}
 							style={globalStyles.drawerStyle}
 							icon={({ color }) => (
@@ -777,7 +777,7 @@ export default function CustomDrawerContent(props: any) {
 						/>
 
 						<DrawerItem
-							labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+							labelStyle={globalStyles.text.drawer}
 							label={t('drawer.changePassword')}
 							style={globalStyles.drawerStyle}
 							icon={({ color }) => (
@@ -795,7 +795,7 @@ export default function CustomDrawerContent(props: any) {
 						/>
 
 						<DrawerItem
-							labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
+							labelStyle={globalStyles.text.drawer}
 							label={t('drawer.signOut')}
 							style={globalStyles.drawerStyle}
 							icon={({ color }) => (

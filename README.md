@@ -35,11 +35,11 @@ It was developed with the intent to accurately, quickly and easily create a memb
   <img align='top' src='assets/samples/drawerDark.png' alt = 'DrawerDarkMode' width=190>
 </p>
 
-## Tecnical Notes
+## Technical Notes
 
 - Member searches have a "fuzzy searching" implementation with a "hint" list to help the user find the intended member
 - Update checking was implemented by having the APKs stored in Firebase Storage and then cross-checking the app's current version and the stored APKs version, downloading and updating if a more recent version is available (this isn't possible in iOS, as it doesn't allow sideloading)
-- As all cloud functionalities (as is) require Firebase, in any reproduction of this project will require setting up Firebase (more specifically the modules detailed in the next section) and adding both config files (google-services.json and GoogleService-Info.plist) to the project
+- As all cloud functionalities (as is) require Firebase, any reproduction of this project will require setting up Firebase (more specifically the modules detailed in the next section) and adding both config files (google-services.json and GoogleService-Info.plist) to the project
 - Environment variables are used, so in any reproduction of this project setting them in a .env file (to run locally) and/or Expo (or other building framework) will be necessary. This is an .env example:
 
 ```
@@ -47,7 +47,7 @@ It was developed with the intent to accurately, quickly and easily create a memb
 GOOGLE_SERVICES_JSON='./google-services.json'
 GOOGLE_SERVICES_PLIST='./GoogleService-Info.plist'
 
-# URL for placeholder profile pricture, stored in Firebase Storage
+# URL for placeholder profile picture, stored in Firebase Storage
 EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 

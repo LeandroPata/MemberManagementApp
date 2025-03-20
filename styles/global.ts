@@ -252,7 +252,9 @@ export const globalStyles = StyleSheet.create({
 		overflow: 'hidden',
 	},
 	wheelPickerContainer: {
-		maxWidth: '20%',
+		minWidth: '25%',
+		maxWidth: '30%',
+		alignItems: 'center',
 	},
 	wheelPickerItem: {
 		maxWidth: '10%',

@@ -78,7 +78,7 @@
 		"orderBy": "Order by",
 		"orderName": "Name",
 		"orderNumber": "Number",
-		"orderEndDate": "Membership End",
+		"orderEndDate": "Membership End Year",
 		"paid": "Paid until",
 		"notPaid": "Not Paid"
 	},

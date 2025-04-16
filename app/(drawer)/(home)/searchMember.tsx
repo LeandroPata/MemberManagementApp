@@ -10,6 +10,7 @@ import {
 	Searchbar,
 	Portal,
 	Modal,
+	IconButton,
 } from 'react-native-paper';
 import { router, useFocusEffect } from 'expo-router';
 import firestore from '@react-native-firebase/firestore';
@@ -30,6 +31,7 @@ export default function SearchMember() {
 	const [loadingNumber, setLoadingNumber] = useState(false);
 
 	const [orderModal, setOrderModal] = useState(false);
+	const [orderAscending, setOrderAscending] = useState(true);
 
 	const [name, setName] = useState('');
 	const [memberNumber, setMemberNumber] = useState('');
@@ -235,12 +237,10 @@ export default function SearchMember() {
 
 	const orderMembersName = () => {
 		try {
-			console.log('Name start');
 			const orderedMembers = members;
 			orderedMembers.sort((a, b) => a.name.localeCompare(b.name));
 			setMembers(orderedMembers);
 			setRefreshFlatlist(!refreshFlatlist);
-			console.log('Name end');
 		} catch (e: any) {
 			const err = e as FirebaseError;
 			console.log(`Ordering members by name failed: ${err.message}`);
@@ -263,10 +263,7 @@ export default function SearchMember() {
 
 	const orderMembersEndDate = (newMembers?: object[]) => {
 		try {
-			console.log('Date start');
 			let orderedMembers = [];
-			console.log(newMembers);
-			console.log(newMembers?.length);
 			if (newMembers && newMembers.length > 0) orderedMembers = newMembers;
 			else orderedMembers = members;
 			orderedMembers.sort((a, b) => {
@@ -276,11 +273,21 @@ export default function SearchMember() {
 			});
 			setMembers(orderedMembers);
 			setRefreshFlatlist(!refreshFlatlist);
-			console.log('Date end');
 		} catch (e: any) {
 			const err = e as FirebaseError;
 			console.log(`Ordering members by endDate failed: ${err.message}`);
 			//showSnackbar('Ordering members by endDate failed: ' + err.message);
+		}
+	};
+
+	const invertOrder = () => {
+		try {
+			const newOrder = members.toReversed();
+			setMembers(newOrder);
+		} catch (e: any) {
+			const err = e as FirebaseError;
+			console.log(`Inverting members order failed: ${err.message}`);
+			//showSnackbar('Inverting members order failed: ' + err.message);
 		}
 	};
 
@@ -487,6 +494,20 @@ export default function SearchMember() {
 						>
 							{t('searchMember.orderBy')}
 						</Button>
+
+						<IconButton
+							icon={orderAscending ? 'arrow-up' : 'arrow-down'}
+							size={25}
+							mode='contained-tonal'
+							iconColor={theme.colors.primary}
+							containerColor={theme.colors.elevation.level1}
+							//containerColor={theme.colors.elevation.level3}
+							onPress={() => {
+								invertOrder();
+								setOrderAscending(!orderAscending);
+							}}
+							animated={true}
+						/>
 					</View>
 				</KeyboardAvoidingView>
 

@@ -4,7 +4,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	...config,
 	name: 'MemberManagementApp',
 	slug: 'MemberManagementApp',
-	version: '1.3.0',
+	version: '1.3.1',
 	orientation: 'portrait',
 	icon: './assets/images/iconReact.png',
 	scheme: 'myapp',

@@ -276,7 +276,7 @@ export default function SearchMember() {
 			orderedMembers.sort((a, b) => {
 				if (!a.endDate) return 1;
 				if (!b.endDate) return -1;
-				a.endDate - b.endDate;
+				return a.endDate - b.endDate;
 			});
 			setMembers(orderedMembers);
 			setRefreshFlatlist(!refreshFlatlist);

@@ -66,7 +66,7 @@ export default function Profile() {
 	const [zipCode, setZipCode] = useState('');
 	const [birthDate, setBirthDate] = useState(new Date());
 	const [paidDate, setPaidDate] = useState(new Date());
-	const [endDate, setEndDate] = useState(new Date().getFullYear());
+	const [endDate, setEndDate] = useState(0);
 	const [profilePicture, setProfilePicture] = useState<string | null>(null);
 
 	// All the logic to implement SnackbarInfo

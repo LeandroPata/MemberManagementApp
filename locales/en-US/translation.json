@@ -75,8 +75,12 @@
 		"name": "Name",
 		"memberNumber": "Member Number",
 		"searchMember": "Search Member",
-		"orderName": "Order by name",
-		"orderNumber": "Order by number"
+		"orderBy": "Order by",
+		"orderName": "Name",
+		"orderNumber": "Number",
+		"orderEndDate": "Membership End",
+		"paid": "Paid until",
+		"notPaid": "Not Paid"
 	},
 	"importExport": {
 		"importMembers": "Import Members",

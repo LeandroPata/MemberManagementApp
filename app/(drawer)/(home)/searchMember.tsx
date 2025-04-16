@@ -8,6 +8,8 @@ import {
 	useTheme,
 	Divider,
 	Searchbar,
+	Portal,
+	Modal,
 } from 'react-native-paper';
 import { router, useFocusEffect } from 'expo-router';
 import firestore from '@react-native-firebase/firestore';
@@ -26,6 +28,8 @@ export default function SearchMember() {
 
 	const [loadingName, setLoadingName] = useState(false);
 	const [loadingNumber, setLoadingNumber] = useState(false);
+
+	const [orderModal, setOrderModal] = useState(false);
 
 	const [name, setName] = useState('');
 	const [memberNumber, setMemberNumber] = useState('');
@@ -63,11 +67,13 @@ export default function SearchMember() {
 						key: doc.id,
 						name: doc.data().name,
 						memberNumber: doc.data().memberNumber,
+						endDate: doc.data().endDate,
 						profilePicture: doc.data().profilePicture,
 					});
 				});
 				//console.log(membersAll);
-				setMembers(membersAll);
+				orderMembersEndDate(membersAll);
+				//setMembers(membersAll);
 				setLoadingName(false);
 				setLoadingNumber(false);
 			})
@@ -229,10 +235,12 @@ export default function SearchMember() {
 
 	const orderMembersName = () => {
 		try {
+			console.log('Name start');
 			const orderedMembers = members;
 			orderedMembers.sort((a, b) => a.name.localeCompare(b.name));
 			setMembers(orderedMembers);
 			setRefreshFlatlist(!refreshFlatlist);
+			console.log('Name end');
 		} catch (e: any) {
 			const err = e as FirebaseError;
 			console.log(`Ordering members by name failed: ${err.message}`);
@@ -248,8 +256,31 @@ export default function SearchMember() {
 			setRefreshFlatlist(!refreshFlatlist);
 		} catch (e: any) {
 			const err = e as FirebaseError;
-			console.log(`Ordering members by name failed: ${err.message}`);
-			//showSnackbar('Ordering members by name failed: ' + err.message);
+			console.log(`Ordering members by number failed: ${err.message}`);
+			//showSnackbar('Ordering members by number failed: ' + err.message);
+		}
+	};
+
+	const orderMembersEndDate = (newMembers?: object[]) => {
+		try {
+			console.log('Date start');
+			let orderedMembers = [];
+			console.log(newMembers);
+			console.log(newMembers?.length);
+			if (newMembers && newMembers.length > 0) orderedMembers = newMembers;
+			else orderedMembers = members;
+			orderedMembers.sort((a, b) => {
+				if (!a.endDate) return 1;
+				if (!b.endDate) return -1;
+				a.endDate - b.endDate;
+			});
+			setMembers(orderedMembers);
+			setRefreshFlatlist(!refreshFlatlist);
+			console.log('Date end');
+		} catch (e: any) {
+			const err = e as FirebaseError;
+			console.log(`Ordering members by endDate failed: ${err.message}`);
+			//showSnackbar('Ordering members by endDate failed: ' + err.message);
 		}
 	};
 
@@ -291,6 +322,16 @@ export default function SearchMember() {
 					>
 						{`${t('searchMember.memberNumber')}: ${item.memberNumber}`}
 					</Text>
+					<Text
+						style={[
+							globalStyles.text.search,
+							{ color: theme.colors.onPrimary },
+						]}
+					>
+						{item.endDate
+							? `${t('searchMember.paid')} ${item.endDate}`
+							: t('searchMember.notPaid')}
+					</Text>
 				</View>
 			</TouchableRipple>
 		);
@@ -318,101 +359,145 @@ export default function SearchMember() {
 	};
 
 	return (
-		<View style={globalStyles.container.global}>
-			<SearchList
-				style={globalStyles.searchBar}
-				icon='account'
-				value={name}
-				placeholder={t('searchMember.name')}
-				data={hintMemberList}
-				onChangeText={(input) => {
-					setName(input);
-					if (input.trim()) filterMemberList(input);
-					else setHintMemberList([]);
-				}}
-				/* onEndEditing={() => {
+		<>
+			<Portal>
+				<Modal
+					visible={orderModal}
+					onDismiss={() => {
+						setOrderModal(false);
+					}}
+					style={globalStyles.modalContainer.global}
+					contentContainerStyle={[
+						globalStyles.modalContentContainer.global,
+						{ backgroundColor: theme.colors.primaryContainer },
+					]}
+				>
+					<Button
+						style={globalStyles.button.global}
+						contentStyle={globalStyles.buttonContent.global}
+						labelStyle={globalStyles.buttonText.global}
+						mode='elevated'
+						onPress={() => {
+							orderMembersName();
+							setOrderModal(false);
+						}}
+					>
+						{t('searchMember.orderName')}
+					</Button>
+
+					<Button
+						style={globalStyles.button.global}
+						contentStyle={globalStyles.buttonContent.global}
+						labelStyle={[
+							globalStyles.buttonText.global,
+							{ wordWrap: 'wrap', flexWrap: 'wrap', flexShrink: 1 },
+						]}
+						mode='elevated'
+						onPress={() => {
+							orderMembersNumber();
+							setOrderModal(false);
+						}}
+					>
+						{t('searchMember.orderNumber')}
+					</Button>
+
+					<Button
+						style={globalStyles.button.global}
+						contentStyle={globalStyles.buttonContent.global}
+						labelStyle={globalStyles.buttonText.global}
+						mode='elevated'
+						onPress={() => {
+							orderMembersName();
+							orderMembersEndDate();
+							setOrderModal(false);
+						}}
+					>
+						{t('searchMember.orderEndDate')}
+					</Button>
+				</Modal>
+			</Portal>
+
+			<View style={globalStyles.container.global}>
+				<SearchList
+					style={globalStyles.searchBar}
+					icon='account'
+					value={name}
+					placeholder={t('searchMember.name')}
+					data={hintMemberList}
+					onChangeText={(input) => {
+						setName(input);
+						if (input.trim()) filterMemberList(input);
+						else setHintMemberList([]);
+					}}
+					/* onEndEditing={() => {
 						getMembersByName(name, true);
 					}} */
-				onSubmitEditing={() => {
-					getMembersByName(name, true);
-				}}
-				onFocus={() => filterMemberList(name)}
-				onBlur={() => setHintMemberList([])}
-				renderItem={renderMemberHint}
-				loading={loadingName}
-				autoCapitalize='words'
-				onClearIconPress={() => {
-					setName('');
-					setHintMemberList([]);
-				}}
-			/>
-			<Searchbar
-				style={globalStyles.searchBar}
-				icon='numeric'
-				value={memberNumber}
-				//onChangeText={setMemberNumber}
-				onChangeText={(input) => {
-					setMemberNumber(input.replace(/[^0-9]/g, ''));
-				}}
-				//onEndEditing={props.onEndEditing}
-				onSubmitEditing={() => {
-					getMembersByNumber(Number(memberNumber.trim()));
-				}}
-				maxLength={6}
-				loading={loadingNumber}
-				autoCapitalize='none'
-				keyboardType='numeric'
-				placeholder={t('searchMember.memberNumber')}
-				onClearIconPress={() => {
-					setMemberNumber('');
-				}}
-			/>
-			<KeyboardAvoidingView
-				style={{ marginHorizontal: '3%' }}
-				behavior='padding'
-			>
-				<View
-					style={{
-						flexDirection: 'row',
-						justifyContent: 'space-between',
-						alignItems: 'center',
-						marginVertical: '3%',
+					onSubmitEditing={() => {
+						getMembersByName(name, true);
 					}}
+					onFocus={() => filterMemberList(name)}
+					onBlur={() => setHintMemberList([])}
+					renderItem={renderMemberHint}
+					loading={loadingName}
+					autoCapitalize='words'
+					onClearIconPress={() => {
+						setName('');
+						setHintMemberList([]);
+					}}
+				/>
+				<Searchbar
+					style={globalStyles.searchBar}
+					icon='numeric'
+					value={memberNumber}
+					//onChangeText={setMemberNumber}
+					onChangeText={(input) => {
+						setMemberNumber(input.replace(/[^0-9]/g, ''));
+					}}
+					//onEndEditing={props.onEndEditing}
+					onSubmitEditing={() => {
+						getMembersByNumber(Number(memberNumber.trim()));
+					}}
+					maxLength={6}
+					loading={loadingNumber}
+					autoCapitalize='none'
+					keyboardType='numeric'
+					placeholder={t('searchMember.memberNumber')}
+					onClearIconPress={() => {
+						setMemberNumber('');
+					}}
+				/>
+				<KeyboardAvoidingView
+					style={{ marginHorizontal: '3%' }}
+					behavior='padding'
 				>
-					<View style={{ width: '49%' }}>
+					<View
+						style={{
+							flexDirection: 'row',
+							justifyContent: 'center',
+							alignItems: 'center',
+							marginVertical: '3%',
+						}}
+					>
 						<Button
 							style={globalStyles.button.search}
+							contentStyle={globalStyles.buttonContent.modal}
 							labelStyle={[globalStyles.buttonText.search, { paddingTop: 0 }]}
 							mode='elevated'
-							onPress={() => orderMembersName()}
+							onPress={() => setOrderModal(true)}
 						>
-							{t('searchMember.orderName')}
+							{t('searchMember.orderBy')}
 						</Button>
 					</View>
+				</KeyboardAvoidingView>
 
-					<View style={{ width: '49%' }}>
-						<Button
-							style={globalStyles.button.search}
-							labelStyle={[
-								globalStyles.buttonText.search,
-								{ fontSize: 13, paddingTop: 0 },
-							]}
-							mode='elevated'
-							onPress={() => orderMembersNumber()}
-						>
-							{t('searchMember.orderNumber')}
-						</Button>
-					</View>
-				</View>
-			</KeyboardAvoidingView>
-
-			<FlatList
-				data={members}
-				renderItem={renderItem}
-				keyExtractor={(item) => item.key}
-				extraData={refreshFlatlist}
-				numColumns={2}
-			/>
-		</View>
+				<FlatList
+					data={members}
+					renderItem={renderItem}
+					keyExtractor={(item) => item.key}
+					extraData={refreshFlatlist}
+					numColumns={2}
+				/>
+			</View>
+		</>
 	);
 }

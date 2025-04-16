@@ -75,8 +75,12 @@
 		"name": "Nome",
 		"memberNumber": "Número de Membro",
 		"searchMember": "Procurar Membro",
-		"orderName": "Ordenar por nome",
-		"orderNumber": "Ordenar por número"
+		"orderBy": "Ordenar por",
+		"orderName": "Nome",
+		"orderNumber": "Número",
+		"orderEndDate": "Final da Adesão",
+		"paid": "Pago até",
+		"notPaid": "Não Pago"
 	},
 	"importExport": {
 		"importMembers": "Importar Membros",

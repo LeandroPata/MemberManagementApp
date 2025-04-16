@@ -76,6 +76,7 @@ export default function SearchMember() {
 				//console.log(membersAll);
 				orderMembersEndDate(membersAll);
 				//setMembers(membersAll);
+				setOrderAscending(true);
 				setLoadingName(false);
 				setLoadingNumber(false);
 			})
@@ -152,6 +153,7 @@ export default function SearchMember() {
 										key: doc.id,
 										name: doc.data().name,
 										memberNumber: doc.data().memberNumber,
+										endDate: doc.data().endDate,
 										profilePicture: doc.data().profilePicture,
 									});
 							}
@@ -190,7 +192,9 @@ export default function SearchMember() {
 					setLoadingName(false);
 				});
 		}
-		setMembers(currentMembers);
+		orderMembersEndDate(currentMembers);
+		//setMembers(currentMembers);
+		setOrderAscending(true);
 		setHintMemberList([]);
 		setLoadingName(false);
 	};
@@ -220,6 +224,7 @@ export default function SearchMember() {
 								key: doc.id,
 								name: doc.data().name,
 								memberNumber: doc.data().memberNumber,
+								endDate: doc.data().endDate,
 								profilePicture: doc.data().profilePicture,
 							});
 						});
@@ -231,7 +236,9 @@ export default function SearchMember() {
 					setLoadingNumber(false);
 				});
 		}
-		setMembers(currentMembers);
+		orderMembersEndDate(currentMembers);
+		//setMembers(currentMembers);
+		setOrderAscending(true);
 		setLoadingNumber(false);
 	};
 
@@ -450,6 +457,7 @@ export default function SearchMember() {
 					onClearIconPress={() => {
 						setName('');
 						setHintMemberList([]);
+						getAllMembers();
 					}}
 				/>
 				<Searchbar
@@ -471,6 +479,7 @@ export default function SearchMember() {
 					placeholder={t('searchMember.memberNumber')}
 					onClearIconPress={() => {
 						setMemberNumber('');
+						getAllMembers();
 					}}
 				/>
 				<KeyboardAvoidingView
@@ -501,7 +510,6 @@ export default function SearchMember() {
 							mode='contained-tonal'
 							iconColor={theme.colors.primary}
 							containerColor={theme.colors.elevation.level1}
-							//containerColor={theme.colors.elevation.level3}
 							onPress={() => {
 								invertOrder();
 								setOrderAscending(!orderAscending);

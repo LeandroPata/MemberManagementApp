@@ -43,9 +43,9 @@ import storage from '@react-native-firebase/storage';
 import i18next from 'i18next';
 import RNFetchBlob from 'rn-fetch-blob';
 import Constants from 'expo-constants';
-import getFlagEmoji from './GetCountryFlag';
-import SnackbarInfo from './SnackbarInfo';
-import DialogConfirmation from './DialogConfirmation';
+import getFlagEmoji from '@/utils/GetCountryFlag';
+import SnackbarInfo from '@/components/SnackbarInfo';
+import DialogConfirmation from '@/components/DialogConfirmation';
 import { globalStyles } from '@/styles/global';
 
 export default function CustomDrawerContent(props: any) {

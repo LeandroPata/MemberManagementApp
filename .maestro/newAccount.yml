@@ -14,6 +14,7 @@ appId: com.leandropata.membermanagementapp
 
 - tapOn:
     id: 'CreateAccountButton'
+    retryTapIfNoChange: false
 - assertVisible:
     id: 'EmailError'
 - assertVisible:
@@ -21,12 +22,15 @@ appId: com.leandropata.membermanagementapp
 
 - tapOn:
     id: 'EmailInput'
+    retryTapIfNoChange: false
 - inputRandomEmail
 - tapOn:
     id: 'PasswordInput'
+    retryTapIfNoChange: false
 - inputText: 'testTest1234'
 - tapOn:
     id: 'CreateAccountButton'
+    retryTapIfNoChange: false
 - assertVisible:
     id: 'ConfirmPasswordModal'
 
@@ -37,17 +41,21 @@ appId: com.leandropata.membermanagementapp
 
 - tapOn:
     id: 'ConfirmPasswordInput'
+    retryTapIfNoChange: false
 - inputRandomText
 - tapOn:
     id: 'ConfirmSignUp'
+    retryTapIfNoChange: false
 - assertVisible:
     id: 'ConfirmPasswordError'
 
 - tapOn:
     id: 'ConfirmPasswordInput'
+    retryTapIfNoChange: false
 - inputText: 'testTest1234'
 - tapOn:
     id: 'ConfirmSignUp'
+    retryTapIfNoChange: false
 
 - assertVisible:
     id: 'HomePage'

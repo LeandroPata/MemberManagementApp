@@ -457,7 +457,10 @@ export default function importExport() {
 				onDismiss={onDismissSnackbar}
 			/>
 
-			<View style={globalStyles.container.global}>
+			<View
+				style={globalStyles.container.global}
+				testID='ImportExportPage'
+			>
 				<View style={globalStyles.container.button}>
 					<Button
 						style={globalStyles.button.global}

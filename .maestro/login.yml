@@ -14,6 +14,7 @@ appId: com.leandropata.membermanagementapp
 
 - tapOn:
     id: 'LoginButton'
+    retryTapIfNoChange: false
 - assertVisible:
     id: 'EmailError'
 - assertVisible:
@@ -21,55 +22,68 @@ appId: com.leandropata.membermanagementapp
 
 - tapOn:
     id: 'EmailInput'
+    retryTapIfNoChange: false
 - inputText: 'testtest.com'
 - tapOn:
     id: 'LoginButton'
+    retryTapIfNoChange: false
 - assertVisible:
     id: 'EmailError'
 - tapOn:
     id: 'EmailInput'
+    retryTapIfNoChange: false
 - eraseText
 
 - inputText: 'test@testcom'
 - tapOn:
     id: 'LoginButton'
+    retryTapIfNoChange: false
 - assertVisible:
     id: 'EmailError'
 - tapOn:
     id: 'EmailInput'
+    retryTapIfNoChange: false
 - eraseText
 
 - inputText: 'test@test.com'
 - tapOn:
     id: 'LoginButton'
+    retryTapIfNoChange: false
 - assertVisible:
     id: 'PasswordError'
 
 - tapOn:
     id: 'PasswordInput'
+    retryTapIfNoChange: false
 - inputText: 'pass'
 - tapOn:
     id: 'LoginButton'
+    retryTapIfNoChange: false
 - assertVisible:
     id: 'PasswordError'
 - tapOn:
     id: 'PasswordInput'
+    retryTapIfNoChange: false
 - eraseText
 
 - inputText: 'pass123'
 - tapOn:
     id: 'EmailInput'
+    retryTapIfNoChange: false
 - eraseText
 - tapOn:
     id: 'LoginButton'
+    retryTapIfNoChange: false
 - assertVisible:
     id: 'EmailError'
 
 - tapOn:
     id: 'EmailInput'
+    retryTapIfNoChange: false
 - inputText: 'test@test.com'
 - tapOn:
     id: 'LoginButton'
+    retryTapIfNoChange: false
 
 - assertVisible:
     id: 'HomePage'

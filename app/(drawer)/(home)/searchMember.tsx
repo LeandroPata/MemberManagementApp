@@ -431,7 +431,10 @@ export default function SearchMember() {
 				</Modal>
 			</Portal>
 
-			<View style={globalStyles.container.global}>
+			<View
+				style={globalStyles.container.global}
+				testID='SearchPage'
+			>
 				<SearchList
 					style={globalStyles.searchBar}
 					icon='account'

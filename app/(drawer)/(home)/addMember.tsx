@@ -364,7 +364,10 @@ export default function AddMember() {
 				onDismiss={onDismissSnackbar}
 			/>
 
-			<View style={globalStyles.container.global}>
+			<View
+				style={globalStyles.container.global}
+				testID='AddPage'
+			>
 				<ScrollView>
 					<KeyboardAvoidingView style={{ paddingHorizontal: 10 }}>
 						<Pressable

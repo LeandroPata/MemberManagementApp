@@ -34,7 +34,10 @@ export default function Home() {
 	}; */
 
 	return (
-		<View style={globalStyles.container.home}>
+		<View
+			style={globalStyles.container.home}
+			testID='HomePage'
+		>
 			<View style={globalStyles.container.image}>
 				<Image
 					style={globalStyles.image.global}
@@ -50,6 +53,7 @@ export default function Home() {
 					mode='elevated'
 					//loading={loginLoading}
 					onPress={() => router.push('/(drawer)/(home)/addMember')}
+					testID='AddButton'
 				>
 					{t('home.addMember')}
 				</Button>
@@ -61,6 +65,7 @@ export default function Home() {
 					mode='elevated'
 					//loading={loginLoading}
 					onPress={() => router.push('/(drawer)/(home)/searchMember')}
+					testID='SearchButton'
 				>
 					{t('home.searchMember')}
 				</Button>
@@ -72,6 +77,7 @@ export default function Home() {
 					mode='elevated'
 					//loading={loginLoading}
 					onPress={() => router.push('/(drawer)/(home)/importExport')}
+					testID='ImportExportButton'
 				>
 					{t('home.importExport')}
 				</Button>

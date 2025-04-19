@@ -1,0 +1,53 @@
+appId: com.leandropata.membermanagementapp
+---
+- launchApp
+- assertVisible:
+    id: 'LoginPage'
+- assertVisible:
+    id: 'EmailInput'
+- assertVisible:
+    id: 'PasswordInput'
+- assertVisible:
+    id: 'LoginButton'
+- assertVisible:
+    id: 'CreateAccountButton'
+
+- tapOn:
+    id: 'CreateAccountButton'
+- assertVisible:
+    id: 'EmailError'
+- assertVisible:
+    id: 'PasswordError'
+
+- tapOn:
+    id: 'EmailInput'
+- inputRandomEmail
+- tapOn:
+    id: 'PasswordInput'
+- inputText: 'testTest1234'
+- tapOn:
+    id: 'CreateAccountButton'
+- assertVisible:
+    id: 'ConfirmPasswordModal'
+
+- assertVisible:
+    id: 'ConfirmPasswordInput'
+- assertVisible:
+    id: 'ConfirmSignUp'
+
+- tapOn:
+    id: 'ConfirmPasswordInput'
+- inputRandomText
+- tapOn:
+    id: 'ConfirmSignUp'
+- assertVisible:
+    id: 'ConfirmPasswordError'
+
+- tapOn:
+    id: 'ConfirmPasswordInput'
+- inputText: 'testTest1234'
+- tapOn:
+    id: 'ConfirmSignUp'
+
+- assertVisible:
+    id: 'HomePage'

@@ -175,11 +175,12 @@ export default function Index() {
 						setLoginLoading(false);
 						setShowModal(false);
 					}}
-					style={globalStyles.modalContainer.global}
+					style={globalStyles.modalContainer.drawer}
 					contentContainerStyle={[
-						globalStyles.modalContentContainer.global,
+						globalStyles.modalContentContainer.drawer,
 						{ backgroundColor: theme.colors.primaryContainer },
 					]}
+					testID='ConfirmPasswordModal'
 				>
 					<TextInput
 						style={globalStyles.input}
@@ -195,12 +196,14 @@ export default function Index() {
 						autoCapitalize='none'
 						label={t('index.confirmPassword')}
 						secureTextEntry
+						testID='ConfirmPasswordInput'
 					/>
 					{confirmPasswordError ? (
 						<HelperText
 							type='error'
 							visible={confirmPasswordError}
 							style={globalStyles.errorHelper}
+							testID='ConfirmPasswordError'
 						>
 							{t('index.confirmPasswordError')}
 						</HelperText>
@@ -215,6 +218,7 @@ export default function Index() {
 							mode='elevated'
 							loading={confirmSignupLoading}
 							onPress={confirmSignUp}
+							testID='ConfirmSignUp'
 						>
 							{t('index.confirmPassword')}
 						</Button>
@@ -243,6 +247,7 @@ export default function Index() {
 						style={{
 							flex: 1,
 						}}
+						testID='LoginPage'
 					>
 						<TextInput
 							style={globalStyles.input}
@@ -258,12 +263,14 @@ export default function Index() {
 							autoCapitalize='none'
 							keyboardType='email-address'
 							label={t('index.email')}
+							testID='EmailInput'
 						/>
 						{emailError ? (
 							<HelperText
 								type='error'
 								visible={emailError}
 								style={globalStyles.errorHelper}
+								testID='EmailError'
 							>
 								{t('index.emailError')}
 							</HelperText>
@@ -283,12 +290,14 @@ export default function Index() {
 							keyboardType='default'
 							label={t('index.password')}
 							secureTextEntry
+							testID='PasswordInput'
 						/>
 						{passwordError ? (
 							<HelperText
 								type='error'
 								visible={passwordError}
 								style={globalStyles.errorHelper}
+								testID='PasswordError'
 							>
 								{t('index.passwordError')}
 							</HelperText>
@@ -307,6 +316,7 @@ export default function Index() {
 						onPress={() => {
 							logIn();
 						}}
+						testID='LoginButton'
 					>
 						{t('index.login')}
 					</Button>
@@ -318,6 +328,7 @@ export default function Index() {
 						mode='elevated'
 						loading={signupLoading}
 						onPress={signUp}
+						testID='CreateAccountButton'
 					>
 						{t('index.createAccount')}
 					</Button>

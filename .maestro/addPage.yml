@@ -1,0 +1,237 @@
+appId: com.leandropata.membermanagementapp
+---
+- launchApp
+
+- assertVisible:
+    id: 'HomePage'
+- tapOn:
+    id: 'AddButton'
+    retryTapIfNoChange: false
+
+- assertVisible:
+    id: 'AddPage'
+- assertVisible:
+    id: 'ProfilePicturePressable'
+- assertVisible:
+    id: 'AutoNumberSwitch'
+- assertVisible:
+    id: 'MemberNumberInput'
+- assertVisible:
+    id: 'NameInput'
+- assertVisible:
+    id: 'EmailInput'
+- assertVisible:
+    id: 'PhoneInput'
+- scrollUntilVisible:
+    element:
+      id: 'PaidCheckbox'
+    direction: DOWN
+- assertVisible:
+    id: 'OccupationInput'
+- assertVisible:
+    id: 'CountryInput'
+- assertVisible:
+    id: 'AddressInput'
+- assertVisible:
+    id: 'ZipCodeInput'
+- assertVisible:
+    id: 'BirthDateButton'
+- assertVisible:
+    id: 'PaidCheckbox'
+- assertVisible:
+    id: 'AddButton'
+
+- scrollUntilVisible:
+    element:
+      id: 'ProfilePicturePressable'
+    direction: UP
+
+- tapOn:
+    id: 'AddButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'NameError'
+
+- tapOn:
+    id: 'ProfilePicturePressable'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'ProfilePictureModal'
+- assertVisible:
+    id: 'GalleryButton'
+- assertVisible:
+    id: 'CameraButton'
+- back
+
+- assertVisible:
+    id: 'AutoNumberSwitch'
+    checked: true
+- assertVisible:
+    id: 'MemberNumberInput'
+    enabled: false
+- tapOn:
+    id: 'AutoNumberSwitch'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'AutoNumberSwitch'
+    checked: false
+- assertVisible:
+    id: 'MemberNumberInput'
+    enabled: true
+- tapOn:
+    id: 'MemberNumberInput'
+- eraseText
+- hideKeyboard
+- tapOn:
+    id: 'AddButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'MemberNumberError'
+
+- tapOn:
+    id: 'MemberNumberInput'
+    retryTapIfNoChange: false
+- inputRandomPersonName
+- inputText: '6969'
+- hideKeyboard
+
+- tapOn:
+    id: 'AutoNumberSwitch'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'AutoNumberSwitch'
+    checked: true
+- assertVisible:
+    id: 'MemberNumberInput'
+    enabled: false
+
+- tapOn:
+    id: 'NameInput'
+    retryTapIfNoChange: false
+- inputRandomPersonName
+- hideKeyboard
+
+- tapOn:
+    id: 'EmailInput'
+    retryTapIfNoChange: false
+- inputRandomText
+- hideKeyboard
+- tapOn:
+    id: 'AddButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'EmailError'
+- tapOn:
+    id: 'EmailInput'
+    retryTapIfNoChange: false
+- eraseText
+- inputRandomEmail
+- hideKeyboard
+
+- tapOn:
+    id: 'PhoneInput'
+    retryTapIfNoChange: false
+- inputRandomPersonName
+- inputRandomNumber:
+    length: 9
+- hideKeyboard
+
+- tapOn:
+    id: 'OccupationInput'
+    retryTapIfNoChange: false
+- inputRandomText
+- hideKeyboard
+
+- tapOn:
+    id: 'CountryInput'
+    retryTapIfNoChange: false
+- inputRandomText
+- hideKeyboard
+
+- tapOn:
+    id: 'AddressInput'
+    retryTapIfNoChange: false
+- inputRandomText
+- hideKeyboard
+
+- tapOn:
+    id: 'ZipCodeInput'
+    retryTapIfNoChange: false
+- inputRandomPersonName
+- inputRandomNumber:
+    length: 3
+- hideKeyboard
+- tapOn:
+    id: 'AddButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'ZipCodeError'
+
+- tapOn:
+    id: 'ZipCodeInput'
+    retryTapIfNoChange: false
+- eraseText
+- inputRandomNumber:
+    length: 7
+- hideKeyboard
+
+- tapOn:
+    id: 'BirthDateButton'
+    retryTapIfNoChange: false
+- assertVisible: 'Confirm'
+- swipe:
+    start: 70%, 50%
+    end: 70%, 90%
+
+- tapOn:
+    text: 'Confirm'
+    retryTapIfNoChange: false
+
+- assertVisible:
+    id: 'PaidCheckbox'
+    checked: false
+- tapOn:
+    id: 'PaidCheckbox'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'PaidCheckbox'
+    checked: true
+- assertVisible:
+    id: 'PaidDateButton'
+- assertVisible:
+    id: 'EndDateButton'
+
+- tapOn:
+    id: 'PaidDateButton'
+    retryTapIfNoChange: false
+- assertVisible: 'Confirm'
+- swipe:
+    start: 70%, 50%
+    end: 70%, 90%
+- tapOn:
+    text: 'Confirm'
+    retryTapIfNoChange: false
+
+- tapOn:
+    id: 'EndDateButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'EndDatePicker'
+- swipe:
+    start: 50%, 50%
+    end: 50%, 10%
+- tapOn:
+    text: 'OK'
+    retryTapIfNoChange: false
+
+- tapOn:
+    id: 'AddButton'
+    retryTapIfNoChange: false
+- assertNotVisible:
+    id: 'NameError'
+- assertNotVisible:
+    id: 'MemberNumberError'
+- assertNotVisible:
+    id: 'EmailError'
+- assertNotVisible:
+    id: 'ZipCodeError'

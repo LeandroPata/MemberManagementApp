@@ -7,6 +7,7 @@ type YearPickerProps = {
 	visible: boolean;
 	onDismiss: () => void;
 	onConfirm: (year: number) => void;
+	testID?: string;
 };
 
 // Custom Component to have a pick a single year with a regular wheel picker,
@@ -43,6 +44,7 @@ const YearPicker = (props: YearPickerProps) => {
 					globalStyles.modalContentContainer.yearPicker,
 					{ backgroundColor: theme.colors.elevation.level4 },
 				]}
+				testID={props.testID || 'YearPicker'}
 			>
 				<WheelPicker
 					containerStyle={globalStyles.wheelPickerContainer}

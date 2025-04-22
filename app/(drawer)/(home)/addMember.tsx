@@ -40,6 +40,7 @@ export default function AddMember() {
 	const [nameError, setNameError] = useState(false);
 	const [memberNumberError, setMemberNumberError] = useState(false);
 	const [emailError, setEmailError] = useState(false);
+	const [zipCodeError, setZipCodeError] = useState(false);
 
 	const [birthDateModal, setBirthDateModal] = useState(false);
 	const [paidDateModal, setPaidDateModal] = useState(false);
@@ -234,37 +235,59 @@ export default function AddMember() {
 		setLoading(true);
 		Keyboard.dismiss();
 
+		let errors = 0;
+
 		if (!name.trim()) {
 			showSnackbar(t('addMember.nameError'));
 			setNameError(true);
-			setLoading(false);
-			return;
-		}
+			errors++;
+			//setLoading(false);
+			//return;
+		} else setNameError(false);
 
 		if (email?.trim() && !email.match(emailRegex)) {
 			showSnackbar(t('addMember.emailError'));
 			setEmailError(true);
-			setLoading(false);
-			return;
-		}
+			errors++;
+			//setLoading(false);
+			//return;
+		} else setEmailError(false);
 
 		if (autoNumber) {
 			await assignMemberNumber();
 		} else if (!memberNumber.trim()) {
 			showSnackbar(t('addMember.memberNumberError'));
 			setMemberNumberError(true);
-			setLoading(false);
-			return;
+			errors++;
+			//setLoading(false);
+			//return;
 		} else {
 			const numberAvailable = await checkNumber();
 			if (numberAvailable > 1) {
 				showSnackbar(t('addMember.memberNumberExists'));
 				setMemberNumberError(true);
-				setLoading(false);
-				return;
+				errors++;
+				//setLoading(false);
+				//return;
 			}
 			minNumber = Number(memberNumber.trim());
 			setMemberNumber(minNumber.toString());
+		}
+
+		if (zipCode.length < 8 && zipCode.length > 0) {
+			showSnackbar(t('addMember.zipCodeError'));
+			setZipCodeError(true);
+			errors++;
+			//setLoading(false);
+			//return;
+		} else setZipCodeError(false);
+
+		console.log(
+			`${nameError} : ${memberNumberError} : ${zipCodeError} : ${errors}`
+		);
+		if (errors > 0) {
+			setLoading(false);
+			return;
 		}
 
 		const docRef = firestore().collection('members').doc();
@@ -326,6 +349,7 @@ export default function AddMember() {
 						globalStyles.modalContentContainer.global,
 						{ backgroundColor: theme.colors.primaryContainer },
 					]}
+					testID='ProfilePictureModal'
 				>
 					<Button
 						style={globalStyles.button.global}
@@ -334,6 +358,7 @@ export default function AddMember() {
 						icon='file-image'
 						mode='elevated'
 						onPress={pickImage}
+						testID='GalleryButton'
 					>
 						{t('addMember.gallery')}
 					</Button>
@@ -344,6 +369,7 @@ export default function AddMember() {
 						icon='camera'
 						mode='elevated'
 						onPress={takePicture}
+						testID='CameraButton'
 					>
 						{t('addMember.camera')}
 					</Button>
@@ -356,6 +382,7 @@ export default function AddMember() {
 					setEndDateModal(false);
 				}}
 				onConfirm={onYearReceived}
+				testID='EndDatePicker'
 			/>
 
 			<SnackbarInfo
@@ -375,6 +402,7 @@ export default function AddMember() {
 							onPress={() => {
 								setPictureModal(true);
 							}}
+							testID='ProfilePicturePressable'
 						>
 							<Avatar.Image
 								size={200}
@@ -395,7 +423,7 @@ export default function AddMember() {
 									flexDirection: 'row',
 									justifyContent: 'center',
 									alignItems: 'center',
-									flex: 2,
+									flex: 1,
 								}}
 							>
 								<Text
@@ -416,27 +444,41 @@ export default function AddMember() {
 										setAutoNumber(input);
 										setMemberNumberError(false);
 									}}
+									testID='AutoNumberSwitch'
 								/>
 							</View>
-							<TextInput
-								disabled={autoNumber}
-								style={[globalStyles.input, { flex: 3 }]}
-								value={memberNumber}
-								onChangeText={(input) => {
-									setMemberNumber(input.replace(/[^0-9]/g, ''));
-								}}
-								onEndEditing={() => {
-									if (!autoNumber && !memberNumber.trim()) {
-										setMemberNumberError(true);
-									} else setMemberNumberError(false);
-									setMemberNumber(memberNumber.trim());
-								}}
-								maxLength={6}
-								error={memberNumberError}
-								autoCapitalize='none'
-								keyboardType='numeric'
-								label={t('addMember.memberNumber')}
-							/>
+							<View style={{ flex: 1, flexDirection: 'column' }}>
+								<TextInput
+									disabled={autoNumber}
+									style={[globalStyles.input, { flex: 3 }]}
+									value={memberNumber}
+									onChangeText={(input) => {
+										setMemberNumber(input.replace(/[^0-9]/g, ''));
+									}}
+									onEndEditing={() => {
+										if (!autoNumber && !memberNumber.trim()) {
+											setMemberNumberError(true);
+										} else setMemberNumberError(false);
+										setMemberNumber(memberNumber.trim());
+									}}
+									maxLength={6}
+									error={memberNumberError}
+									autoCapitalize='none'
+									keyboardType='numeric'
+									label={t('addMember.memberNumber')}
+									testID='MemberNumberInput'
+								/>
+								{memberNumberError ? (
+									<HelperText
+										type='error'
+										visible={memberNumberError}
+										style={globalStyles.text.errorHelper}
+										testID='MemberNumberError'
+									>
+										{t('addMember.memberNumberError')}
+									</HelperText>
+								) : null}
+							</View>
 						</View>
 
 						<TextInput
@@ -453,12 +495,14 @@ export default function AddMember() {
 							autoCapitalize='words'
 							keyboardType='default'
 							label={t('addMember.name')}
+							testID='NameInput'
 						/>
 						{nameError ? (
 							<HelperText
 								type='error'
 								visible={nameError}
 								style={globalStyles.text.errorHelper}
+								testID='NameError'
 							>
 								{t('addMember.nameError')}
 							</HelperText>
@@ -478,12 +522,14 @@ export default function AddMember() {
 							autoCapitalize='none'
 							keyboardType='email-address'
 							label={t('addMember.email')}
+							testID='EmailInput'
 						/>
 						{emailError ? (
 							<HelperText
 								type='error'
 								visible={emailError}
 								style={globalStyles.text.errorHelper}
+								testID='EmailError'
 							>
 								{t('addMember.emailError')}
 							</HelperText>
@@ -502,6 +548,7 @@ export default function AddMember() {
 							inputMode='tel'
 							keyboardType='phone-pad'
 							label={t('addMember.phoneNumber')}
+							testID='PhoneInput'
 						/>
 						<TextInput
 							style={globalStyles.input}
@@ -514,6 +561,7 @@ export default function AddMember() {
 							inputMode='text'
 							keyboardType='default'
 							label={t('addMember.occupation')}
+							testID='OccupationInput'
 						/>
 						<TextInput
 							style={globalStyles.input}
@@ -526,6 +574,7 @@ export default function AddMember() {
 							inputMode='text'
 							keyboardType='default'
 							label={t('addMember.country')}
+							testID='CountryInput'
 						/>
 						<TextInput
 							style={globalStyles.input}
@@ -538,6 +587,7 @@ export default function AddMember() {
 							inputMode='text'
 							keyboardType='default'
 							label={t('addMember.address')}
+							testID='AddressInput'
 						/>
 						<TextInput
 							style={globalStyles.input}
@@ -553,20 +603,36 @@ export default function AddMember() {
 								}
 							}}
 							onEndEditing={() => {
+								if (zipCode.length < 8 && zipCode.length > 0)
+									setZipCodeError(true);
+								else setZipCodeError(false);
 								setZipCode(zipCode.trim());
 							}}
+							error={zipCodeError}
 							maxLength={8}
 							autoCapitalize='none'
 							inputMode='numeric'
 							keyboardType='number-pad'
 							label={t('addMember.zipCode')}
+							testID='ZipCodeInput'
 						/>
+						{zipCodeError ? (
+							<HelperText
+								type='error'
+								visible={zipCodeError}
+								style={globalStyles.text.errorHelper}
+								testID='ZipCodeError'
+							>
+								{t('addMember.zipCodeError')}
+							</HelperText>
+						) : null}
 
 						<>
 							<Button
 								style={{ marginVertical: 5 }}
 								labelStyle={globalStyles.text.date}
 								onPress={() => setBirthDateModal(true)}
+								testID='BirthDateButton'
 							>
 								{`${t('addMember.birthDate')}: ${birthDate.toLocaleDateString(
 									'pt-pt'
@@ -588,6 +654,7 @@ export default function AddMember() {
 								onCancel={() => {
 									setBirthDateModal(false);
 								}}
+								testID='BirthDatePicker'
 							/>
 						</>
 
@@ -610,12 +677,14 @@ export default function AddMember() {
 								onPress={() => {
 									setPaid(!paid);
 								}}
+								testID='PaidCheckbox'
 							/>
 							{paid ? (
 								<>
 									<Button
 										labelStyle={globalStyles.text.date}
 										onPress={() => setPaidDateModal(true)}
+										testID='PaidDateButton'
 									>
 										{`${t('addMember.on')} ${paidDate.toLocaleDateString(
 											'pt-pt'
@@ -636,11 +705,13 @@ export default function AddMember() {
 										onCancel={() => {
 											setPaidDateModal(false);
 										}}
+										testID='PaidDatePicker'
 									/>
 									<View style={{ flexDirection: 'column' }}>
 										<Button
 											labelStyle={globalStyles.text.date}
 											onPress={() => setEndDateModal(true)}
+											testID='EndDateButton'
 										>
 											{`${t('addMember.until')} ${endDate}`}
 										</Button>
@@ -660,6 +731,7 @@ export default function AddMember() {
 						mode='elevated'
 						loading={loading}
 						onPress={addMember}
+						testID='AddButton'
 					>
 						{t('addMember.addMember')}
 					</Button>

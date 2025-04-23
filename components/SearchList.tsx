@@ -36,6 +36,7 @@ type SearchListProps = ComponentPropsWithRef<typeof TextInput> & {
 	data: ArrayLike<any> | null | undefined;
 	renderItem: ListRenderItem<any> | null | undefined;
 	onClearIconPress?: (e: GestureResponderEvent) => void;
+	testID?: string;
 };
 
 const SearchList = (props: SearchListProps) => {
@@ -78,6 +79,7 @@ const SearchList = (props: SearchListProps) => {
 				placeholder={props.placeholder}
 				loading={props.loading}
 				onClearIconPress={props.onClearIconPress}
+				testID={props.testID || 'SearchList'}
 			/>
 			{flatlistVisible ? (
 				<Animated.View

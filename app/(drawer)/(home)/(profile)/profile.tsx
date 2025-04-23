@@ -537,7 +537,10 @@ export default function Profile() {
 				onDismiss={onDismissSnackbar}
 			/>
 
-			<View style={globalStyles.container.global}>
+			<View
+				style={globalStyles.container.global}
+				testID='ProfilePage'
+			>
 				{loading || !profile ? (
 					<ActivityIndicator
 						size={75}
@@ -625,6 +628,7 @@ export default function Profile() {
 										autoCapitalize='none'
 										keyboardType='numeric'
 										label={t('profile.memberNumber')}
+										testID='MemberNumberInput'
 									/>
 								</View>
 

@@ -1,0 +1,136 @@
+appId: com.leandropata.membermanagementapp
+---
+- launchApp
+
+- assertVisible:
+    id: 'HomePage'
+- tapOn:
+    id: 'SearchButton'
+    retryTapIfNoChange: false
+
+- assertVisible:
+    id: 'SearchPage'
+- assertVisible:
+    id: 'NameSearch'
+- assertVisible:
+    id: 'NumberSearch'
+- assertVisible:
+    id: 'OrderButton'
+- assertVisible:
+    id: 'OrderReverseButton'
+- assertVisible:
+    id: 'MembersList'
+- assertVisible:
+    id: 'ItemButton'
+
+- tapOn:
+    id: 'ItemButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'ProfilePage'
+- back
+- assertVisible:
+    id: 'SearchPage'
+
+- tapOn:
+    id: 'NumberSearch'
+    retryTapIfNoChange: false
+- inputRandomPersonName
+- inputText: '1'
+- tapOn:
+    point: 90%, 93%
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'ItemButton'
+- tapOn:
+    id: 'ItemButton'
+
+- assertVisible:
+    id: 'ProfilePage'
+- assertVisible:
+    id: 'MemberNumberInput'
+    text: '1'
+- back
+- assertVisible:
+    id: 'SearchPage'
+
+- tapOn:
+    id: 'NameSearch'
+- inputText: Ana
+- assertVisible:
+    id: 'NameHintList'
+- tapOn:
+    id: 'NameHintList'
+- assertVisible:
+    id: 'ItemButton'
+- tapOn:
+    id: 'ItemButton'
+- assertVisible:
+    id: 'ProfilePage'
+- back
+- assertVisible:
+    id: 'SearchPage'
+
+- tapOn:
+    id: 'OrderButton'
+- assertVisible:
+    id: 'OrderModal'
+- assertVisible:
+    id: 'OrderNameButton'
+- assertVisible:
+    id: 'OrderNumberButton'
+- assertVisible:
+    id: 'OrderDateButton'
+
+- tapOn:
+    id: 'OrderNameButton'
+- assertNotVisible:
+    id: 'OrderModal'
+- assertVisible:
+    id: 'ItemButton'
+- tapOn:
+    id: 'OrderReverseButton'
+- assertVisible:
+    id: 'ItemButton'
+- tapOn:
+    id: 'OrderReverseButton'
+- assertVisible:
+    id: 'ItemButton'
+
+- tapOn:
+    id: 'OrderButton'
+- assertVisible:
+    id: 'OrderModal'
+- tapOn:
+    id: 'OrderNumberButton'
+- assertNotVisible:
+    id: 'OrderModal'
+- assertVisible:
+    id: 'ItemButton'
+- tapOn:
+    id: 'OrderReverseButton'
+- assertVisible:
+    id: 'ItemButton'
+- tapOn:
+    id: 'OrderReverseButton'
+- assertVisible:
+    id: 'ItemButton'
+
+- tapOn:
+    id: 'OrderButton'
+- assertVisible:
+    id: 'OrderModal'
+- tapOn:
+    id: 'OrderDateButton'
+- assertNotVisible:
+    id: 'OrderModal'
+- assertVisible:
+    id: 'ItemButton'
+- tapOn:
+    id: 'OrderReverseButton'
+- assertVisible:
+    id: 'ItemButton'
+- tapOn:
+    id: 'OrderReverseButton'
+- assertVisible:
+    id: 'ItemButton'

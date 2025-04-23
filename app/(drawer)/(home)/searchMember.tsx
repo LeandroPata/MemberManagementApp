@@ -309,6 +309,7 @@ export default function SearchMember() {
 						params: { profileID: item.key },
 					});
 				}}
+				testID='ItemButton'
 			>
 				<View>
 					<Avatar.Image
@@ -364,6 +365,7 @@ export default function SearchMember() {
 						setName(item.item);
 						getMembersByName(item.item);
 					}}
+					testID='NameHintList'
 				>
 					<Text style={{ padding: 5 }}>{item.item}</Text>
 				</TouchableRipple>
@@ -385,6 +387,7 @@ export default function SearchMember() {
 						globalStyles.modalContentContainer.global,
 						{ backgroundColor: theme.colors.primaryContainer },
 					]}
+					testID='OrderModal'
 				>
 					<Button
 						style={globalStyles.button.global}
@@ -395,6 +398,7 @@ export default function SearchMember() {
 							orderMembersName();
 							setOrderModal(false);
 						}}
+						testID='OrderNameButton'
 					>
 						{t('searchMember.orderName')}
 					</Button>
@@ -411,6 +415,7 @@ export default function SearchMember() {
 							orderMembersNumber();
 							setOrderModal(false);
 						}}
+						testID='OrderNumberButton'
 					>
 						{t('searchMember.orderNumber')}
 					</Button>
@@ -425,6 +430,7 @@ export default function SearchMember() {
 							orderMembersEndDate();
 							setOrderModal(false);
 						}}
+						testID='OrderDateButton'
 					>
 						{t('searchMember.orderEndDate')}
 					</Button>
@@ -462,6 +468,7 @@ export default function SearchMember() {
 						setHintMemberList([]);
 						getAllMembers();
 					}}
+					testID='NameSearch'
 				/>
 				<Searchbar
 					style={globalStyles.searchBar}
@@ -484,6 +491,7 @@ export default function SearchMember() {
 						setMemberNumber('');
 						getAllMembers();
 					}}
+					testID='NumberSearch'
 				/>
 				<KeyboardAvoidingView
 					style={{ marginHorizontal: '3%' }}
@@ -503,6 +511,7 @@ export default function SearchMember() {
 							labelStyle={[globalStyles.buttonText.search, { paddingTop: 0 }]}
 							mode='elevated'
 							onPress={() => setOrderModal(true)}
+							testID='OrderButton'
 						>
 							{t('searchMember.orderBy')}
 						</Button>
@@ -518,6 +527,7 @@ export default function SearchMember() {
 								setOrderAscending(!orderAscending);
 							}}
 							animated={true}
+							testID='OrderReverseButton'
 						/>
 					</View>
 				</KeyboardAvoidingView>
@@ -528,6 +538,7 @@ export default function SearchMember() {
 					keyExtractor={(item) => item.key}
 					extraData={refreshFlatlist}
 					numColumns={2}
+					testID='MembersList'
 				/>
 			</View>
 		</>

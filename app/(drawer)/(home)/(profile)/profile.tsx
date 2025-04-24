@@ -50,6 +50,7 @@ export default function Profile() {
 	const [nameError, setNameError] = useState(false);
 	const [memberNumberError, setMemberNumberError] = useState(false);
 	const [emailError, setEmailError] = useState(false);
+	const [zipCodeError, setZipCodeError] = useState(false);
 
 	const [birthDateModal, setBirthDateModal] = useState(false);
 	const [paidDateModal, setPaidDateModal] = useState(false);
@@ -112,10 +113,12 @@ export default function Profile() {
 			setEndDate(0);
 			setProfilePicture('');
 			setPaid(!!profile?.paidDate);
+			setAutoNumber(false);
 
 			setNameError(false);
 			setMemberNumberError(false);
 			setEmailError(false);
+			setZipCodeError(false);
 		} else {
 			router.replace('/(drawer)/(home)/searchMember');
 		}
@@ -322,6 +325,9 @@ export default function Profile() {
 	};
 
 	const assignMemberNumber = async () => {
+		const numCheck = await checkNumber();
+		console.log(numCheck);
+
 		try {
 			await firestore()
 				.collection('members')
@@ -331,7 +337,16 @@ export default function Profile() {
 					let i = 1;
 					// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
 					querySnapshot.forEach((documentSnapshot) => {
-						if (i === Number(memberNumber.trim())) {
+						console.log(
+							`${i} : ${memberNumber.trim()} : ${profile.memberNumber} : ${
+								i === Number(memberNumber.trim())
+							} : ${i === profile.memberNumber}`
+						);
+						if (
+							(i === Number(memberNumber.trim()) && numCheck <= 1) ||
+							i === profile.memberNumber
+						) {
+							console.log('In');
 							minNumber = i;
 						} else if (i === Number(documentSnapshot.data().memberNumber)) {
 							i = Number(documentSnapshot.data().memberNumber) + 1;
@@ -361,16 +376,14 @@ export default function Profile() {
 					.then((querySnapshot) => {
 						// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
 						querySnapshot.forEach((documentSnapshot) => {
-							if (
-								memberNumber.trim() === documentSnapshot.data().memberNumber
-							) {
+							if (memberNumber.trim() == documentSnapshot.data().memberNumber) {
 								numberAvailable++;
 								console.log('Number unavailable!');
 							}
 						});
 					});
 			}
-			//console.log('Result: ' + numberAvailable);
+			//console.log(`Result: ${numberAvailable}`);
 			return numberAvailable;
 		} catch (e: any) {
 			const err = e as FirebaseError;
@@ -383,35 +396,65 @@ export default function Profile() {
 		setLoadingSave(true);
 		Keyboard.dismiss();
 
+		let errors = 0;
+
 		if (!name.trim()) {
 			showSnackbar(t('profile.nameError'));
 			setNameError(true);
-			setLoadingSave(false);
-			return;
+			errors++;
+			//setLoadingSave(false);
+			//return;
 		}
 
 		if (email?.trim() && !email.match(emailRegex)) {
 			showSnackbar(t('profile.emailError'));
 			setEmailError(true);
-			setLoadingSave(false);
-			return;
+			errors++;
+			//setLoadingSave(false);
+			//return;
 		}
 
 		if (autoNumber) {
 			await assignMemberNumber();
 		} else if (!memberNumber.trim()) {
 			showSnackbar(t('profile.memberNumberError'));
-			setLoadingSave(false);
-			return;
+			setMemberNumberError(true);
+			errors++;
+			//setLoadingSave(false);
+			//return;
 		} else {
 			const numberAvailable = await checkNumber();
-			if (numberAvailable > 1) {
+			console.log(
+				`${memberNumber} : ${profile.memberNumber} : ${
+					memberNumber != profile.memberNumber
+				} : ${numberAvailable}`
+			);
+			if (memberNumber != profile.memberNumber && numberAvailable > 1) {
 				showSnackbar(t('profile.memberNumberExists'));
-				setLoadingSave(false);
-				return;
+				setMemberNumberError(true);
+				errors++;
+				//setLoadingSave(false);
+				//return;
 			}
 			minNumber = Number(memberNumber);
 			setMemberNumber(minNumber.toString());
+		}
+
+		if (zipCode.length < 8 && zipCode.length > 0) {
+			showSnackbar(t('addMember.zipCodeError'));
+			setZipCodeError(true);
+			errors++;
+			//setLoadingSave(false);
+			//return;
+		} else setZipCodeError(false);
+
+		console.log(
+			`${nameError} : ${memberNumberError} : ${zipCodeError} : ${errors}`
+		);
+
+		if (errors > 0) {
+			setLoadingSave(false);
+			return;
 		}
 
 		const url = await uploadPicture();
@@ -441,6 +484,7 @@ export default function Profile() {
 				.then(() => {
 					showSnackbar(t('profile.updatedMember'));
 					setEditing(false);
+					setAutoNumber(false);
 					getMember(profileID);
 				});
 		} catch (e: any) {
@@ -492,6 +536,7 @@ export default function Profile() {
 						globalStyles.modalContentContainer.global,
 						{ backgroundColor: theme.colors.primaryContainer },
 					]}
+					testID='ProfilePictureModal'
 				>
 					<Button
 						style={globalStyles.button.global}
@@ -500,6 +545,7 @@ export default function Profile() {
 						icon='file-image'
 						mode='elevated'
 						onPress={pickImage}
+						testID='GalleryButton'
 					>
 						{t('profile.gallery')}
 					</Button>
@@ -510,6 +556,7 @@ export default function Profile() {
 						icon='camera'
 						mode='elevated'
 						onPress={takePicture}
+						testID='CameraButton'
 					>
 						{t('profile.camera')}
 					</Button>
@@ -529,6 +576,7 @@ export default function Profile() {
 					setEndDateModal(false);
 				}}
 				onConfirm={onYearReceived}
+				testID='EndDatePicker'
 			/>
 
 			<SnackbarInfo
@@ -557,6 +605,7 @@ export default function Profile() {
 									onPress={() => {
 										setPictureModal(true);
 									}}
+									testID='ProfilePicturePressable'
 								>
 									<Avatar.Image
 										size={200}
@@ -581,7 +630,7 @@ export default function Profile() {
 											flexDirection: 'row',
 											justifyContent: 'center',
 											alignItems: 'center',
-											flex: 2,
+											flex: 1,
 										}}
 									>
 										<Text
@@ -601,35 +650,48 @@ export default function Profile() {
 											value={autoNumber}
 											onValueChange={(input) => {
 												setAutoNumber(input);
-												setMemberNumber('');
 												setMemberNumberError(false);
+												if (input) assignMemberNumber();
 											}}
+											testID='AutoNumberSwitch'
 										/>
 									</View>
-									<TextInput
-										disabled={Boolean(!editing || (editing && autoNumber))}
-										style={[globalStyles.input, { flex: 3 }]}
-										value={
-											memberNumber || editing
-												? memberNumber
-												: profile.memberNumber.toString()
-										}
-										onChangeText={(input) => {
-											setMemberNumber(input.replace(/[^0-9]/g, ''));
-										}}
-										onEndEditing={() => {
-											if (!autoNumber && !memberNumber.trim()) {
-												setMemberNumberError(true);
-											} else setMemberNumberError(false);
-											setMemberNumber(memberNumber.trim());
-										}}
-										maxLength={6}
-										error={memberNumberError}
-										autoCapitalize='none'
-										keyboardType='numeric'
-										label={t('profile.memberNumber')}
-										testID='MemberNumberInput'
-									/>
+									<View style={{ flex: 1, flexDirection: 'column' }}>
+										<TextInput
+											disabled={Boolean(!editing || (editing && autoNumber))}
+											style={[globalStyles.input, { flex: 3 }]}
+											value={
+												memberNumber || editing
+													? memberNumber
+													: profile.memberNumber.toString()
+											}
+											onChangeText={(input) => {
+												setMemberNumber(input.replace(/[^0-9]/g, ''));
+											}}
+											onEndEditing={() => {
+												if (!autoNumber && !memberNumber.trim() && editing) {
+													setMemberNumberError(true);
+												} else setMemberNumberError(false);
+												setMemberNumber(memberNumber.trim());
+											}}
+											maxLength={6}
+											error={memberNumberError}
+											autoCapitalize='none'
+											keyboardType='numeric'
+											label={t('profile.memberNumber')}
+											testID='MemberNumberInput'
+										/>
+										{memberNumberError ? (
+											<HelperText
+												type='error'
+												visible={memberNumberError}
+												style={globalStyles.text.errorHelper}
+												testID='MemberNumberError'
+											>
+												{t('addMember.memberNumberError')}
+											</HelperText>
+										) : null}
+									</View>
 								</View>
 
 								<TextInput
@@ -638,7 +700,7 @@ export default function Profile() {
 									value={name || editing ? name : profile.name}
 									onChangeText={setName}
 									onEndEditing={() => {
-										if (!name.trim()) {
+										if (!name.trim() && editing) {
 											setNameError(true);
 										} else setNameError(false);
 										setName(name.trim());
@@ -647,12 +709,14 @@ export default function Profile() {
 									autoCapitalize='words'
 									keyboardType='default'
 									label={t('profile.name')}
+									testID='NameInput'
 								/>
 								{nameError ? (
 									<HelperText
 										type='error'
 										visible={nameError}
 										style={globalStyles.text.errorHelper}
+										testID='NameError'
 									>
 										{t('profile.nameError')}
 									</HelperText>
@@ -664,7 +728,7 @@ export default function Profile() {
 									value={email || editing ? email : profile.email}
 									onChangeText={setEmail}
 									onEndEditing={() => {
-										if (email?.trim() && !email.match(emailRegex)) {
+										if (email?.trim() && !email.match(emailRegex) && editing) {
 											setEmailError(true);
 										} else setEmailError(false);
 										setEmail(email.trim());
@@ -673,12 +737,14 @@ export default function Profile() {
 									autoCapitalize='none'
 									keyboardType='email-address'
 									label={t('profile.email')}
+									testID='EmailInput'
 								/>
 								{emailError ? (
 									<HelperText
 										type='error'
 										visible={emailError}
 										style={globalStyles.text.errorHelper}
+										testID='EmailError'
 									>
 										{t('profile.emailError')}
 									</HelperText>
@@ -691,7 +757,7 @@ export default function Profile() {
 										phoneNumber || editing ? phoneNumber : profile.phoneNumber
 									}
 									onChangeText={(input) => {
-										setPhoneNumber(input.replace(/[^0-9+\-\s]/g, ''));
+										setPhoneNumber(input.replace(/[^0-9+-]/g, ''));
 									}}
 									onEndEditing={() => {
 										setPhoneNumber(phoneNumber.trim());
@@ -700,6 +766,7 @@ export default function Profile() {
 									inputMode='tel'
 									keyboardType='phone-pad'
 									label={t('profile.phoneNumber')}
+									testID='PhoneInput'
 								/>
 								<TextInput
 									disabled={!editing}
@@ -715,6 +782,7 @@ export default function Profile() {
 									inputMode='text'
 									keyboardType='default'
 									label={t('profile.occupation')}
+									testID='OccupationInput'
 								/>
 								<TextInput
 									disabled={!editing}
@@ -728,6 +796,7 @@ export default function Profile() {
 									inputMode='text'
 									keyboardType='default'
 									label={t('profile.country')}
+									testID='CountryInput'
 								/>
 								<TextInput
 									disabled={!editing}
@@ -741,6 +810,7 @@ export default function Profile() {
 									inputMode='text'
 									keyboardType='default'
 									label={t('profile.address')}
+									testID='AddressInput'
 								/>
 								<TextInput
 									disabled={!editing}
@@ -757,6 +827,9 @@ export default function Profile() {
 										}
 									}}
 									onEndEditing={() => {
+										if (zipCode.length < 8 && zipCode.length > 0 && editing)
+											setZipCodeError(true);
+										else setZipCodeError(false);
 										setZipCode(zipCode.trim());
 									}}
 									maxLength={8}
@@ -764,7 +837,18 @@ export default function Profile() {
 									inputMode='numeric'
 									keyboardType='number-pad'
 									label={t('profile.zipCode')}
+									testID='ZipCodeInput'
 								/>
+								{zipCodeError ? (
+									<HelperText
+										type='error'
+										visible={zipCodeError}
+										style={globalStyles.text.errorHelper}
+										testID='ZipCodeError'
+									>
+										{t('addMember.zipCodeError')}
+									</HelperText>
+								) : null}
 
 								<>
 									<Button
@@ -772,6 +856,7 @@ export default function Profile() {
 										style={{ marginVertical: 5 }}
 										labelStyle={globalStyles.text.date}
 										onPress={() => setBirthDateModal(true)}
+										testID='BirthDateButton'
 									>
 										{`${t('profile.birthDate')}: ${
 											birthDate.toLocaleDateString('pt-pt') !==
@@ -798,6 +883,7 @@ export default function Profile() {
 										onCancel={() => {
 											setBirthDateModal(false);
 										}}
+										testID='BirthDatePicker'
 									/>
 								</>
 
@@ -825,6 +911,7 @@ export default function Profile() {
 										onPress={() => {
 											setPaid(!paid);
 										}}
+										testID='PaidCheckbox'
 									/>
 									{paid ? (
 										<>
@@ -832,6 +919,7 @@ export default function Profile() {
 												disabled={!editing}
 												labelStyle={globalStyles.text.date}
 												onPress={() => setPaidDateModal(true)}
+												testID='PaidDateButton'
 											>
 												{`${t('profile.on')} ${
 													paidDate.toLocaleDateString('pt-pt') !==
@@ -859,12 +947,14 @@ export default function Profile() {
 												onCancel={() => {
 													setPaidDateModal(false);
 												}}
+												testID='PaidDatePicker'
 											/>
 											<View style={{ flexDirection: 'column' }}>
 												<Button
 													disabled={!editing}
 													labelStyle={globalStyles.text.date}
 													onPress={() => setEndDateModal(true)}
+													testID='EndDateButton'
 												>
 													{`${t('profile.until')} ${
 														endDate || editing ? endDate : profile.endDate
@@ -887,6 +977,7 @@ export default function Profile() {
 									mode='elevated'
 									loading={loadingSave}
 									onPress={saveMember}
+									testID='SaveButton'
 								>
 									{t('profile.saveMember')}
 								</Button>
@@ -917,6 +1008,7 @@ export default function Profile() {
 											setEndDate(profile.endDate || new Date().getFullYear());
 											setProfilePicture('');
 										}}
+										testID='EditButton'
 									>
 										{t('profile.editMember')}
 									</Button>
@@ -930,6 +1022,7 @@ export default function Profile() {
 										onPress={() => {
 											setDialogConfirmationVisible(true);
 										}}
+										testID='DeleteButton'
 									>
 										{t('profile.deleteMember')}
 									</Button>

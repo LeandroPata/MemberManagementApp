@@ -83,6 +83,9 @@ export default function AddMember() {
 	let minNumber = 0;
 
 	const assignMemberNumber = async () => {
+		const numCheck = await checkNumber();
+		console.log(numCheck);
+
 		try {
 			await firestore()
 				.collection('members')
@@ -92,7 +95,7 @@ export default function AddMember() {
 					let i = 1;
 					// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
 					querySnapshot.forEach((documentSnapshot) => {
-						if (i === Number(memberNumber.trim())) {
+						if (numCheck <= 1 && i === Number(memberNumber.trim())) {
 							minNumber = i;
 						} else if (i === Number(documentSnapshot.data().memberNumber)) {
 							i = Number(documentSnapshot.data().memberNumber) + 1;
@@ -120,13 +123,13 @@ export default function AddMember() {
 				.then((querySnapshot) => {
 					// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
 					querySnapshot.forEach((documentSnapshot) => {
-						if (memberNumber.trim() === documentSnapshot.data().memberNumber) {
+						if (memberNumber.trim() == documentSnapshot.data().memberNumber) {
 							numberAvailable++;
 							console.log(t('addMember.memberNumberUnavailable'));
 						}
 					});
 				});
-			//console.log('Result: ' + numberAvailable);
+			//console.log(`Result: ${numberAvailable}`);
 			return numberAvailable;
 		} catch (e: any) {
 			const err = e as FirebaseError;
@@ -282,9 +285,10 @@ export default function AddMember() {
 			//return;
 		} else setZipCodeError(false);
 
-		console.log(
+		/* console.log(
 			`${nameError} : ${memberNumberError} : ${zipCodeError} : ${errors}`
-		);
+		); */
+
 		if (errors > 0) {
 			setLoading(false);
 			return;
@@ -443,6 +447,7 @@ export default function AddMember() {
 									onValueChange={(input) => {
 										setAutoNumber(input);
 										setMemberNumberError(false);
+										if (input) assignMemberNumber();
 									}}
 									testID='AutoNumberSwitch'
 								/>
@@ -539,7 +544,7 @@ export default function AddMember() {
 							style={globalStyles.input}
 							value={phoneNumber}
 							onChangeText={(input) => {
-								setPhoneNumber(input.replace(/[^0-9+\-\s]/g, ''));
+								setPhoneNumber(input.replace(/[^0-9+-]/g, ''));
 							}}
 							onEndEditing={() => {
 								setPhoneNumber(phoneNumber.trim());

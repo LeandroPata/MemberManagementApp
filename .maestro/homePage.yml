@@ -36,3 +36,5 @@ appId: com.leandropata.membermanagementapp
 - back
 - assertVisible:
     id: 'HomePage'
+
+- stopApp

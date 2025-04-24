@@ -134,3 +134,5 @@ appId: com.leandropata.membermanagementapp
     id: 'OrderReverseButton'
 - assertVisible:
     id: 'ItemButton'
+
+- stopApp

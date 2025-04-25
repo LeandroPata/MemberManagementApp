@@ -470,6 +470,7 @@ export default function importExport() {
 						mode='elevated'
 						loading={importLoading}
 						onPress={importMembers}
+						testID='ImportButton'
 					>
 						{t('importExport.importMembers')}
 					</Button>
@@ -481,6 +482,7 @@ export default function importExport() {
 						mode='elevated'
 						loading={exportLoading}
 						onPress={exportMembers}
+						testID='ExportButton'
 					>
 						{t('importExport.exportMembers')}
 					</Button>

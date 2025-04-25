@@ -135,4 +135,8 @@ appId: com.leandropata.membermanagementapp
 - assertVisible:
     id: 'ItemButton'
 
+- back
+- assertVisible:
+    id: 'HomePage'
+
 - stopApp

@@ -31,9 +31,13 @@ appId: com.leandropata.membermanagementapp
 - tapOn:
     id: 'CreateAccountButton'
     retryTapIfNoChange: false
+- assertNotVisible:
+    id: 'EmailError'
+- assertNotVisible:
+    id: 'PasswordError'
+
 - assertVisible:
     id: 'ConfirmPasswordModal'
-
 - assertVisible:
     id: 'ConfirmPasswordInput'
 - assertVisible:

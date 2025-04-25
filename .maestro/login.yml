@@ -49,6 +49,8 @@ appId: com.leandropata.membermanagementapp
 - tapOn:
     id: 'LoginButton'
     retryTapIfNoChange: false
+- assertNotVisible:
+    id: 'EmailError'
 - assertVisible:
     id: 'PasswordError'
 
@@ -66,7 +68,7 @@ appId: com.leandropata.membermanagementapp
     retryTapIfNoChange: false
 - eraseText
 
-- inputText: 'pass123'
+- inputText: 'pass321'
 - tapOn:
     id: 'EmailInput'
     retryTapIfNoChange: false
@@ -76,11 +78,25 @@ appId: com.leandropata.membermanagementapp
     retryTapIfNoChange: false
 - assertVisible:
     id: 'EmailError'
+- assertNotVisible:
+    id: 'PasswordError'
 
 - tapOn:
     id: 'EmailInput'
     retryTapIfNoChange: false
 - inputText: 'test@test.com'
+- tapOn:
+    id: 'LoginButton'
+    retryTapIfNoChange: false
+- assertNotVisible:
+    id: 'EmailError'
+- assertNotVisible:
+    id: 'PasswordError'
+
+- tapOn:
+    id: 'PasswordInput'
+    retryTapIfNoChange: false
+- inputText: 'pass123'
 - tapOn:
     id: 'LoginButton'
     retryTapIfNoChange: false

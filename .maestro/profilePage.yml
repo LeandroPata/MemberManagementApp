@@ -247,11 +247,17 @@ appId: com.leandropata.membermanagementapp
 - hideKeyboard
 - assertNotVisible:
     id: 'ZipCodeError'
+
 - back
 - assertVisible:
     id: 'EditButton'
+
 - back
 - assertVisible:
     id: 'SearchPage'
+
+- back
+- assertVisible:
+    id: 'HomePage'
 
 - stopApp

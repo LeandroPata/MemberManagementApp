@@ -1,0 +1,19 @@
+appId: com.leandropata.membermanagementapp
+---
+- launchApp
+- assertVisible:
+    id: 'HomePage'
+- assertVisible:
+    id: 'ImportExportButton'
+
+- tapOn:
+    id: 'ImportExportButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'ImportExportPage'
+- assertVisible:
+    id: 'ImportButton'
+- assertVisible:
+    id: 'ExportButton'
+
+- stopApp

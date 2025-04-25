@@ -109,6 +109,8 @@ appId: com.leandropata.membermanagementapp
 - assertVisible:
     id: 'MemberNumberInput'
     enabled: false
+- assertNotVisible:
+    id: 'MemberNumberError'
 
 - tapOn:
     id: 'NameInput'
@@ -119,6 +121,8 @@ appId: com.leandropata.membermanagementapp
 - tapOn:
     id: 'EmailInput'
     retryTapIfNoChange: false
+- assertNotVisible:
+    id: 'NameError'
 - inputRandomText
 - hideKeyboard
 - tapOn:
@@ -136,6 +140,8 @@ appId: com.leandropata.membermanagementapp
 - tapOn:
     id: 'PhoneInput'
     retryTapIfNoChange: false
+- assertNotVisible:
+    id: 'EmailError'
 - inputRandomPersonName
 - inputText: '987654321'
 - assertVisible:
@@ -183,6 +189,13 @@ appId: com.leandropata.membermanagementapp
 - inputRandomNumber:
     length: 7
 - hideKeyboard
+
+- tapOn:
+    id: 'AddressInput'
+    retryTapIfNoChange: false
+- hideKeyboard
+- assertNotVisible:
+    id: 'ZipCodeError'
 
 - tapOn:
     id: 'BirthDateButton'
@@ -244,5 +257,9 @@ appId: com.leandropata.membermanagementapp
     id: 'EmailError'
 - assertNotVisible:
     id: 'ZipCodeError'
+
+- back
+- assertVisible:
+    id: 'HomePage'
 
 - stopApp

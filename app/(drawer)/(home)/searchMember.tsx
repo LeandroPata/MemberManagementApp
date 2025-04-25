@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 import Fuse from 'fuse.js';
 import SearchList from '@/components/SearchList';
 import { globalStyles } from '@/styles/global';
+import { useBackHandler } from '@react-native-community/hooks';
 
 export default function SearchMember() {
 	const theme = useTheme();
@@ -38,6 +39,11 @@ export default function SearchMember() {
 	const [members, setMembers] = useState([]);
 
 	const [refreshFlatlist, setRefreshFlatlist] = useState(false);
+
+	useBackHandler(() => {
+		router.replace('/(drawer)/(home)/home');
+		return true;
+	});
 
 	useFocusEffect(
 		useCallback(() => {

@@ -13,6 +13,7 @@ type DialogConfirmationProps = {
 	visible: boolean;
 	onDismiss: () => void;
 	onConfirmation: () => void;
+	testID?: string;
 };
 
 const DialogConfirmation = (props: DialogConfirmationProps) => {
@@ -22,13 +23,24 @@ const DialogConfirmation = (props: DialogConfirmationProps) => {
 			<Dialog
 				visible={props.visible}
 				onDismiss={props.onDismiss}
+				testID={props.testID || 'DialogConfirmation'}
 			>
 				<Dialog.Content>
 					<Text style={globalStyles.text.dialog}>{props.text}</Text>
 				</Dialog.Content>
 				<Dialog.Actions>
-					<Button onPress={props.onConfirmation}>{t('profile.yes')}</Button>
-					<Button onPress={props.onDismiss}>{t('profile.no')}</Button>
+					<Button
+						onPress={props.onConfirmation}
+						testID='DialogConfirmationYes'
+					>
+						{t('profile.yes')}
+					</Button>
+					<Button
+						onPress={props.onDismiss}
+						testID='DialogConfirmationNo'
+					>
+						{t('profile.no')}
+					</Button>
 				</Dialog.Actions>
 			</Dialog>
 		</Portal>

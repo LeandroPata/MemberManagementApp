@@ -349,6 +349,7 @@ export default function CustomDrawerContent(props: any) {
 			.then(() => {
 				console.log('Successfull reauthentication');
 				passwordCheck = true;
+				setCurrentPasswordError(false);
 			})
 			.catch((e: any) => {
 				const err = e as FirebaseError;
@@ -359,6 +360,7 @@ export default function CustomDrawerContent(props: any) {
 				} else {
 					//showSnackbar('Sign in failed: ' + err.message);
 					console.log(`Reauthentication failed: ${err.message}`);
+					setCurrentPasswordError(true);
 				}
 				passwordCheck = false;
 			});
@@ -366,28 +368,50 @@ export default function CustomDrawerContent(props: any) {
 	};
 
 	const changePassword = async () => {
+		let errors = 0;
+
 		if (!currentPassword.trim() || currentPassword.trim().length < 6) {
 			console.log('Invalid current password');
+			errors++;
 			setCurrentPasswordError(true);
-			return;
-		} else if (!newPassword.trim() || newPassword.trim().length < 6) {
-			console.log('Invalid new password');
-			setNewPasswordError(true);
-			return;
-		} else if (
-			!confirmNewPassword.trim() ||
-			confirmNewPassword.trim().length < 6
-		) {
-			console.log('Invalid confirmed new password');
-			setConfirmNewPasswordError(true);
-			return;
-		} else if (newPassword !== confirmNewPassword) {
-			console.log('Passwords do not match');
-			setNewPasswordError(false);
-			setConfirmNewPasswordError(true);
-			return;
-		} else if (!(await checkCurrentPassword())) {
+			//return;
+		}
+
+		const passwordCheck = await checkCurrentPassword();
+		if (!passwordCheck) {
 			console.log('False');
+			errors++;
+			setCurrentPasswordError(true);
+			//return;
+		} else setCurrentPasswordError(false);
+
+		if (!newPassword.trim() || newPassword.trim().length < 6) {
+			console.log('Invalid new password');
+			errors++;
+			setNewPasswordError(true);
+			//return;
+		} else setNewPasswordError(false);
+
+		if (!confirmNewPassword.trim() || confirmNewPassword.trim().length < 6) {
+			console.log('Invalid confirmed new password');
+			errors++;
+			setConfirmNewPasswordError(true);
+			//return;
+		}
+
+		if (newPassword !== confirmNewPassword) {
+			console.log('Passwords do not match');
+			errors++;
+			setConfirmNewPasswordError(true);
+			//return;
+		} else if (
+			newPassword.trim() &&
+			confirmNewPassword.trim() &&
+			newPassword === confirmNewPassword
+		)
+			setConfirmNewPasswordError(false);
+
+		if (errors > 0) {
 			return;
 		}
 
@@ -396,6 +420,7 @@ export default function CustomDrawerContent(props: any) {
 			.then(() => {
 				console.log('Password updated');
 				showSnackbar(t('drawer.passwordUpdated'));
+				onChangePasswordModalDismiss();
 			})
 			.catch((e: any) => {
 				const err = e as FirebaseError;
@@ -423,6 +448,7 @@ export default function CustomDrawerContent(props: any) {
 				visible={checkUpdateConfirmationVisible}
 				onDismiss={onDismissDialogConfirmation}
 				onConfirmation={() => checkUpdates()}
+				testID='UpdateConfirmation'
 			/>
 
 			<DialogConfirmation
@@ -430,6 +456,7 @@ export default function CustomDrawerContent(props: any) {
 				visible={runUpdateConfirmationVisible}
 				onDismiss={onDismissDialogConfirmation}
 				onConfirmation={() => downloadUpdate(updateVersion)}
+				testID='RunUpdateConfirmation'
 			/>
 
 			<DialogConfirmation
@@ -437,6 +464,7 @@ export default function CustomDrawerContent(props: any) {
 				visible={signOutConfirmationVisible}
 				onDismiss={onDismissDialogConfirmation}
 				onConfirmation={signOut}
+				testID='SignOutConfirmation'
 			/>
 
 			<Portal>
@@ -463,6 +491,7 @@ export default function CustomDrawerContent(props: any) {
 							minHeight: useWindowDimensions().height / 2,
 						},
 					]}
+					testID='ChangePasswordModal'
 				>
 					<View
 						style={{
@@ -487,12 +516,14 @@ export default function CustomDrawerContent(props: any) {
 								autoCapitalize='none'
 								label={t('drawer.currentPassword')}
 								secureTextEntry
+								testID='CurrentPasswordInput'
 							/>
 							{currentPasswordError ? (
 								<HelperText
 									type='error'
 									visible={currentPasswordError}
 									style={globalStyles.text.errorHelper}
+									testID='CurrentPasswordError'
 								>
 									{t('drawer.currentPasswordError')}
 								</HelperText>
@@ -515,12 +546,14 @@ export default function CustomDrawerContent(props: any) {
 								autoCapitalize='none'
 								label={t('drawer.newPassword')}
 								secureTextEntry
+								testID='NewPasswordInput'
 							/>
 							{newPasswordError ? (
 								<HelperText
 									type='error'
 									visible={newPasswordError}
 									style={globalStyles.text.errorHelper}
+									testID='NewPasswordError'
 								>
 									{t('drawer.newPasswordError')}
 								</HelperText>
@@ -545,12 +578,14 @@ export default function CustomDrawerContent(props: any) {
 								autoCapitalize='none'
 								label={t('drawer.confirmNewPassword')}
 								secureTextEntry
+								testID='ConfirmNewPasswordInput'
 							/>
 							{confirmNewPasswordError ? (
 								<HelperText
 									type='error'
 									visible={confirmNewPasswordError}
 									style={globalStyles.text.errorHelper}
+									testID='ConfirmNewPasswordError'
 								>
 									{t('drawer.confirmNewPasswordError')}
 								</HelperText>
@@ -564,6 +599,7 @@ export default function CustomDrawerContent(props: any) {
 						icon='check-bold'
 						mode='elevated'
 						onPress={changePassword}
+						testID='ChangePasswordButton'
 					>
 						{t('drawer.changePassword')}
 					</Button>
@@ -594,6 +630,7 @@ export default function CustomDrawerContent(props: any) {
 								},
 							]}
 							source={require('@/assets/images/logoReact.png')}
+							testID='DrawerLogo'
 						/>
 
 						<Divider
@@ -618,6 +655,7 @@ export default function CustomDrawerContent(props: any) {
 							pressColor='rgba(80, 80, 80, 0.32)'
 							focused={currentRoute === '/(drawer)/(home)/home'}
 							onPress={() => drawerItemPress('/(drawer)/(home)/home')}
+							testID='HomeDrawerButton'
 						/>
 
 						<DrawerItem
@@ -637,6 +675,7 @@ export default function CustomDrawerContent(props: any) {
 							pressColor='rgba(80, 80, 80, 0.32)'
 							focused={currentRoute === '/(drawer)/(home)/addMember'}
 							onPress={() => drawerItemPress('/(drawer)/(home)/addMember')}
+							testID='AddDrawerButton'
 						/>
 
 						<DrawerItem
@@ -656,6 +695,7 @@ export default function CustomDrawerContent(props: any) {
 							pressColor='rgba(80, 80, 80, 0.32)'
 							focused={currentRoute === '/(drawer)/(home)/searchMember'}
 							onPress={() => drawerItemPress('/(drawer)/(home)/searchMember')}
+							testID='SearchDrawerButton'
 						/>
 
 						<DrawerItem
@@ -675,6 +715,7 @@ export default function CustomDrawerContent(props: any) {
 							pressColor='rgba(80, 80, 80, 0.32)'
 							focused={currentRoute === '/(drawer)/(home)/importExport'}
 							onPress={() => drawerItemPress('/(drawer)/(home)/importExport')}
+							testID='ImportExportDrawerButton'
 						/>
 					</View>
 
@@ -706,12 +747,14 @@ export default function CustomDrawerContent(props: any) {
 							<Switch
 								value={darkModeSwitch}
 								onValueChange={changeColorScheme}
+								testID='ThemeSwitch'
 							/>
 						</View>
 
 						<TouchableOpacity
 							style={{ marginLeft: -4, minHeight: 10 }}
 							onPress={toggleAccordion}
+							testID='LanguageButton'
 						>
 							<List.Item
 								title={t('drawer.language')}
@@ -747,6 +790,7 @@ export default function CustomDrawerContent(props: any) {
 										i18next.changeLanguage('en-US');
 										AsyncStorage.setItem('language', 'en-US');
 									}}
+									testID='EnButton'
 								/>
 								<List.Item
 									title={`${getFlagEmoji('PT')}     Português`}
@@ -754,6 +798,7 @@ export default function CustomDrawerContent(props: any) {
 										i18next.changeLanguage('pt-PT');
 										AsyncStorage.setItem('language', 'pt-PT');
 									}}
+									testID='PtButton'
 								/>
 							</View>
 						</Animated.View>
@@ -774,6 +819,7 @@ export default function CustomDrawerContent(props: any) {
 							inactiveBackgroundColor='transparent'
 							pressColor='rgba(80, 80, 80, 0.32)'
 							onPress={() => setCheckUpdateConfirmationVisible(true)}
+							testID='UpdateDrawerButton'
 						/>
 
 						<DrawerItem
@@ -792,6 +838,7 @@ export default function CustomDrawerContent(props: any) {
 							inactiveBackgroundColor='transparent'
 							pressColor='rgba(80, 80, 80, 0.32)'
 							onPress={() => setChangePasswordModal(true)}
+							testID='ChangePasswordDrawerButton'
 						/>
 
 						<DrawerItem
@@ -810,6 +857,7 @@ export default function CustomDrawerContent(props: any) {
 							inactiveBackgroundColor='transparent'
 							pressColor='rgba(80, 80, 80, 0.32)'
 							onPress={() => setSignOutConfirmationVisible(true)}
+							testID='SignOutDrawerButton'
 						/>
 					</View>
 					{/* <DrawerItemList {...props} /> */}
@@ -821,7 +869,10 @@ export default function CustomDrawerContent(props: any) {
 				/>
 
 				<View style={{ paddingBottom: insets.bottom + 5 }}>
-					<Text style={globalStyles.text.footer}>
+					<Text
+						style={globalStyles.text.footer}
+						testID='VersionText'
+					>
 						{t('drawer.version')}: {Constants.expoConfig?.version}
 					</Text>
 				</View>

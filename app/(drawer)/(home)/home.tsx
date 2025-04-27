@@ -42,6 +42,7 @@ export default function Home() {
 				<Image
 					style={globalStyles.image.global}
 					source={require('@/assets/images/logoReact.png')}
+					testID='HomeLogo'
 				/>
 			</View>
 			<View style={globalStyles.container.button}>

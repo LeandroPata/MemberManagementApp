@@ -35,6 +35,7 @@ const DrawerLayout = () => {
 								navigation.toggleDrawer();
 							}}
 							style={{ maxWidth: 36 }}
+							testID='DrawerButton'
 						>
 							<Ionicons
 								name='menu'

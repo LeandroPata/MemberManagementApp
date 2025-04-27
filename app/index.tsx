@@ -241,6 +241,7 @@ export default function Index() {
 						<Image
 							style={globalStyles.image.global}
 							source={require('@/assets/images/logoReact.png')}
+							testID='LoginLogo'
 						/>
 					</View>
 					<View

@@ -4,6 +4,8 @@ appId: com.leandropata.membermanagementapp
 - assertVisible:
     id: 'HomePage'
 - assertVisible:
+    id: 'HomeLogo'
+- assertVisible:
     id: 'AddButton'
 - assertVisible:
     id: 'SearchButton'

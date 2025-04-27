@@ -1,0 +1,313 @@
+appId: com.leandropata.membermanagementapp
+---
+- launchApp
+- assertVisible:
+    id: 'HomePage'
+- assertVisible:
+    id: 'DrawerButton'
+
+- tapOn:
+    id: 'DrawerButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'DrawerLogo'
+- assertVisible:
+    id: 'HomeDrawerButton'
+- assertVisible:
+    id: 'AddDrawerButton'
+- assertVisible:
+    id: 'SearchDrawerButton'
+- assertVisible:
+    id: 'ImportExportDrawerButton'
+- assertVisible:
+    id: 'ThemeSwitch'
+- assertVisible:
+    id: 'LanguageButton'
+- assertNotVisible:
+    id: 'EnButton'
+- assertNotVisible:
+    id: 'PtButton'
+- assertVisible:
+    id: 'UpdateDrawerButton'
+- assertVisible:
+    id: 'ChangePasswordDrawerButton'
+- assertVisible:
+    id: 'SignOutDrawerButton'
+- assertVisible:
+    id: 'VersionText'
+
+- tapOn:
+    id: 'AddDrawerButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'AddPage'
+
+- tapOn:
+    id: 'DrawerButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'AddDrawerButton'
+    selected: true
+- assertVisible:
+    id: 'SearchDrawerButton'
+- tapOn:
+    id: 'SearchDrawerButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'SearchPage'
+
+- tapOn:
+    id: 'DrawerButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'AddDrawerButton'
+    selected: false
+- assertVisible:
+    id: 'SearchDrawerButton'
+    selected: true
+- assertVisible:
+    id: 'ImportExportDrawerButton'
+- tapOn:
+    id: 'ImportExportDrawerButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'ImportExportPage'
+
+- tapOn:
+    id: 'DrawerButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'SearchDrawerButton'
+    selected: false
+- assertVisible:
+    id: 'ImportExportDrawerButton'
+    selected: true
+- assertVisible:
+    id: 'HomeDrawerButton'
+- tapOn:
+    id: 'HomeDrawerButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'HomePage'
+
+- tapOn:
+    id: 'DrawerButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'ThemeSwitch'
+- tapOn:
+    id: 'ThemeSwitch'
+    retryTapIfNoChange: false
+- tapOn:
+    id: 'ThemeSwitch'
+    retryTapIfNoChange: false
+
+- assertVisible:
+    id: 'LanguageButton'
+- tapOn:
+    id: 'LanguageButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'EnButton'
+- assertVisible:
+    id: 'PtButton'
+- tapOn:
+    id: 'PtButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    text: 'Idioma'
+- tapOn:
+    id: 'EnButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    text: 'Language'
+- tapOn:
+    id: 'LanguageButton'
+    retryTapIfNoChange: false
+- assertNotVisible:
+    id: 'EnButton'
+- assertNotVisible:
+    id: 'PtButton'
+
+- assertVisible:
+    id: 'UpdateDrawerButton'
+- tapOn:
+    id: 'UpdateDrawerButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'UpdateConfirmation'
+- assertVisible:
+    id: 'DialogConfirmationYes'
+- assertVisible:
+    id: 'DialogConfirmationNo'
+- tapOn:
+    id: 'DialogConfirmationNo'
+    retryTapIfNoChange: false
+- assertNotVisible:
+    id: 'UpdateConfirmation'
+
+- assertVisible:
+    id: 'ChangePasswordDrawerButton'
+- tapOn:
+    id: 'ChangePasswordDrawerButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'ChangePasswordModal'
+- assertVisible:
+    id: 'CurrentPasswordInput'
+- assertNotVisible:
+    id: 'CurrentPasswordError'
+- assertVisible:
+    id: 'NewPasswordInput'
+- assertNotVisible:
+    id: 'NewPasswordError'
+- assertVisible:
+    id: 'ConfirmNewPasswordInput'
+- assertNotVisible:
+    id: 'ConfirmNewPasswordError'
+- assertVisible:
+    id: 'ChangePasswordButton'
+
+- tapOn:
+    id: 'ChangePasswordButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'CurrentPasswordError'
+- assertVisible:
+    id: 'NewPasswordError'
+- assertVisible:
+    id: 'ConfirmNewPasswordError'
+
+- tapOn:
+    id: 'CurrentPasswordInput'
+    retryTapIfNoChange: false
+- inputText: 'pass321'
+- tapOn:
+    id: 'ChangePasswordButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'CurrentPasswordError'
+- assertVisible:
+    id: 'NewPasswordError'
+- assertVisible:
+    id: 'ConfirmNewPasswordError'
+
+- tapOn:
+    id: 'CurrentPasswordInput'
+    retryTapIfNoChange: false
+- eraseText
+- inputText: 'pass123'
+- tapOn:
+    id: 'ChangePasswordButton'
+    retryTapIfNoChange: false
+- assertNotVisible:
+    id: 'CurrentPasswordError'
+- assertVisible:
+    id: 'NewPasswordError'
+- assertVisible:
+    id: 'ConfirmNewPasswordError'
+
+- tapOn:
+    id: 'NewPasswordInput'
+    retryTapIfNoChange: false
+- inputRandomText:
+    length: 4
+- tapOn:
+    id: 'ChangePasswordButton'
+    retryTapIfNoChange: false
+- assertNotVisible:
+    id: 'CurrentPasswordError'
+- assertVisible:
+    id: 'NewPasswordError'
+- assertVisible:
+    id: 'ConfirmNewPasswordError'
+
+- tapOn:
+    id: 'NewPasswordInput'
+    retryTapIfNoChange: false
+- eraseText
+- inputText: pass123
+- tapOn:
+    id: 'ChangePasswordButton'
+    retryTapIfNoChange: false
+- assertNotVisible:
+    id: 'CurrentPasswordError'
+- assertNotVisible:
+    id: 'NewPasswordError'
+- assertVisible:
+    id: 'ConfirmNewPasswordError'
+
+- tapOn:
+    id: 'ConfirmNewPasswordInput'
+    retryTapIfNoChange: false
+- inputRandomText:
+    length: 7
+- tapOn:
+    id: 'ChangePasswordButton'
+    retryTapIfNoChange: false
+- assertNotVisible:
+    id: 'CurrentPasswordError'
+- assertNotVisible:
+    id: 'NewPasswordError'
+- assertVisible:
+    id: 'ConfirmNewPasswordError'
+
+- tapOn:
+    id: 'ConfirmNewPasswordInput'
+    retryTapIfNoChange: false
+- eraseText
+- inputText: pass123
+- tapOn:
+    id: 'ChangePasswordButton'
+    retryTapIfNoChange: false
+- assertNotVisible:
+    id: 'CurrentPasswordError'
+- assertNotVisible:
+    id: 'NewPasswordError'
+- assertNotVisible:
+    id: 'ConfirmNewPasswordError'
+- assertNotVisible:
+    id: 'ChangePasswordModal'
+
+- assertVisible:
+    id: 'SignOutDrawerButton'
+- tapOn:
+    id: 'SignOutDrawerButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'SignOutConfirmation'
+- assertVisible:
+    id: 'DialogConfirmationYes'
+- assertVisible:
+    id: 'DialogConfirmationNo'
+
+- tapOn:
+    id: 'DialogConfirmationNo'
+    retryTapIfNoChange: false
+- assertNotVisible:
+    id: 'SignOutConfirmation'
+
+- tapOn:
+    id: 'SignOutDrawerButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'SignOutConfirmation'
+- assertVisible:
+    id: 'DialogConfirmationYes'
+- assertVisible:
+    id: 'DialogConfirmationNo'
+- tapOn:
+    id: 'DialogConfirmationYes'
+    retryTapIfNoChange: false
+- assertNotVisible:
+    id: 'SignOutConfirmation'
+- assertNotVisible:
+    id: 'DrawerLogo'
+- assertNotVisible:
+    id: 'HomePage'
+- assertVisible:
+    id: 'LoginPage'
+- assertNotVisible:
+    id: 'DrawerButton'
+
+- stopApp

@@ -4,6 +4,8 @@ appId: com.leandropata.membermanagementapp
 - assertVisible:
     id: 'LoginPage'
 - assertVisible:
+    id: 'LoginLogo'
+- assertVisible:
     id: 'EmailInput'
 - assertVisible:
     id: 'PasswordInput'

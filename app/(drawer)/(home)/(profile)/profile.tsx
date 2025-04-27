@@ -337,16 +337,15 @@ export default function Profile() {
 					let i = 1;
 					// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
 					querySnapshot.forEach((documentSnapshot) => {
-						console.log(
+						/* console.log(
 							`${i} : ${memberNumber.trim()} : ${profile.memberNumber} : ${
 								i === Number(memberNumber.trim())
 							} : ${i === profile.memberNumber}`
-						);
+						); */
 						if (
 							(i === Number(memberNumber.trim()) && numCheck <= 1) ||
 							i === profile.memberNumber
 						) {
-							console.log('In');
 							minNumber = i;
 						} else if (i === Number(documentSnapshot.data().memberNumber)) {
 							i = Number(documentSnapshot.data().memberNumber) + 1;
@@ -378,7 +377,7 @@ export default function Profile() {
 						querySnapshot.forEach((documentSnapshot) => {
 							if (memberNumber.trim() == documentSnapshot.data().memberNumber) {
 								numberAvailable++;
-								console.log('Number unavailable!');
+								//console.log('Number unavailable!');
 							}
 						});
 					});

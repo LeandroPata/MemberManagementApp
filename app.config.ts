@@ -87,6 +87,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 		'expo-localization',
 		'@react-native-firebase/app',
 		'@react-native-firebase/auth',
+		'react-native-nfc-manager',
 	],
 	experiments: {
 		typedRoutes: true,

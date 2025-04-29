@@ -1,6 +1,5 @@
 appId: com.leandropata.membermanagementapp
 ---
-- launchApp
 - assertVisible:
     id: 'HomePage'
 - assertVisible:
@@ -16,4 +15,6 @@ appId: com.leandropata.membermanagementapp
 - assertVisible:
     id: 'ExportButton'
 
-- stopApp
+- back
+- assertVisible:
+    id: 'HomePage'

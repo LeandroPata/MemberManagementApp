@@ -1,6 +1,5 @@
 appId: com.leandropata.membermanagementapp
 ---
-- launchApp
 - assertVisible:
     id: 'LoginPage'
 - assertVisible:
@@ -105,5 +104,3 @@ appId: com.leandropata.membermanagementapp
 
 - assertVisible:
     id: 'HomePage'
-
-- stopApp

@@ -1,7 +1,5 @@
 appId: com.leandropata.membermanagementapp
 ---
-- launchApp
-
 - assertVisible:
     id: 'HomePage'
 - tapOn:
@@ -259,5 +257,3 @@ appId: com.leandropata.membermanagementapp
 - back
 - assertVisible:
     id: 'HomePage'
-
-- stopApp

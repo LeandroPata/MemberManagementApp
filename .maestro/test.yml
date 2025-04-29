@@ -1,3 +1,12 @@
 appId: com.leandropata.membermanagementapp
 ---
+- launchApp
+- runFlow: newAccount.yml
+- runFlow: drawer.yml
+- runFlow: login.yml
+- runFlow: homePage.yml
+- runFlow: addPage.yml
+- runFlow: searchPage.yml
+- runFlow: profilePage.yml
+- runFlow: importExportPage.yml
 - stopApp

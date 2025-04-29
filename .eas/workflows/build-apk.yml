@@ -1,0 +1,19 @@
+name: Build apk
+
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  build:
+    type: build
+    params:
+      platform: android
+      profile: preview
+
+  maestro_test:
+    needs: [build]
+    type: maestro
+    params:
+      build_id: ${{ needs.build.outputs.build_id }}
+      flow_path: ['.maestro/test.yml']

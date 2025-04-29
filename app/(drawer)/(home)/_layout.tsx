@@ -14,18 +14,27 @@ const HomeLayout = () => {
 				name='home'
 				options={{ headerShown: false }}
 			/>
+
 			<Stack.Screen
 				name='addMember'
 				options={{ headerShown: false }}
 			/>
+
 			<Stack.Screen
 				name='searchMember'
 				options={{ headerShown: false }}
 			/>
+
 			<Stack.Screen
 				name='importExport'
 				options={{ headerShown: false }}
 			/>
+
+			<Stack.Screen
+				name='nfc'
+				options={{ headerShown: false }}
+			/>
+
 			<Stack.Screen
 				name='(profile)'
 				options={{ headerShown: false }}

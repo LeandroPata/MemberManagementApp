@@ -82,6 +82,18 @@ export default function Home() {
 				>
 					{t('home.importExport')}
 				</Button>
+				<Button
+					style={globalStyles.button.global}
+					contentStyle={globalStyles.buttonContent.global}
+					labelStyle={globalStyles.buttonText.global}
+					icon='nfc'
+					mode='elevated'
+					//loading={loginLoading}
+					onPress={() => router.push('/(drawer)/(home)/nfc')}
+					testID='NFCButton'
+				>
+					{t('home.nfc')}
+				</Button>
 			</View>
 		</View>
 	);

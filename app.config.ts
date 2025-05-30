@@ -84,10 +84,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 					'The app accesses your camera to take a photo for profile pictures.',
 			},
 		],
+		['react-native-nfc-manager'],
 		'expo-localization',
 		'@react-native-firebase/app',
 		'@react-native-firebase/auth',
-		'react-native-nfc-manager',
 	],
 	experiments: {
 		typedRoutes: true,

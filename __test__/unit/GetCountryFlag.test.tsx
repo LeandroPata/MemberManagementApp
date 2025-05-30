@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import getFlagEmoji from '@/utils/GetCountryFlag';
+import { getFlagEmoji } from '@/utils/GetCountryFlag';
 
 afterEach(() => {
 	jest.clearAllMocks();

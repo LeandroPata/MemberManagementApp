@@ -74,6 +74,18 @@ export default function Home() {
 					style={globalStyles.button.global}
 					contentStyle={globalStyles.buttonContent.global}
 					labelStyle={globalStyles.buttonText.global}
+					icon='nfc'
+					mode='elevated'
+					//loading={loginLoading}
+					onPress={() => router.push('/(drawer)/(home)/updateMembers')}
+					testID='UpdateMembersButton'
+				>
+					{t('home.updateMembers')}
+				</Button>
+				<Button
+					style={globalStyles.button.global}
+					contentStyle={globalStyles.buttonContent.global}
+					labelStyle={globalStyles.buttonText.global}
 					icon='database'
 					mode='elevated'
 					//loading={loginLoading}

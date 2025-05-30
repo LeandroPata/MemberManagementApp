@@ -26,6 +26,11 @@ const HomeLayout = () => {
 			/>
 
 			<Stack.Screen
+				name='updateMembers'
+				options={{ headerShown: false }}
+			/>
+
+			<Stack.Screen
 				name='importExport'
 				options={{ headerShown: false }}
 			/>

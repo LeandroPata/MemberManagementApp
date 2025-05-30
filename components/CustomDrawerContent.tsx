@@ -43,7 +43,7 @@ import storage from '@react-native-firebase/storage';
 import i18next from 'i18next';
 import RNFetchBlob from 'rn-fetch-blob';
 import Constants from 'expo-constants';
-import getFlagEmoji from '@/utils/GetCountryFlag';
+import { getFlagEmoji } from '@/utils/GetCountryFlag';
 import SnackbarInfo from '@/components/SnackbarInfo';
 import DialogConfirmation from '@/components/DialogConfirmation';
 import { globalStyles } from '@/styles/global';
@@ -696,6 +696,26 @@ export default function CustomDrawerContent(props: any) {
 							focused={currentRoute === '/(drawer)/(home)/searchMember'}
 							onPress={() => drawerItemPress('/(drawer)/(home)/searchMember')}
 							testID='SearchDrawerButton'
+						/>
+
+						<DrawerItem
+							labelStyle={globalStyles.text.drawer}
+							label={t('drawer.updateMember')}
+							style={globalStyles.drawerStyle}
+							icon={({ focused, size, color }) => (
+								<Ionicons
+									name={focused ? 'person-add' : 'person-add-outline'}
+									size={size}
+									color={color}
+								/>
+							)}
+							inactiveTintColor={theme.colors.onBackground}
+							activeTintColor={theme.colors.primary}
+							inactiveBackgroundColor='transparent'
+							pressColor='rgba(80, 80, 80, 0.32)'
+							focused={currentRoute === '/(drawer)/(home)/updateMember'}
+							onPress={() => drawerItemPress('/(drawer)/(home)/updateMembers')}
+							testID='UpdateDrawerButton'
 						/>
 
 						<DrawerItem

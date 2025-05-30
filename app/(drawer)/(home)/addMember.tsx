@@ -19,14 +19,15 @@ import {
 	Checkbox,
 } from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
-import * as ImagePicker from 'expo-image-picker';
 import type { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
-import storage from '@react-native-firebase/storage';
 import { useTranslation } from 'react-i18next';
 import SnackbarInfo from '@/components/SnackbarInfo';
 import YearPicker from '@/components/YearPicker';
 import { globalStyles } from '@/styles/global';
+import { getLastNumber, checkNumber } from '@/utils/NumberManagement';
+import { askPermission, launchCamera, launchGallery } from '@/utils/Image';
+import { uploadImage } from '@/utils/Firebase';
 
 export default function AddMember() {
 	const theme = useTheme();
@@ -83,29 +84,9 @@ export default function AddMember() {
 	let minNumber = 0;
 
 	const assignMemberNumber = async () => {
-		const numCheck = await checkNumber();
-		console.log(numCheck);
-
 		try {
-			await firestore()
-				.collection('members')
-				.orderBy('memberNumber', 'asc')
-				.get()
-				.then((querySnapshot) => {
-					let i = 1;
-					// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
-					querySnapshot.forEach((documentSnapshot) => {
-						if (numCheck <= 1 && i === Number(memberNumber.trim())) {
-							minNumber = i;
-						} else if (i === Number(documentSnapshot.data().memberNumber)) {
-							i = Number(documentSnapshot.data().memberNumber) + 1;
-						}
-					});
-					if (!minNumber) {
-						minNumber = i;
-					}
-					setMemberNumber(minNumber.toString());
-				});
+			minNumber = (await getLastNumber()) + 1;
+			setMemberNumber(minNumber.toString());
 		} catch (e: any) {
 			const err = e as FirebaseError;
 			//showSnackbar('Assigning member number failed: ' + err.message);
@@ -113,49 +94,13 @@ export default function AddMember() {
 		}
 	};
 
-	const checkNumber = async () => {
-		try {
-			let numberAvailable = 1;
-			await firestore()
-				.collection('members')
-				.orderBy('memberNumber', 'asc')
-				.get()
-				.then((querySnapshot) => {
-					// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
-					querySnapshot.forEach((documentSnapshot) => {
-						if (memberNumber.trim() == documentSnapshot.data().memberNumber) {
-							numberAvailable++;
-							console.log(t('addMember.memberNumberUnavailable'));
-						}
-					});
-				});
-			//console.log(`Result: ${numberAvailable}`);
-			return numberAvailable;
-		} catch (e: any) {
-			const err = e as FirebaseError;
-			//showSnackbar('Checking number failed: ' + err.message);
-			console.log(`Checking number number failed: ${err.message}`);
-		}
-	};
-
 	const pickImage = async () => {
 		setPictureModal(false);
 
 		try {
-			// No permissions request is necessary for launching the image library
-			const result = await ImagePicker.launchImageLibraryAsync({
-				mediaTypes: 'images',
-				allowsMultipleSelection: false,
-				allowsEditing: true,
-				quality: 0.5,
-				aspect: [3, 4],
-			});
+			const result = await launchGallery();
 
-			//console.log(result);
-
-			if (!result.canceled) {
-				setProfilePicture(result.assets[0].uri);
-			}
+			if (result) setProfilePicture(result);
 		} catch (e: any) {
 			const err = e as FirebaseError;
 			//showSnackbar('Picking picture failed: ' + err.message);
@@ -168,70 +113,19 @@ export default function AddMember() {
 
 		try {
 			// Ask the user for the permission to access the camera
-			const permissionResult =
-				await ImagePicker.requestCameraPermissionsAsync();
-
-			if (permissionResult.granted === false) {
+			const permissionResult = await askPermission();
+			if (permissionResult === false) {
 				showSnackbar(t('addMember.cameraPermission'));
 				return;
 			}
+			const result = await launchCamera();
 
-			const result = await ImagePicker.launchCameraAsync({
-				mediaTypes: 'images',
-				allowsMultipleSelection: false,
-				allowsEditing: true,
-				quality: 0.5,
-				aspect: [3, 4],
-			});
-
-			//console.log(result);
-
-			if (!result.canceled) {
-				setProfilePicture(result.assets[0].uri);
-			}
+			if (result) setProfilePicture(result);
 		} catch (e: any) {
 			const err = e as FirebaseError;
 			//showSnackbar('Taking picture failed: ' + err.message);
 			console.log(`Taking picture failed: ${err.message}`);
 		}
-	};
-
-	const uploadPicture = async (docID) => {
-		if (
-			profilePicture &&
-			profilePicture !== process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL
-		) {
-			// Upload picture to Firebase if it is different from the placeholder
-
-			const reference = storage().ref(`profilePicture/${docID}.jpg`);
-
-			const task = reference.putFile(profilePicture);
-
-			task.on('state_changed', (taskSnapshot) => {
-				console.log(
-					`${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`
-				);
-			});
-
-			await task
-				.then(() => {
-					console.log('Image uploaded to the bucket!');
-					//showSnackbar('Image uploaded to the bucket!');
-				})
-				.catch((e: any) => {
-					const err = e as FirebaseError;
-					//showSnackbar('File upload failed: ' + err.message);
-					console.log(`File upload failed: ${err.message}`);
-					setLoading(false);
-				});
-
-			// Get download url
-			const url = await reference.getDownloadURL();
-			//console.log(url);
-			setProfilePicture(url);
-			return url;
-		}
-		return null;
 	};
 
 	const addMember = async () => {
@@ -265,7 +159,7 @@ export default function AddMember() {
 			//setLoading(false);
 			//return;
 		} else {
-			const numberAvailable = await checkNumber();
+			const numberAvailable = await checkNumber(Number(memberNumber.trim()));
 			if (numberAvailable > 1) {
 				showSnackbar(t('addMember.memberNumberExists'));
 				setMemberNumberError(true);
@@ -296,9 +190,10 @@ export default function AddMember() {
 
 		const docRef = firestore().collection('members').doc();
 
-		const url = await uploadPicture(docRef.id);
-
 		try {
+			const url = await uploadImage(docRef.id, profilePicture);
+			if (url) setProfilePicture(url);
+
 			docRef
 				.set({
 					name: name.trim(),

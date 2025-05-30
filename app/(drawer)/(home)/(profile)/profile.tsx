@@ -21,7 +21,6 @@ import {
 } from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import * as ImagePicker from 'expo-image-picker';
 import { useBackHandler } from '@react-native-community/hooks';
 import type { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
@@ -31,6 +30,13 @@ import SnackbarInfo from '@/components/SnackbarInfo';
 import DialogConfirmation from '@/components/DialogConfirmation';
 import YearPicker from '@/components/YearPicker';
 import { globalStyles } from '@/styles/global';
+import { getLastNumber, checkNumber } from '@/utils/NumberManagement';
+import {
+	deleteMemberDoc,
+	getSingleMember,
+	uploadImage,
+} from '@/utils/Firebase';
+import { askPermission, launchCamera, launchGallery } from '@/utils/Image';
 
 export default function Profile() {
 	const { profileID } = useLocalSearchParams();
@@ -165,28 +171,12 @@ export default function Profile() {
 		setLoading(true);
 
 		try {
-			await firestore()
-				.collection('members')
-				.doc(id)
-				.get()
-				.then((documentSnapshot) => {
-					if (documentSnapshot?.data()) {
-						setProfile(documentSnapshot.data());
-						setPaid(!!documentSnapshot.data()?.paidDate);
-						/* setName(documentSnapshot.data().name);
-            setMemberNumber(documentSnapshot.data().memberNumber.toString());
-            setEmail(documentSnapshot.data().email);
-            setPhoneNumber(documentSnapshot.data().phoneNumber);
-            setOccupation(documentSnapshot.data().occupation);
-            setCountry(documentSnapshot.data().country);
-            setAddress(documentSnapshot.data().address);
-            setZipCode(documentSnapshot.data().zipCode);
-            setBirthDate(new Date(documentSnapshot.data().birthDate.toDate()));
-            setEndDate(new Date(documentSnapshot.data().endDate.toDate()));
-            setProfilePicture(documentSnapshot.data().profilePicture); */
-					}
-					//console.log(documentSnapshot.data());
-				});
+			const documentSnapshot = await getSingleMember(id);
+			if (documentSnapshot?.data()) {
+				setProfile(documentSnapshot.data());
+				setPaid(!!documentSnapshot.data()?.paidDate);
+			}
+			//console.log(documentSnapshot.data());
 		} catch (e: any) {
 			const err = e as FirebaseError;
 			console.log(`Getting profile failed: ${err.message}`);
@@ -199,19 +189,9 @@ export default function Profile() {
 
 		try {
 			// No permissions request is necessary for launching the image library
-			const result = await ImagePicker.launchImageLibraryAsync({
-				mediaTypes: 'images',
-				allowsMultipleSelection: false,
-				allowsEditing: true,
-				quality: 0.5,
-				aspect: [3, 4],
-			});
+			const result = await launchGallery();
 
-			console.log(result);
-
-			if (!result.canceled) {
-				setProfilePicture(result.assets[0].uri);
-			}
+			if (result) setProfilePicture(result);
 		} catch (e: any) {
 			const err = e as FirebaseError;
 			//showSnackbar('Picking picture failed: ' + err.message);
@@ -224,27 +204,16 @@ export default function Profile() {
 
 		try {
 			// Ask the user for the permission to access the camera
-			const permissionResult =
-				await ImagePicker.requestCameraPermissionsAsync();
+			const permissionResult = await askPermission();
 
-			if (permissionResult.granted === false) {
+			if (permissionResult === false) {
 				showSnackbar(t('profile.cameraPermission'));
 				return;
 			}
 
-			const result = await ImagePicker.launchCameraAsync({
-				mediaTypes: 'images',
-				allowsMultipleSelection: false,
-				allowsEditing: true,
-				quality: 0.5,
-				aspect: [3, 4],
-			});
+			const result = await launchCamera();
 
-			console.log(result);
-
-			if (!result.canceled) {
-				setProfilePicture(result.assets[0].uri);
-			}
+			if (result) setProfilePicture(result);
 		} catch (e: any) {
 			const err = e as FirebaseError;
 			//showSnackbar('Taking picture failed: ' + err.message);
@@ -252,142 +221,16 @@ export default function Profile() {
 		}
 	};
 
-	const uploadPicture = async () => {
-		// Delete previous picture if it is different from the placeholder
-		if (
-			profilePicture &&
-			profilePicture !== process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL &&
-			profilePicture !== profile.profilePicture
-		) {
-			await reference
-				.delete()
-				.then(() => {
-					console.log('File deleted!');
-				})
-				.catch((e: any) => {
-					const err = e as FirebaseError;
-					//showSnackbar('File deletion failed: ' + err.message);
-					console.log(`File deletion failed: ${err.message}`);
-				});
-
-			// Upload picture to Firebase if it is different from the placeholder
-
-			const task = reference.putFile(profilePicture);
-
-			task.on('state_changed', (taskSnapshot) => {
-				console.log(
-					`${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`
-				);
-			});
-
-			await task
-				.then(() => {
-					console.log('Image uploaded to the bucket!');
-					//showSnackbar('Image uploaded to the bucket!');
-				})
-				.catch((e: any) => {
-					const err = e as FirebaseError;
-					//showSnackbar('File upload failed: ' + err.message);
-					console.log(`File upload failed: ${err.message}`);
-					//setLoadingSave(false);
-				});
-
-			//await reference.putFile(result.assets[0].uri);
-			// Get download url
-			const url = await reference.getDownloadURL();
-			console.log(url);
-			setProfilePicture(url);
-			return url;
-		}
-		return null;
-	};
-
-	const deletePicture = async () => {
-		if (
-			(profile.profilePicture &&
-				profile.profilePicture !==
-					process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL) ||
-			(profilePicture &&
-				profilePicture !== process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL)
-		) {
-			await reference
-				.delete()
-				.then(() => {
-					console.log('File deleted!');
-				})
-				.catch((e: any) => {
-					const err = e as FirebaseError;
-					//showSnackbar('File deletion failed: ' + err.message);
-					console.log(`File deletion failed: ${err.message}`);
-					//setLoadingDelete(false);
-				});
-		}
-	};
-
 	const assignMemberNumber = async () => {
-		const numCheck = await checkNumber();
-		console.log(numCheck);
-
 		try {
-			await firestore()
-				.collection('members')
-				.orderBy('memberNumber', 'asc')
-				.get()
-				.then((querySnapshot) => {
-					let i = 1;
-					// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
-					querySnapshot.forEach((documentSnapshot) => {
-						/* console.log(
-							`${i} : ${memberNumber.trim()} : ${profile.memberNumber} : ${
-								i === Number(memberNumber.trim())
-							} : ${i === profile.memberNumber}`
-						); */
-						if (
-							(i === Number(memberNumber.trim()) && numCheck <= 1) ||
-							i === profile.memberNumber
-						) {
-							minNumber = i;
-						} else if (i === Number(documentSnapshot.data().memberNumber)) {
-							i = Number(documentSnapshot.data().memberNumber) + 1;
-						}
-					});
-					if (!minNumber) {
-						minNumber = i;
-					}
-					setMemberNumber(minNumber.toString());
-				});
+			const lastNumber = await getLastNumber();
+			if (lastNumber == profile.memberNumber) minNumber = lastNumber;
+			else minNumber = lastNumber + 1;
+			setMemberNumber(minNumber.toString());
 		} catch (e: any) {
 			const err = e as FirebaseError;
 			//showSnackbar('Assigning member number failed: ' + err.message);
 			console.log(`Assigning member number failed: ${err.message}`);
-		}
-	};
-
-	const checkNumber = async () => {
-		try {
-			let numberAvailable = 1;
-
-			if (memberNumber.trim() !== profile.memberNumber) {
-				await firestore()
-					.collection('members')
-					.orderBy('memberNumber', 'asc')
-					.get()
-					.then((querySnapshot) => {
-						// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
-						querySnapshot.forEach((documentSnapshot) => {
-							if (memberNumber.trim() == documentSnapshot.data().memberNumber) {
-								numberAvailable++;
-								//console.log('Number unavailable!');
-							}
-						});
-					});
-			}
-			//console.log(`Result: ${numberAvailable}`);
-			return numberAvailable;
-		} catch (e: any) {
-			const err = e as FirebaseError;
-			//showSnackbar('Checking number failed: ' + err.message);
-			console.log(`Checking number number failed: ${err.message}`);
 		}
 	};
 
@@ -423,11 +266,11 @@ export default function Profile() {
 			//return;
 		} else {
 			const numberAvailable = await checkNumber();
-			console.log(
+			/* console.log(
 				`${memberNumber} : ${profile.memberNumber} : ${
 					memberNumber != profile.memberNumber
 				} : ${numberAvailable}`
-			);
+			); */
 			if (memberNumber != profile.memberNumber && numberAvailable > 1) {
 				showSnackbar(t('profile.memberNumberExists'));
 				setMemberNumberError(true);
@@ -447,16 +290,16 @@ export default function Profile() {
 			//return;
 		} else setZipCodeError(false);
 
-		console.log(
+		/* console.log(
 			`${nameError} : ${memberNumberError} : ${zipCodeError} : ${errors}`
-		);
+		); */
 
 		if (errors > 0) {
 			setLoadingSave(false);
 			return;
 		}
 
-		const url = await uploadPicture();
+		const url = await uploadImage(profileID, profilePicture);
 
 		try {
 			firestore()
@@ -497,29 +340,23 @@ export default function Profile() {
 	};
 
 	const deleteMember = async () => {
+		setDialogConfirmationVisible(false);
 		setLoadingDelete(true);
 
-		await deletePicture();
-
 		try {
-			firestore()
-				.collection('members')
-				.doc(profileID)
-				.delete()
-				.then(() => {
-					showSnackbar(t('profile.deletedMember'));
-				});
+			const confirm = await deleteMemberDoc(profileID);
+			console.log(confirm);
+			if (confirm) {
+				showSnackbar(t('profile.deletedMember'));
+				router.replace('/(drawer)/(home)/searchMember');
+			}
 		} catch (e: any) {
 			const err = e as FirebaseError;
 			//showSnackbar('Deleting member failed: ' + err.message);
 			console.log(`Deleting member failed: ${err.message}`);
 			setLoadingDelete(false);
-		} finally {
-			setLoadingDelete(false);
 		}
 		setLoadingDelete(false);
-		setDialogConfirmationVisible(false);
-		router.replace('/(drawer)/(home)/searchMember');
 	};
 
 	return (
@@ -651,6 +488,7 @@ export default function Profile() {
 												setAutoNumber(input);
 												setMemberNumberError(false);
 												if (input) assignMemberNumber();
+												else setMemberNumber(profile.memberNumber.toString());
 											}}
 											testID='AutoNumberSwitch'
 										/>

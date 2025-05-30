@@ -20,6 +20,7 @@ import Fuse from 'fuse.js';
 import SearchList from '@/components/SearchList';
 import { globalStyles } from '@/styles/global';
 import { useBackHandler } from '@react-native-community/hooks';
+import { getMembers, getMemberNames, getSingleMember } from '@/utils/Firebase';
 
 export default function SearchMember() {
 	const theme = useTheme();
@@ -59,61 +60,34 @@ export default function SearchMember() {
 		}, [])
 	);
 
-	const getAllMembers = () => {
+	const getAllMembers = async () => {
 		setLoadingName(true);
 		setLoadingNumber(true);
-
-		firestore()
-			.collection('members')
-			.orderBy('name', 'asc')
-			.get()
-			.then((querySnapshot) => {
-				const membersAll = [];
-				// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
-				querySnapshot.forEach((doc) => {
-					membersAll.push({
-						key: doc.id,
-						name: doc.data().name,
-						memberNumber: doc.data().memberNumber,
-						endDate: doc.data().endDate,
-						profilePicture: doc.data().profilePicture,
-					});
-				});
-				//console.log(membersAll);
-				orderMembersEndDate(membersAll);
-				//setMembers(membersAll);
-				setOrderAscending(true);
-				setLoadingName(false);
-				setLoadingNumber(false);
-			})
-			.catch((e: any) => {
-				const err = e as FirebaseError;
-				console.log(`Error getting all member list: ${err.message}`);
-				setLoadingName(false);
-				setLoadingNumber(false);
-			});
+		try {
+			const membersAll = await getMembers();
+			//console.log(membersAll);
+			orderMembersEndDate(membersAll);
+			//setMembers(membersAll);
+			setOrderAscending(true);
+			setLoadingName(false);
+			setLoadingNumber(false);
+		} catch (e: any) {
+			const err = e as FirebaseError;
+			console.log(`Error getting all member list: ${err.message}`);
+			setLoadingName(false);
+			setLoadingNumber(false);
+		}
 	};
 
 	const getMemberList = async () => {
-		await firestore()
-			.collection('members')
-			.orderBy('name', 'asc')
-			.get()
-			.then((querySnapshot) => {
-				const membersName = [];
-
-				// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
-				querySnapshot.forEach((doc) => {
-					if (!membersName.includes(doc.data().name))
-						membersName.push(doc.data().name);
-				});
-				//console.log(membersName);
-				setMemberList(membersName);
-			})
-			.catch((e: any) => {
-				const err = e as FirebaseError;
-				console.log(`Error getting member list: ${err.message}`);
-			});
+		try {
+			const membersName = await getMemberNames();
+			//console.log(membersName);
+			setMemberList(membersName);
+		} catch (e: any) {
+			const err = e as FirebaseError;
+			console.log(`Error getting member list: ${err.message}`);
+		}
 	};
 
 	const filterMemberList = async (input: string) => {
@@ -399,6 +373,7 @@ export default function SearchMember() {
 						style={globalStyles.button.global}
 						contentStyle={globalStyles.buttonContent.global}
 						labelStyle={globalStyles.buttonText.global}
+						icon='sort-alphabetical-variant'
 						mode='elevated'
 						onPress={() => {
 							orderMembersName();
@@ -416,6 +391,7 @@ export default function SearchMember() {
 							globalStyles.buttonText.global,
 							{ wordWrap: 'wrap', flexWrap: 'wrap', flexShrink: 1 },
 						]}
+						icon='sort-numeric-variant'
 						mode='elevated'
 						onPress={() => {
 							orderMembersNumber();
@@ -430,6 +406,7 @@ export default function SearchMember() {
 						style={globalStyles.button.global}
 						contentStyle={globalStyles.buttonContent.global}
 						labelStyle={globalStyles.buttonText.global}
+						icon='sort-calendar-ascending'
 						mode='elevated'
 						onPress={() => {
 							orderMembersName();
@@ -515,6 +492,7 @@ export default function SearchMember() {
 							style={globalStyles.button.search}
 							contentStyle={globalStyles.buttonContent.modal}
 							labelStyle={[globalStyles.buttonText.search, { paddingTop: 0 }]}
+							icon='sort'
 							mode='elevated'
 							onPress={() => setOrderModal(true)}
 							testID='OrderButton'
@@ -523,7 +501,7 @@ export default function SearchMember() {
 						</Button>
 
 						<IconButton
-							icon={orderAscending ? 'arrow-up' : 'arrow-down'}
+							icon={orderAscending ? 'arrow-down' : 'arrow-up'}
 							size={25}
 							mode='contained-tonal'
 							iconColor={theme.colors.primary}

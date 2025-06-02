@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Dialog, Portal, Text } from 'react-native-paper';
 import { globalStyles } from '@/styles/global';
 
-/* // All the logic to implemet DialogConfirmation
+/* // All the logic to implement DialogConfirmation
   const [dialogConfirmationVisible, setDialogConfirmationVisible] =
     useState(false);
   const onDismissDialogConfirmation = () => setDialogConfirmationVisible(false); */
@@ -13,6 +13,8 @@ type DialogConfirmationProps = {
 	visible: boolean;
 	onDismiss: () => void;
 	onConfirmation: () => void;
+	onDismissText?: string;
+	onConfirmationText?: string;
 	testID?: string;
 };
 
@@ -33,13 +35,13 @@ const DialogConfirmation = (props: DialogConfirmationProps) => {
 						onPress={props.onConfirmation}
 						testID='DialogConfirmationYes'
 					>
-						{t('profile.yes')}
+						{props.onConfirmationText || t('profile.yes')}
 					</Button>
 					<Button
 						onPress={props.onDismiss}
 						testID='DialogConfirmationNo'
 					>
-						{t('profile.no')}
+						{props.onDismissText || t('profile.no')}
 					</Button>
 				</Dialog.Actions>
 			</Dialog>

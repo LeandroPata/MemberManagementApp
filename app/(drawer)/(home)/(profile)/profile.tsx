@@ -24,10 +24,9 @@ import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useBackHandler } from '@react-native-community/hooks';
 import type { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
-import storage from '@react-native-firebase/storage';
 import { useTranslation } from 'react-i18next';
-import SnackbarInfo from '@/components/SnackbarInfo';
-import DialogConfirmation from '@/components/DialogConfirmation';
+import { useSnackbar } from '@/context/SnackbarContext';
+import { useDialog } from '@/context/DialogueConfirmationContext';
 import YearPicker from '@/components/YearPicker';
 import { globalStyles } from '@/styles/global';
 import { getLastNumber, checkNumber } from '@/utils/NumberManagement';
@@ -76,20 +75,11 @@ export default function Profile() {
 	const [endDate, setEndDate] = useState(0);
 	const [profilePicture, setProfilePicture] = useState<string | null>(null);
 
-	// All the logic to implement SnackbarInfo
-	const [snackbarVisible, setSnackbarVisible] = useState(false);
-	const [snackbarText, setSnackbarText] = useState('');
+	// All the logic to implement the snackbar
+	const { showSnackbar } = useSnackbar();
 
-	const showSnackbar = (text: string) => {
-		setSnackbarText(text);
-		setSnackbarVisible(true);
-	};
-	const onDismissSnackbar = () => setSnackbarVisible(false);
-
-	// All the logic to implemet DialogConfirmation
-	const [dialogConfirmationVisible, setDialogConfirmationVisible] =
-		useState(false);
-	const onDismissDialogConfirmation = () => setDialogConfirmationVisible(false);
+	// All the logic to implement DialogConfirmation
+	const { showDialog, hideDialog } = useDialog();
 
 	// All the logic to implement the YearPicker
 	const [endDateModal, setEndDateModal] = useState(false);
@@ -99,7 +89,6 @@ export default function Profile() {
 	};
 
 	const emailRegex = /.+@.+\..+/g;
-	const reference = storage().ref(`profilePicture/${profileID}.jpg`);
 	let minNumber = 0;
 
 	useBackHandler(() => {
@@ -126,7 +115,7 @@ export default function Profile() {
 			setEmailError(false);
 			setZipCodeError(false);
 		} else {
-			router.replace('/(drawer)/(home)/searchMember');
+			router.back();
 		}
 		return true;
 	});
@@ -155,7 +144,7 @@ export default function Profile() {
 
 				setEditing(false);
 				setPictureModal(false);
-				setDialogConfirmationVisible(false);
+				hideDialog();
 				setBirthDateModal(false);
 				setPaidDateModal(false);
 				setEndDateModal(false);
@@ -340,7 +329,6 @@ export default function Profile() {
 	};
 
 	const deleteMember = async () => {
-		setDialogConfirmationVisible(false);
 		setLoadingDelete(true);
 
 		try {
@@ -399,13 +387,6 @@ export default function Profile() {
 				</Modal>
 			</Portal>
 
-			<DialogConfirmation
-				text={t('profile.deleteConfirmation')}
-				visible={dialogConfirmationVisible}
-				onDismiss={onDismissDialogConfirmation}
-				onConfirmation={deleteMember}
-			/>
-
 			<YearPicker
 				visible={endDateModal}
 				onDismiss={() => {
@@ -413,12 +394,6 @@ export default function Profile() {
 				}}
 				onConfirm={onYearReceived}
 				testID='EndDatePicker'
-			/>
-
-			<SnackbarInfo
-				text={snackbarText}
-				visible={snackbarVisible}
-				onDismiss={onDismissSnackbar}
 			/>
 
 			<View
@@ -857,7 +832,12 @@ export default function Profile() {
 										mode='elevated'
 										loading={loadingDelete}
 										onPress={() => {
-											setDialogConfirmationVisible(true);
+											showDialog({
+												text: t('profile.deleteConfirmation'),
+												onConfirmation: () => {
+													deleteMember();
+												},
+											});
 										}}
 										testID='DeleteButton'
 									>

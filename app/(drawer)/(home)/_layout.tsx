@@ -36,11 +36,6 @@ const HomeLayout = () => {
 			/>
 
 			<Stack.Screen
-				name='nfc'
-				options={{ headerShown: false }}
-			/>
-
-			<Stack.Screen
 				name='(profile)'
 				options={{ headerShown: false }}
 			/>

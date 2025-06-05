@@ -13,7 +13,6 @@ const decodePayload = (tag: TagEvent) => {
 
 // To take the user to the settings to enable NFC if not enabled
 export const goToNFCSettings = () => {
-	//setDialogConfirmationVisible(false);
 	NfcManager.goToNfcSetting();
 };
 
@@ -49,10 +48,8 @@ export const readNFC = async () => {
 		return payload;
 	} catch (e: any) {
 		console.log(`Error: ${e.message}`);
-		//setLoadingRead(false);
 	} finally {
 		NfcManager.cancelTechnologyRequest();
-		//setLoadingRead(false);
 	}
 };
 

@@ -22,7 +22,7 @@ import DatePicker from 'react-native-date-picker';
 import type { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
 import { useTranslation } from 'react-i18next';
-import SnackbarInfo from '@/components/SnackbarInfo';
+import { useSnackbar } from '@/context/SnackbarContext';
 import YearPicker from '@/components/YearPicker';
 import { globalStyles } from '@/styles/global';
 import { getLastNumber, checkNumber } from '@/utils/NumberManagement';
@@ -64,14 +64,7 @@ export default function AddMember() {
 	);
 
 	// All the logic to implement the snackbar
-	const [snackbarVisible, setSnackbarVisible] = useState(false);
-	const [snackbarText, setSnackbarText] = useState('');
-
-	const showSnackbar = (text: string) => {
-		setSnackbarText(text);
-		setSnackbarVisible(true);
-	};
-	const onDismissSnackbar = () => setSnackbarVisible(false);
+	const { showSnackbar } = useSnackbar();
 
 	// All the logic to implement the YearPicker
 	const [endDateModal, setEndDateModal] = useState(false);
@@ -282,12 +275,6 @@ export default function AddMember() {
 				}}
 				onConfirm={onYearReceived}
 				testID='EndDatePicker'
-			/>
-
-			<SnackbarInfo
-				text={snackbarText}
-				visible={snackbarVisible}
-				onDismiss={onDismissSnackbar}
 			/>
 
 			<View

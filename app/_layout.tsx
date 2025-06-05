@@ -10,6 +10,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { EventRegister } from 'react-native-event-listeners';
 import '@/locales/i18n';
 import { globalTheme } from '@/styles/global';
+import { SnackbarProvider } from '@/context/SnackbarContext';
+import { DialogProvider } from '@/context/DialogueConfirmationContext';
 
 export default function RootLayout() {
 	const router = useRouter();
@@ -93,21 +95,26 @@ export default function RootLayout() {
 		<PaperProvider theme={theme}>
 			<GestureHandlerRootView style={{ flex: 1 }}>
 				<Portal.Host>
-					<StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-					<Stack
-						screenOptions={{
-							contentStyle: { backgroundColor: theme.colors.background },
-						}}
-					>
-						<Stack.Screen
-							name='index'
-							options={{ headerShown: false }}
-						/>
-						<Stack.Screen
-							name='(drawer)'
-							options={{ headerShown: false }}
-						/>
-					</Stack>
+					<DialogProvider>
+						<SnackbarProvider>
+							<StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+
+							<Stack
+								screenOptions={{
+									contentStyle: { backgroundColor: theme.colors.background },
+								}}
+							>
+								<Stack.Screen
+									name='index'
+									options={{ headerShown: false }}
+								/>
+								<Stack.Screen
+									name='(drawer)'
+									options={{ headerShown: false }}
+								/>
+							</Stack>
+						</SnackbarProvider>
+					</DialogProvider>
 				</Portal.Host>
 			</GestureHandlerRootView>
 		</PaperProvider>

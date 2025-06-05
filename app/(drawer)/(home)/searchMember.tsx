@@ -11,6 +11,7 @@ import {
 	Portal,
 	Modal,
 	IconButton,
+	Menu,
 } from 'react-native-paper';
 import { router, useFocusEffect } from 'expo-router';
 import firestore from '@react-native-firebase/firestore';
@@ -20,7 +21,10 @@ import Fuse from 'fuse.js';
 import SearchList from '@/components/SearchList';
 import { globalStyles } from '@/styles/global';
 import { useBackHandler } from '@react-native-community/hooks';
-import { getMembers, getMemberNames, getSingleMember } from '@/utils/Firebase';
+import { getMembers, getMemberNames } from '@/utils/Firebase';
+import MenuComponent from '@/components/MenuComponent';
+import { goToProfile } from '@/utils/Utils';
+import { writeNFC } from '@/utils/NFC';
 
 export default function SearchMember() {
 	const theme = useTheme();
@@ -281,54 +285,76 @@ export default function SearchMember() {
 	const renderItem = ({ item }) => {
 		//console.log(item);
 		return (
-			<TouchableRipple
-				style={[globalStyles.item, { backgroundColor: theme.colors.primary }]}
-				onPress={() => {
-					router.push({
-						pathname: '/profile',
-						params: { profileID: item.key },
-					});
-				}}
-				testID='ItemButton'
-			>
-				<View>
-					<Avatar.Image
-						size={100}
-						style={{ alignSelf: 'center', marginBottom: 10 }}
-						source={{
-							uri: item.profilePicture
-								? item.profilePicture
-								: process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL,
+			<MenuComponent
+				contentStyle={{ borderRadius: 20 }}
+				anchor={
+					<TouchableRipple
+						style={[
+							globalStyles.item,
+							{ backgroundColor: theme.colors.primary },
+						]}
+						onPress={() => {
+							goToProfile(item.key);
 						}}
-					/>
-					<Text
-						style={[
-							globalStyles.text.search,
-							{ color: theme.colors.onPrimary },
-						]}
+						testID='ItemButton'
 					>
-						{`${t('searchMember.name')}: ${item.name}`}
-					</Text>
-					<Text
-						style={[
-							globalStyles.text.search,
-							{ color: theme.colors.onPrimary },
-						]}
-					>
-						{`${t('searchMember.memberNumber')}: ${item.memberNumber}`}
-					</Text>
-					<Text
-						style={[
-							globalStyles.text.search,
-							{ color: theme.colors.onPrimary },
-						]}
-					>
-						{item.endDate
-							? `${t('searchMember.paid')} ${item.endDate}`
-							: t('searchMember.notPaid')}
-					</Text>
-				</View>
-			</TouchableRipple>
+						<View>
+							<Avatar.Image
+								size={100}
+								style={{ alignSelf: 'center', marginBottom: 10 }}
+								source={{
+									uri: item.profilePicture
+										? item.profilePicture
+										: process.env.EXPO_PUBLIC_PLACEHOLDER_PICTURE_URL,
+								}}
+							/>
+							<Text
+								style={[
+									globalStyles.text.search,
+									{ color: theme.colors.onPrimary },
+								]}
+							>
+								{`${t('searchMember.name')}: ${item.name}`}
+							</Text>
+							<Text
+								style={[
+									globalStyles.text.search,
+									{ color: theme.colors.onPrimary },
+								]}
+							>
+								{`${t('searchMember.memberNumber')}: ${item.memberNumber}`}
+							</Text>
+							<Text
+								style={[
+									globalStyles.text.search,
+									{ color: theme.colors.onPrimary },
+								]}
+							>
+								{item.endDate
+									? `${t('searchMember.paid')} ${item.endDate}`
+									: t('searchMember.notPaid')}
+							</Text>
+						</View>
+					</TouchableRipple>
+				}
+			>
+				<Menu.Item
+					onPress={() => {
+						goToProfile(item.key);
+					}}
+					title='Open Member'
+				/>
+				<Menu.Item
+					onPress={() => {
+						writeNFC(item.key);
+					}}
+					title='Write to NFC'
+				/>
+				<Menu.Item
+					onPress={() => {}}
+					title='Delete Member'
+				/>
+			</MenuComponent>
 		);
 	};
 

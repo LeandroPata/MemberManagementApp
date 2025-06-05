@@ -7,7 +7,7 @@ import storage from '@react-native-firebase/storage';
 import * as DocumentPicker from 'expo-document-picker';
 import { useTranslation } from 'react-i18next';
 import RNFetchBlob from 'rn-fetch-blob';
-import SnackbarInfo from '@/components/SnackbarInfo';
+import { useSnackbar } from '@/context/SnackbarContext';
 import { globalStyles } from '@/styles/global';
 
 export default function importExport() {
@@ -17,14 +17,7 @@ export default function importExport() {
 	const [exportLoading, setExportLoading] = useState(false);
 
 	// All the logic to implement the snackbar
-	const [snackbarVisible, setSnackbarVisible] = useState(false);
-	const [snackbarText, setSnackbarText] = useState('');
-
-	const showSnackbar = (text: string) => {
-		setSnackbarText(text);
-		setSnackbarVisible(true);
-	};
-	const onDismissSnackbar = () => setSnackbarVisible(false);
+	const { showSnackbar } = useSnackbar();
 
 	const reference = storage().ref('membersData.csv');
 
@@ -450,44 +443,36 @@ export default function importExport() {
 	};
 
 	return (
-		<>
-			<SnackbarInfo
-				text={snackbarText}
-				visible={snackbarVisible}
-				onDismiss={onDismissSnackbar}
-			/>
-
-			<View
-				style={globalStyles.container.global}
-				testID='ImportExportPage'
-			>
-				<View style={globalStyles.container.button}>
-					<Button
-						style={globalStyles.button.global}
-						contentStyle={globalStyles.buttonContent.global}
-						labelStyle={globalStyles.buttonText.global}
-						icon='database-import'
-						mode='elevated'
-						loading={importLoading}
-						onPress={importMembers}
-						testID='ImportButton'
-					>
-						{t('importExport.importMembers')}
-					</Button>
-					<Button
-						style={globalStyles.button.global}
-						contentStyle={globalStyles.buttonContent.global}
-						labelStyle={globalStyles.buttonText.global}
-						icon='database-export'
-						mode='elevated'
-						loading={exportLoading}
-						onPress={exportMembers}
-						testID='ExportButton'
-					>
-						{t('importExport.exportMembers')}
-					</Button>
-				</View>
+		<View
+			style={globalStyles.container.global}
+			testID='ImportExportPage'
+		>
+			<View style={globalStyles.container.button}>
+				<Button
+					style={globalStyles.button.global}
+					contentStyle={globalStyles.buttonContent.global}
+					labelStyle={globalStyles.buttonText.global}
+					icon='database-import'
+					mode='elevated'
+					loading={importLoading}
+					onPress={importMembers}
+					testID='ImportButton'
+				>
+					{t('importExport.importMembers')}
+				</Button>
+				<Button
+					style={globalStyles.button.global}
+					contentStyle={globalStyles.buttonContent.global}
+					labelStyle={globalStyles.buttonText.global}
+					icon='database-export'
+					mode='elevated'
+					loading={exportLoading}
+					onPress={exportMembers}
+					testID='ExportButton'
+				>
+					{t('importExport.exportMembers')}
+				</Button>
 			</View>
-		</>
+		</View>
 	);
 }

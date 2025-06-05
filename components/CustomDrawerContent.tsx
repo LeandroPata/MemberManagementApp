@@ -44,8 +44,8 @@ import i18next from 'i18next';
 import RNFetchBlob from 'rn-fetch-blob';
 import Constants from 'expo-constants';
 import { getFlagEmoji } from '@/utils/GetCountryFlag';
-import SnackbarInfo from '@/components/SnackbarInfo';
-import DialogConfirmation from '@/components/DialogConfirmation';
+import { useSnackbar } from '@/context/SnackbarContext';
+import { useDialog } from '@/context/DialogueConfirmationContext';
 import { globalStyles } from '@/styles/global';
 
 export default function CustomDrawerContent(props: any) {
@@ -108,27 +108,10 @@ export default function CustomDrawerContent(props: any) {
 	const user = auth().currentUser;
 
 	// All the logic to implement the snackbar
-	const [snackbarVisible, setSnackbarVisible] = useState(false);
-	const [snackbarText, setSnackbarText] = useState('');
+	const { showSnackbar } = useSnackbar();
 
-	const showSnackbar = (text: string) => {
-		setSnackbarText(text);
-		setSnackbarVisible(true);
-	};
-	const onDismissSnackbar = () => setSnackbarVisible(false);
-
-	// All the logic to implemet DialogConfirmation
-	const [checkUpdateConfirmationVisible, setCheckUpdateConfirmationVisible] =
-		useState(false);
-	const [runUpdateConfirmationVisible, setRunUpdateConfirmationVisible] =
-		useState(false);
-	const [signOutConfirmationVisible, setSignOutConfirmationVisible] =
-		useState(false);
-	const onDismissDialogConfirmation = () => {
-		setCheckUpdateConfirmationVisible(false);
-		setRunUpdateConfirmationVisible(false);
-		setSignOutConfirmationVisible(false);
-	};
+	// All the logic to implement DialogConfirmation
+	const { showDialog, hideDialog } = useDialog();
 
 	AsyncStorage.getItem('colorScheme').then((token) => {
 		token === 'dark' ? setDarkModeSwitch(true) : setDarkModeSwitch(false);
@@ -207,7 +190,6 @@ export default function CustomDrawerContent(props: any) {
 	};
 
 	const checkUpdates = async (passive = false) => {
-		setCheckUpdateConfirmationVisible(false);
 		setUpdateDownloadProgress(0);
 
 		const updatesStorageRef = storage().ref('updates');
@@ -233,7 +215,11 @@ export default function CustomDrawerContent(props: any) {
 					if (!passive) {
 						console.log('Do update?');
 
-						setRunUpdateConfirmationVisible(true);
+						showDialog({
+							text: t('drawer.runUpdateDialog'),
+							onConfirmation: () => downloadUpdate(updateVersion),
+							testID: 'RunUpdateConfirmation',
+						});
 					} else {
 						console.log('Passive update check');
 						showSnackbar(t('drawer.passiveUpdateCheck'));
@@ -259,8 +245,6 @@ export default function CustomDrawerContent(props: any) {
 	};
 
 	const downloadUpdate = async (updateFolderName: string) => {
-		setRunUpdateConfirmationVisible(false);
-
 		console.log(`Downloading update: ${updateFolderName}`);
 
 		let updateFileName = '';
@@ -430,43 +414,18 @@ export default function CustomDrawerContent(props: any) {
 	};
 
 	const signOut = () => {
-		setSignOutConfirmationVisible(false);
 		props.navigation.closeDrawer();
 		auth().signOut();
 	};
 
-	const drawerItemPress = (goToPathName: string) => {
+	const drawerItemPress = (path: string) => {
 		props.navigation.closeDrawer();
-		setCurrentRoute(goToPathName);
-		router.replace(goToPathName);
+		setCurrentRoute(path);
+		router.replace(path);
 	};
 
 	return (
 		<>
-			<DialogConfirmation
-				text={t('drawer.checkUpdateDialog')}
-				visible={checkUpdateConfirmationVisible}
-				onDismiss={onDismissDialogConfirmation}
-				onConfirmation={() => checkUpdates()}
-				testID='UpdateConfirmation'
-			/>
-
-			<DialogConfirmation
-				text={t('drawer.runUpdateDialog')}
-				visible={runUpdateConfirmationVisible}
-				onDismiss={onDismissDialogConfirmation}
-				onConfirmation={() => downloadUpdate(updateVersion)}
-				testID='RunUpdateConfirmation'
-			/>
-
-			<DialogConfirmation
-				text={t('drawer.signOutDialog')}
-				visible={signOutConfirmationVisible}
-				onDismiss={onDismissDialogConfirmation}
-				onConfirmation={signOut}
-				testID='SignOutConfirmation'
-			/>
-
 			<Portal>
 				<Dialog visible={updateDownloadProgressVisible}>
 					<Dialog.Title style={{ textAlign: 'center' }}>
@@ -605,12 +564,6 @@ export default function CustomDrawerContent(props: any) {
 					</Button>
 				</Modal>
 			</Portal>
-
-			<SnackbarInfo
-				text={snackbarText}
-				visible={snackbarVisible}
-				onDismiss={onDismissSnackbar}
-			/>
 
 			<View style={{ flex: 1 }}>
 				<DrawerContentScrollView
@@ -838,7 +791,13 @@ export default function CustomDrawerContent(props: any) {
 							activeTintColor={theme.colors.primary}
 							inactiveBackgroundColor='transparent'
 							pressColor='rgba(80, 80, 80, 0.32)'
-							onPress={() => setCheckUpdateConfirmationVisible(true)}
+							onPress={() =>
+								showDialog({
+									text: t('drawer.checkUpdateDialog'),
+									onConfirmation: () => checkUpdates(),
+									testID: 'UpdateConfirmation',
+								})
+							}
 							testID='UpdateDrawerButton'
 						/>
 
@@ -876,7 +835,15 @@ export default function CustomDrawerContent(props: any) {
 							activeTintColor={theme.colors.primary}
 							inactiveBackgroundColor='transparent'
 							pressColor='rgba(80, 80, 80, 0.32)'
-							onPress={() => setSignOutConfirmationVisible(true)}
+							onPress={() =>
+								showDialog({
+									text: t('drawer.signOutDialog'),
+									onConfirmation: () => {
+										signOut();
+									},
+									testID: 'SignOutConfirmation',
+								})
+							}
 							testID='SignOutDrawerButton'
 						/>
 					</View>

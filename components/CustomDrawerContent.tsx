@@ -47,6 +47,7 @@ import { getFlagEmoji } from '@/utils/GetCountryFlag';
 import { useSnackbar } from '@/context/SnackbarContext';
 import { useDialog } from '@/context/DialogueConfirmationContext';
 import { globalStyles } from '@/styles/global';
+import { useBackHandler } from '@react-native-community/hooks';
 
 export default function CustomDrawerContent(props: any) {
 	const theme = useTheme();
@@ -56,6 +57,14 @@ export default function CustomDrawerContent(props: any) {
 	const scrollRef = useRef();
 
 	const isDrawerOpen = useDrawerStatus() === 'open';
+
+	useBackHandler(() => {
+		if (isDrawerOpen) {
+			props.navigation.closeDrawer();
+			return true;
+		}
+		return null;
+	});
 
 	useEffect(() => {
 		//console.log(isDrawerOpen);

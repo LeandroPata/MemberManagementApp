@@ -63,25 +63,22 @@ export const writeNFC = async (id: string) => {
 	try {
 		const check = await checkNFC();
 		if (!check || !id) {
-			//setLoadingWrite(false);
 			return false;
 		}
 
 		await NfcManager.requestTechnology(NfcTech.Ndef);
 
 		const payload = Ndef.encodeMessage([Ndef.textRecord(id)]);
-		console.log(payload);
 
 		if (payload) {
 			await NfcManager.ndefHandler.writeNdefMessage(payload);
+			console.log(id);
 			result = true;
 		}
 	} catch (e: any) {
 		console.log(`Error: ${e.message}`);
-		//setLoadingWrite(false);
 	} finally {
 		NfcManager.cancelTechnologyRequest();
-		//setLoadingWrite(false);
 	}
 	return result;
 };

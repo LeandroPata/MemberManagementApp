@@ -12,6 +12,8 @@ import {
 	Modal,
 	IconButton,
 	Menu,
+	Dialog,
+	ActivityIndicator,
 } from 'react-native-paper';
 import { router, useFocusEffect } from 'expo-router';
 import firestore from '@react-native-firebase/firestore';
@@ -21,10 +23,13 @@ import Fuse from 'fuse.js';
 import SearchList from '@/components/SearchList';
 import { globalStyles } from '@/styles/global';
 import { useBackHandler } from '@react-native-community/hooks';
-import { getMembers, getMemberNames } from '@/utils/Firebase';
+import { getMembers, getMemberNames, deleteMemberDoc } from '@/utils/Firebase';
 import MenuComponent from '@/components/MenuComponent';
 import { goToProfile } from '@/utils/Utils';
-import { writeNFC } from '@/utils/NFC';
+import NfcManager from 'react-native-nfc-manager';
+import { checkNFC, goToNFCSettings, writeNFC } from '@/utils/NFC';
+import { useDialog } from '@/context/DialogueConfirmationContext';
+import { useSnackbar } from '@/context/SnackbarContext';
 
 export default function SearchMember() {
 	const theme = useTheme();
@@ -44,6 +49,13 @@ export default function SearchMember() {
 	const [members, setMembers] = useState([]);
 
 	const [refreshFlatlist, setRefreshFlatlist] = useState(false);
+	const [writeNFCVisible, setWriteNFCVisible] = useState(false);
+
+	// All the logic to implement DialogConfirmation
+	const { showDialog } = useDialog();
+
+	// All the logic to implement the snackbar
+	const { showSnackbar } = useSnackbar();
 
 	useBackHandler(() => {
 		router.replace('/(drawer)/(home)/home');
@@ -282,6 +294,24 @@ export default function SearchMember() {
 		}
 	};
 
+	const wNFC = async (id: string) => {
+		const nfcStatus = await checkNFC();
+		if (!nfcStatus) {
+			showDialog({
+				text: t('nfc.goToSettings'),
+				onConfirmation: () => goToNFCSettings(),
+				onDismissText: 'Cancel',
+				onConfirmationText: 'Go to Settings',
+			});
+			return false;
+		}
+		setWriteNFCVisible(true);
+		const result = await writeNFC(id);
+		if (result) showSnackbar(t('nfc.writeSuccess'));
+		else showSnackbar(t('nfc.writeFail'));
+		setWriteNFCVisible(false);
+	};
+
 	const renderItem = ({ item }) => {
 		//console.log(item);
 		return (
@@ -331,7 +361,9 @@ export default function SearchMember() {
 								]}
 							>
 								{item.endDate
-									? `${t('searchMember.paid')} ${item.endDate}`
+									? `${t('searchMember.paid')} ${t('searchMember.until')} ${
+											item.endDate
+									  }`
 									: t('searchMember.notPaid')}
 							</Text>
 						</View>
@@ -346,12 +378,33 @@ export default function SearchMember() {
 				/>
 				<Menu.Item
 					onPress={() => {
-						writeNFC(item.key);
+						wNFC(item.key);
 					}}
 					title='Write to NFC'
 				/>
 				<Menu.Item
-					onPress={() => {}}
+					onPress={() => {
+						showDialog({
+							text: t('member.deleteConfirmation'),
+							onConfirmation: async () => {
+								const result = await deleteMemberDoc(item.key);
+								if (result) {
+									const updatedMembers = members;
+									for (const member of updatedMembers) {
+										if (member.key === item.key) {
+											const index = updatedMembers.indexOf(member);
+											updatedMembers.splice(index, 1);
+
+											setMembers(updatedMembers);
+											break;
+										}
+									}
+									showSnackbar(t('member.deletedSuccess'));
+								} else showSnackbar(t('member.deletedSuccess'));
+								setRefreshFlatlist(!refreshFlatlist);
+							},
+						});
+					}}
 					title='Delete Member'
 				/>
 			</MenuComponent>
@@ -444,6 +497,21 @@ export default function SearchMember() {
 						{t('searchMember.orderEndDate')}
 					</Button>
 				</Modal>
+
+				<Dialog
+					visible={writeNFCVisible}
+					onDismiss={() => {
+						NfcManager.cancelTechnologyRequest();
+						setWriteNFCVisible(false);
+					}}
+				>
+					<Dialog.Title style={{ textAlign: 'center' }}>
+						{t('nfc.writeNFC')}
+					</Dialog.Title>
+					<Dialog.Content>
+						<ActivityIndicator size='large' />
+					</Dialog.Content>
+				</Dialog>
 			</Portal>
 
 			<View

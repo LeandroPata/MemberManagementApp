@@ -88,6 +88,7 @@ export const deleteMemberDoc = async (id: string) => {
 		console.log(`Member doc deletion failed: ${err.message}`);
 		return false;
 	}
+	console.log('Deleted');
 	return true;
 };
 

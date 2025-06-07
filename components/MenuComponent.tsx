@@ -32,6 +32,17 @@ const MenuComponent = (props: MenuComponentProps) => {
 		openMenu();
 	};
 
+	const injectItems = React.Children.map(props.children, (child) => {
+		if (!React.isValidElement(child)) return child;
+		const originalOnPress = child.props.onPress;
+		const injectedOnPress = (...args: any[]) => {
+			closeMenu();
+			if (originalOnPress) originalOnPress(...args);
+		};
+
+		return React.cloneElement(child, { onPress: injectedOnPress });
+	});
+
 	return (
 		<>
 			{React.cloneElement(props.anchor, { onLongPress: onIconPress })}
@@ -43,7 +54,7 @@ const MenuComponent = (props: MenuComponentProps) => {
 				//style={{ borderWidth: 5, borderRadius: 20 }}
 				contentStyle={props.contentStyle}
 			>
-				{props.children}
+				{injectItems}
 			</Menu>
 		</>
 	);

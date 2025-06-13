@@ -44,10 +44,19 @@
 		"on": "em",
 		"until": "até"
 	},
-	"nfc": {},
+	"nfc": {
+		"isDisabled": "NFC está desativado! !",
+		"settings": "Ir para as definições",
+		"invalidTag": "Esta tag é inválida!",
+		"memberNotFound": "Membro não encontrado!",
+		"readNFC": "Aguardando Tag NFC...",
+		"writeNFC": "Aguardando Tag NFC...",
+		"writeSuccess": "Escrito para a tag NFC com sucesso",
+		"writeFailed": "Escrito para a tag NFC sem sucesso"
+	},
 	"permission": {
-		"cameraPermission": "Permissão para aceder à camera negada!",
-		"storagePermission": "Permissões de armazenamento são necessárias para importar/exportar dados!"
+		"camera": "Permissão para aceder à camera negada!",
+		"storage": "Permissões de armazenamento são necessárias para importar/exportar dados!"
 	},
 	"button": {
 		"login": "Login",
@@ -57,36 +66,44 @@
 		"home": "Página Principal",
 		"addMember": "Adicionar Membro",
 		"searchMember": "Procurar Membro",
+		"updateMembers": "Atualizar Membros",
 		"importExport": "Importar/Exportar",
+		"nfc": "Ler NFC",
 		"gallery": "Galeria",
 		"camera": "Tirar Foto",
 		"saveMember": "Guardar",
 		"editMember": "Editar Membro",
 		"deleteMember": "Apagar Membro",
-		"updatedMember": "Membro Atualizado!",
-		"deletedMember": "Membro Apagado!"
+		"importMembers": "Importar Membros",
+		"exportMembers": "Exportar Membros",
+		"orderBy": "Ordenar por",
+		"updateMembersNumbers": "Atualizar Números dos Membros"
 	},
 	"feature": {
 		"darkMode": "Modo Escuro",
 		"language": "Idioma",
 		"checkUpdate": "Verificar atualizações",
-		"checkUpdateDialog": "Verificar se existem atualizações?",
-		"runUpdateDialog": "Existe uma nova atualização, atualizar?",
+		"version": "Versão",
+		"orderName": "Nome",
+		"orderNumber": "Número",
+		"orderEndDate": "Ano Final da Adesão"
+	},
+	"dialog": {
+		"checkUpdate": "Verificar se existem atualizações?",
+		"runUpdate": "Existe uma nova atualização, atualizar?",
 		"noUpdate": "Versão mais atualizada já instalada!",
 		"passiveUpdateCheck": "Uma nova versão está disponível!",
 		"downloadingDialog": "A transferir...",
-		"version": "Versão",
-		"orderBy": "Ordenar por",
-		"orderName": "Nome",
-		"orderNumber": "Número",
-		"orderEndDate": "Ano Final da Adesão",
-		"importMembers": "Importar Membros",
 		"importSuccess": "Importação com sucesso!",
 		"importExistingMembers": "Os membros com os seguintes números já existem na base de dados e não foram importados",
-		"exportMembers": "Exportar Membros",
 		"exportSuccess": "Exportação com sucesso!",
 		"yes": "Sim",
 		"no": "Não",
-		"deleteConfirmation": "Tem a certeza que quer apagar este membro?"
+		"deleteConfirmation": "Tem a certeza que quer apagar este membro?",
+		"cancel": "Cancelar",
+		"updatedMember": "Membro Atualizado!",
+		"deletedMember": "Membro Apagado!",
+		"deletedMemberFailed": "A eliminação do membro falhou!",
+		"updateNumbersSuccess": "Números dos membros atualizados!"
 	}
 }

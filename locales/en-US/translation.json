@@ -44,10 +44,19 @@
 		"on": "on",
 		"until": "until"
 	},
-	"nfc": {},
+	"nfc": {
+		"isDisabled": "NFC is disabled! Enable it to use this feature!",
+		"settings": "Go to settings",
+		"invalidTag": "This tag is invalid!",
+		"memberNotFound": "Member not found!",
+		"readNFC": "Awaiting NFC Tag...",
+		"writeNFC": "Awaiting NFC Tag...",
+		"writeSuccess": "Writing to NFC tag successful",
+		"writeFailed": "Writing to NFC tag failed"
+	},
 	"permission": {
-		"cameraPermission": "Permission to access camera denied!",
-		"storagePermission": "Storage permissions are necessary to import/export data!"
+		"camera": "Permission to access camera denied!",
+		"storage": "Storage permissions are necessary to import/export data!"
 	},
 	"button": {
 		"login": "Login",
@@ -57,36 +66,44 @@
 		"home": "Home",
 		"addMember": "Add Member",
 		"searchMember": "Search Member",
+		"updateMembers": "Update Members",
 		"importExport": "Import/Export",
+		"nfc": "Read NFC",
 		"gallery": "From Gallery",
 		"camera": "Take Picture",
 		"saveMember": "Save",
 		"editMember": "Edit Member",
 		"deleteMember": "Delete Member",
-		"updatedMember": "Updated Member!",
-		"deletedMember": "Member Deleted!"
+		"importMembers": "Import Members",
+		"exportMembers": "Export Members",
+		"orderBy": "Order by",
+		"updateMembersNumbers": "Update Members Numbers"
 	},
 	"feature": {
 		"darkMode": "Dark Mode",
 		"language": "Language",
 		"checkUpdate": "Check for updates",
-		"checkUpdateDialog": "Check for updates?",
-		"runUpdateDialog": "There is a new version available, update?",
+		"version": "Version",
+		"orderName": "Name",
+		"orderNumber": "Number",
+		"orderEndDate": "End date"
+	},
+	"dialog": {
+		"checkUpdate": "Check for updates?",
+		"runUpdate": "There is a new version available, update?",
 		"noUpdate": "Most up to date version already installed!",
 		"passiveUpdateCheck": "A new version is available!",
 		"downloadingDialog": "Downloading...",
-		"version": "Version",
-		"orderBy": "Order by",
-		"orderName": "Name",
-		"orderNumber": "Number",
-		"orderEndDate": "End date",
-		"importMembers": "Import Members",
 		"importSuccess": "Importing Successful!",
 		"importExistingMembers": "The members with the following numbers already existed in the database and were not imported",
-		"exportMembers": "Export Members",
 		"exportSuccess": "Exporting successful!",
 		"yes": "Yes",
 		"no": "No",
-		"deleteConfirmation": "Are you sure you want to delete this member?"
+		"deleteConfirmation": "Are you sure you want to delete this member?",
+		"cancel": "Cancel",
+		"updatedMember": "Updated Member!",
+		"deletedMember": "Member Deleted!",
+		"deletedMemberFailed": "Member deletion failed!",
+		"updateNumbersSuccess": "Members Numbers updated!"
 	}
 }

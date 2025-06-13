@@ -196,7 +196,7 @@ export default function Profile() {
 			const permissionResult = await askPermission();
 
 			if (permissionResult === false) {
-				showSnackbar(t('profile.cameraPermission'));
+				showSnackbar(t('permission.camera'));
 				return;
 			}
 
@@ -230,7 +230,7 @@ export default function Profile() {
 		let errors = 0;
 
 		if (!name.trim()) {
-			showSnackbar(t('profile.nameError'));
+			showSnackbar(t('member.nameError'));
 			setNameError(true);
 			errors++;
 			//setLoadingSave(false);
@@ -238,7 +238,7 @@ export default function Profile() {
 		}
 
 		if (email?.trim() && !email.match(emailRegex)) {
-			showSnackbar(t('profile.emailError'));
+			showSnackbar(t('member.emailError'));
 			setEmailError(true);
 			errors++;
 			//setLoadingSave(false);
@@ -248,7 +248,7 @@ export default function Profile() {
 		if (autoNumber) {
 			await assignMemberNumber();
 		} else if (!memberNumber.trim()) {
-			showSnackbar(t('profile.memberNumberError'));
+			showSnackbar(t('member.memberNumberError'));
 			setMemberNumberError(true);
 			errors++;
 			//setLoadingSave(false);
@@ -261,7 +261,7 @@ export default function Profile() {
 				} : ${numberAvailable}`
 			); */
 			if (memberNumber != profile.memberNumber && numberAvailable > 1) {
-				showSnackbar(t('profile.memberNumberExists'));
+				showSnackbar(t('member.memberNumberExists'));
 				setMemberNumberError(true);
 				errors++;
 				//setLoadingSave(false);
@@ -313,7 +313,7 @@ export default function Profile() {
 						: profile.profilePicture,
 				})
 				.then(() => {
-					showSnackbar(t('profile.updatedMember'));
+					showSnackbar(t('dialog.updatedMember'));
 					setEditing(false);
 					setAutoNumber(false);
 					getMember(profileID);
@@ -335,7 +335,7 @@ export default function Profile() {
 			const confirm = await deleteMemberDoc(profileID);
 			console.log(confirm);
 			if (confirm) {
-				showSnackbar(t('profile.deletedMember'));
+				showSnackbar(t('dialog.deletedMember'));
 				router.replace('/(drawer)/(home)/searchMember');
 			}
 		} catch (e: any) {
@@ -371,7 +371,7 @@ export default function Profile() {
 						onPress={pickImage}
 						testID='GalleryButton'
 					>
-						{t('profile.gallery')}
+						{t('button.gallery')}
 					</Button>
 					<Button
 						style={globalStyles.button.global}
@@ -382,7 +382,7 @@ export default function Profile() {
 						onPress={takePicture}
 						testID='CameraButton'
 					>
-						{t('profile.camera')}
+						{t('button.camera')}
 					</Button>
 				</Modal>
 			</Portal>
@@ -454,7 +454,7 @@ export default function Profile() {
 												},
 											]}
 										>
-											{t('profile.autoNumber')}
+											{t('member.autoNumber')}
 										</Text>
 										<Switch
 											disabled={!editing}
@@ -490,7 +490,7 @@ export default function Profile() {
 											error={memberNumberError}
 											autoCapitalize='none'
 											keyboardType='numeric'
-											label={t('profile.memberNumber')}
+											label={t('member.memberNumber')}
 											testID='MemberNumberInput'
 										/>
 										{memberNumberError ? (
@@ -520,7 +520,7 @@ export default function Profile() {
 									error={nameError}
 									autoCapitalize='words'
 									keyboardType='default'
-									label={t('profile.name')}
+									label={t('member.name')}
 									testID='NameInput'
 								/>
 								{nameError ? (
@@ -530,7 +530,7 @@ export default function Profile() {
 										style={globalStyles.text.errorHelper}
 										testID='NameError'
 									>
-										{t('profile.nameError')}
+										{t('member.nameError')}
 									</HelperText>
 								) : null}
 
@@ -548,7 +548,7 @@ export default function Profile() {
 									error={emailError}
 									autoCapitalize='none'
 									keyboardType='email-address'
-									label={t('profile.email')}
+									label={t('member.email')}
 									testID='EmailInput'
 								/>
 								{emailError ? (
@@ -558,7 +558,7 @@ export default function Profile() {
 										style={globalStyles.text.errorHelper}
 										testID='EmailError'
 									>
-										{t('profile.emailError')}
+										{t('member.emailError')}
 									</HelperText>
 								) : null}
 
@@ -577,7 +577,7 @@ export default function Profile() {
 									autoCapitalize='none'
 									inputMode='tel'
 									keyboardType='phone-pad'
-									label={t('profile.phoneNumber')}
+									label={t('member.phoneNumber')}
 									testID='PhoneInput'
 								/>
 								<TextInput
@@ -593,7 +593,7 @@ export default function Profile() {
 									autoCapitalize='sentences'
 									inputMode='text'
 									keyboardType='default'
-									label={t('profile.occupation')}
+									label={t('member.occupation')}
 									testID='OccupationInput'
 								/>
 								<TextInput
@@ -607,7 +607,7 @@ export default function Profile() {
 									autoCapitalize='sentences'
 									inputMode='text'
 									keyboardType='default'
-									label={t('profile.country')}
+									label={t('member.country')}
 									testID='CountryInput'
 								/>
 								<TextInput
@@ -621,7 +621,7 @@ export default function Profile() {
 									autoCapitalize='sentences'
 									inputMode='text'
 									keyboardType='default'
-									label={t('profile.address')}
+									label={t('member.address')}
 									testID='AddressInput'
 								/>
 								<TextInput
@@ -648,7 +648,7 @@ export default function Profile() {
 									autoCapitalize='none'
 									inputMode='numeric'
 									keyboardType='number-pad'
-									label={t('profile.zipCode')}
+									label={t('member.zipCode')}
 									testID='ZipCodeInput'
 								/>
 								{zipCodeError ? (
@@ -658,7 +658,7 @@ export default function Profile() {
 										style={globalStyles.text.errorHelper}
 										testID='ZipCodeError'
 									>
-										{t('addMember.zipCodeError')}
+										{t('member.zipCodeError')}
 									</HelperText>
 								) : null}
 
@@ -670,7 +670,7 @@ export default function Profile() {
 										onPress={() => setBirthDateModal(true)}
 										testID='BirthDateButton'
 									>
-										{`${t('profile.birthDate')}: ${
+										{`${t('member.birthDate')}: ${
 											birthDate.toLocaleDateString('pt-pt') !==
 											new Date().toLocaleDateString('pt-pt')
 												? birthDate.toLocaleDateString('pt-pt')
@@ -710,7 +710,7 @@ export default function Profile() {
 									<Checkbox.Item
 										disabled={!editing}
 										uncheckedColor={theme.colors.primary}
-										label={paid ? t('profile.paid') : t('profile.notPaid')}
+										label={paid ? t('member.paid') : t('member.notPaid')}
 										labelStyle={[
 											globalStyles.text.date,
 											{
@@ -733,7 +733,7 @@ export default function Profile() {
 												onPress={() => setPaidDateModal(true)}
 												testID='PaidDateButton'
 											>
-												{`${t('profile.on')} ${
+												{`${t('member.on')} ${
 													paidDate.toLocaleDateString('pt-pt') !==
 													new Date().toLocaleDateString('pt-pt')
 														? paidDate.toLocaleDateString('pt-pt')
@@ -768,7 +768,7 @@ export default function Profile() {
 													onPress={() => setEndDateModal(true)}
 													testID='EndDateButton'
 												>
-													{`${t('profile.until')} ${
+													{`${t('member.until')} ${
 														endDate || editing ? endDate : profile.endDate
 													}`}
 												</Button>
@@ -791,7 +791,7 @@ export default function Profile() {
 									onPress={saveMember}
 									testID='SaveButton'
 								>
-									{t('profile.saveMember')}
+									{t('button.saveMember')}
 								</Button>
 							) : (
 								<>
@@ -822,7 +822,7 @@ export default function Profile() {
 										}}
 										testID='EditButton'
 									>
-										{t('profile.editMember')}
+										{t('button.editMember')}
 									</Button>
 									<Button
 										style={globalStyles.button.profile}
@@ -833,7 +833,7 @@ export default function Profile() {
 										loading={loadingDelete}
 										onPress={() => {
 											showDialog({
-												text: t('profile.deleteConfirmation'),
+												text: t('dialog.deleteConfirmation'),
 												onConfirmation: () => {
 													deleteMember();
 												},
@@ -841,7 +841,7 @@ export default function Profile() {
 										}}
 										testID='DeleteButton'
 									>
-										{t('profile.deleteMember')}
+										{t('button.deleteMember')}
 									</Button>
 								</>
 							)}

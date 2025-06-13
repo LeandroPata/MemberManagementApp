@@ -298,17 +298,17 @@ export default function SearchMember() {
 		const nfcStatus = await checkNFC();
 		if (!nfcStatus) {
 			showDialog({
-				text: t('nfc.goToSettings'),
+				text: t('nfc.isDisabled'),
 				onConfirmation: () => goToNFCSettings(),
-				onDismissText: 'Cancel',
-				onConfirmationText: 'Go to Settings',
+				onDismissText: t('dialog.cancel'),
+				onConfirmationText: t('nfc.settings'),
 			});
 			return false;
 		}
 		setWriteNFCVisible(true);
 		const result = await writeNFC(id);
 		if (result) showSnackbar(t('nfc.writeSuccess'));
-		else showSnackbar(t('nfc.writeFail'));
+		else showSnackbar(t('nfc.writeFailed'));
 		setWriteNFCVisible(false);
 	};
 
@@ -344,7 +344,7 @@ export default function SearchMember() {
 									{ color: theme.colors.onPrimary },
 								]}
 							>
-								{`${t('searchMember.name')}: ${item.name}`}
+								{`${t('member.name')}: ${item.name}`}
 							</Text>
 							<Text
 								style={[
@@ -352,7 +352,7 @@ export default function SearchMember() {
 									{ color: theme.colors.onPrimary },
 								]}
 							>
-								{`${t('searchMember.memberNumber')}: ${item.memberNumber}`}
+								{`${t('member.memberNumber')}: ${item.memberNumber}`}
 							</Text>
 							<Text
 								style={[
@@ -361,10 +361,8 @@ export default function SearchMember() {
 								]}
 							>
 								{item.endDate
-									? `${t('searchMember.paid')} ${t('searchMember.until')} ${
-											item.endDate
-									  }`
-									: t('searchMember.notPaid')}
+									? `${t('member.paid')} ${t('member.until')} ${item.endDate}`
+									: t('member.notPaid')}
 							</Text>
 						</View>
 					</TouchableRipple>
@@ -385,7 +383,7 @@ export default function SearchMember() {
 				<Menu.Item
 					onPress={() => {
 						showDialog({
-							text: t('member.deleteConfirmation'),
+							text: t('dialog.deleteConfirmation'),
 							onConfirmation: async () => {
 								const result = await deleteMemberDoc(item.key);
 								if (result) {
@@ -399,8 +397,8 @@ export default function SearchMember() {
 											break;
 										}
 									}
-									showSnackbar(t('member.deletedSuccess'));
-								} else showSnackbar(t('member.deletedSuccess'));
+									showSnackbar(t('dialog.deletedMember'));
+								} else showSnackbar(t('dialog.deletedMemberFailed'));
 								setRefreshFlatlist(!refreshFlatlist);
 							},
 						});
@@ -460,7 +458,7 @@ export default function SearchMember() {
 						}}
 						testID='OrderNameButton'
 					>
-						{t('searchMember.orderName')}
+						{t('feature.orderName')}
 					</Button>
 
 					<Button
@@ -478,7 +476,7 @@ export default function SearchMember() {
 						}}
 						testID='OrderNumberButton'
 					>
-						{t('searchMember.orderNumber')}
+						{t('feature.orderNumber')}
 					</Button>
 
 					<Button
@@ -494,7 +492,7 @@ export default function SearchMember() {
 						}}
 						testID='OrderDateButton'
 					>
-						{t('searchMember.orderEndDate')}
+						{t('feature.orderEndDate')}
 					</Button>
 				</Modal>
 
@@ -522,7 +520,7 @@ export default function SearchMember() {
 					style={globalStyles.searchBar}
 					icon='account'
 					value={name}
-					placeholder={t('searchMember.name')}
+					placeholder={t('member.name')}
 					data={hintMemberList}
 					onChangeText={(input) => {
 						setName(input);
@@ -563,7 +561,7 @@ export default function SearchMember() {
 					loading={loadingNumber}
 					autoCapitalize='none'
 					keyboardType='numeric'
-					placeholder={t('searchMember.memberNumber')}
+					placeholder={t('member.memberNumber')}
 					onClearIconPress={() => {
 						setMemberNumber('');
 						getAllMembers();
@@ -591,7 +589,7 @@ export default function SearchMember() {
 							onPress={() => setOrderModal(true)}
 							testID='OrderButton'
 						>
-							{t('searchMember.orderBy')}
+							{t('button.orderBy')}
 						</Button>
 
 						<IconButton

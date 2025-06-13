@@ -77,13 +77,13 @@ export const DialogProvider: React.FC = ({ children }) => {
 							onPress={handleConfirmation}
 							testID='DialogConfirmationYes'
 						>
-							{options?.onConfirmationText || t('profile.yes')}
+							{options?.onConfirmationText || t('dialog.yes')}
 						</Button>
 						<Button
 							onPress={handleDismiss}
 							testID='DialogConfirmationNo'
 						>
-							{options?.onDismissText || t('profile.no')}
+							{options?.onDismissText || t('dialog.no')}
 						</Button>
 					</Dialog.Actions>
 				</Dialog>

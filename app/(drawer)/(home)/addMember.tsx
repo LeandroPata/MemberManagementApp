@@ -108,7 +108,7 @@ export default function AddMember() {
 			// Ask the user for the permission to access the camera
 			const permissionResult = await askPermission();
 			if (permissionResult === false) {
-				showSnackbar(t('addMember.cameraPermission'));
+				showSnackbar(t('permission.camera'));
 				return;
 			}
 			const result = await launchCamera();
@@ -128,7 +128,7 @@ export default function AddMember() {
 		let errors = 0;
 
 		if (!name.trim()) {
-			showSnackbar(t('addMember.nameError'));
+			showSnackbar(t('member.nameError'));
 			setNameError(true);
 			errors++;
 			//setLoading(false);
@@ -136,7 +136,7 @@ export default function AddMember() {
 		} else setNameError(false);
 
 		if (email?.trim() && !email.match(emailRegex)) {
-			showSnackbar(t('addMember.emailError'));
+			showSnackbar(t('member.emailError'));
 			setEmailError(true);
 			errors++;
 			//setLoading(false);
@@ -146,7 +146,7 @@ export default function AddMember() {
 		if (autoNumber) {
 			await assignMemberNumber();
 		} else if (!memberNumber.trim()) {
-			showSnackbar(t('addMember.memberNumberError'));
+			showSnackbar(t('member.memberNumberError'));
 			setMemberNumberError(true);
 			errors++;
 			//setLoading(false);
@@ -154,7 +154,7 @@ export default function AddMember() {
 		} else {
 			const numberAvailable = await checkNumber(Number(memberNumber.trim()));
 			if (numberAvailable > 1) {
-				showSnackbar(t('addMember.memberNumberExists'));
+				showSnackbar(t('member.memberNumberExists'));
 				setMemberNumberError(true);
 				errors++;
 				//setLoading(false);
@@ -165,11 +165,9 @@ export default function AddMember() {
 		}
 
 		if (zipCode.length < 8 && zipCode.length > 0) {
-			showSnackbar(t('addMember.zipCodeError'));
+			showSnackbar(t('member.zipCodeError'));
 			setZipCodeError(true);
 			errors++;
-			//setLoading(false);
-			//return;
 		} else setZipCodeError(false);
 
 		/* console.log(
@@ -252,7 +250,7 @@ export default function AddMember() {
 						onPress={pickImage}
 						testID='GalleryButton'
 					>
-						{t('addMember.gallery')}
+						{t('button.gallery')}
 					</Button>
 					<Button
 						style={globalStyles.button.global}
@@ -263,7 +261,7 @@ export default function AddMember() {
 						onPress={takePicture}
 						testID='CameraButton'
 					>
-						{t('addMember.camera')}
+						{t('button.camera')}
 					</Button>
 				</Modal>
 			</Portal>
@@ -322,7 +320,7 @@ export default function AddMember() {
 										},
 									]}
 								>
-									{t('addMember.autoNumber')}
+									{t('member.autoNumber')}
 								</Text>
 								<Switch
 									value={autoNumber}
@@ -352,7 +350,7 @@ export default function AddMember() {
 									error={memberNumberError}
 									autoCapitalize='none'
 									keyboardType='numeric'
-									label={t('addMember.memberNumber')}
+									label={t('member.memberNumber')}
 									testID='MemberNumberInput'
 								/>
 								{memberNumberError ? (
@@ -362,7 +360,7 @@ export default function AddMember() {
 										style={globalStyles.text.errorHelper}
 										testID='MemberNumberError'
 									>
-										{t('addMember.memberNumberError')}
+										{t('member.memberNumberError')}
 									</HelperText>
 								) : null}
 							</View>
@@ -381,7 +379,7 @@ export default function AddMember() {
 							error={nameError}
 							autoCapitalize='words'
 							keyboardType='default'
-							label={t('addMember.name')}
+							label={t('member.name')}
 							testID='NameInput'
 						/>
 						{nameError ? (
@@ -391,7 +389,7 @@ export default function AddMember() {
 								style={globalStyles.text.errorHelper}
 								testID='NameError'
 							>
-								{t('addMember.nameError')}
+								{t('member.nameError')}
 							</HelperText>
 						) : null}
 
@@ -408,7 +406,7 @@ export default function AddMember() {
 							error={emailError}
 							autoCapitalize='none'
 							keyboardType='email-address'
-							label={t('addMember.email')}
+							label={t('member.email')}
 							testID='EmailInput'
 						/>
 						{emailError ? (
@@ -418,7 +416,7 @@ export default function AddMember() {
 								style={globalStyles.text.errorHelper}
 								testID='EmailError'
 							>
-								{t('addMember.emailError')}
+								{t('member.emailError')}
 							</HelperText>
 						) : null}
 
@@ -434,7 +432,7 @@ export default function AddMember() {
 							autoCapitalize='none'
 							inputMode='tel'
 							keyboardType='phone-pad'
-							label={t('addMember.phoneNumber')}
+							label={t('member.phoneNumber')}
 							testID='PhoneInput'
 						/>
 						<TextInput
@@ -447,7 +445,7 @@ export default function AddMember() {
 							autoCapitalize='sentences'
 							inputMode='text'
 							keyboardType='default'
-							label={t('addMember.occupation')}
+							label={t('member.occupation')}
 							testID='OccupationInput'
 						/>
 						<TextInput
@@ -460,7 +458,7 @@ export default function AddMember() {
 							autoCapitalize='sentences'
 							inputMode='text'
 							keyboardType='default'
-							label={t('addMember.country')}
+							label={t('member.country')}
 							testID='CountryInput'
 						/>
 						<TextInput
@@ -473,7 +471,7 @@ export default function AddMember() {
 							autoCapitalize='sentences'
 							inputMode='text'
 							keyboardType='default'
-							label={t('addMember.address')}
+							label={t('member.address')}
 							testID='AddressInput'
 						/>
 						<TextInput
@@ -500,7 +498,7 @@ export default function AddMember() {
 							autoCapitalize='none'
 							inputMode='numeric'
 							keyboardType='number-pad'
-							label={t('addMember.zipCode')}
+							label={t('member.zipCode')}
 							testID='ZipCodeInput'
 						/>
 						{zipCodeError ? (
@@ -510,7 +508,7 @@ export default function AddMember() {
 								style={globalStyles.text.errorHelper}
 								testID='ZipCodeError'
 							>
-								{t('addMember.zipCodeError')}
+								{t('member.zipCodeError')}
 							</HelperText>
 						) : null}
 
@@ -521,7 +519,7 @@ export default function AddMember() {
 								onPress={() => setBirthDateModal(true)}
 								testID='BirthDateButton'
 							>
-								{`${t('addMember.birthDate')}: ${birthDate.toLocaleDateString(
+								{`${t('member.birthDate')}: ${birthDate.toLocaleDateString(
 									'pt-pt'
 								)}`}
 							</Button>
@@ -555,7 +553,7 @@ export default function AddMember() {
 						>
 							<Checkbox.Item
 								uncheckedColor={theme.colors.primary}
-								label={paid ? t('addMember.paid') : t('addMember.notPaid')}
+								label={paid ? t('member.paid') : t('member.notPaid')}
 								labelStyle={[
 									globalStyles.text.date,
 									{ color: theme.colors.primary },
@@ -573,7 +571,7 @@ export default function AddMember() {
 										onPress={() => setPaidDateModal(true)}
 										testID='PaidDateButton'
 									>
-										{`${t('addMember.on')} ${paidDate.toLocaleDateString(
+										{`${t('member.on')} ${paidDate.toLocaleDateString(
 											'pt-pt'
 										)}`}
 									</Button>
@@ -600,7 +598,7 @@ export default function AddMember() {
 											onPress={() => setEndDateModal(true)}
 											testID='EndDateButton'
 										>
-											{`${t('addMember.until')} ${endDate}`}
+											{`${t('member.until')} ${endDate}`}
 										</Button>
 									</View>
 								</>
@@ -620,7 +618,7 @@ export default function AddMember() {
 						onPress={addMember}
 						testID='AddButton'
 					>
-						{t('addMember.addMember')}
+						{t('button.addMember')}
 					</Button>
 				</View>
 			</View>

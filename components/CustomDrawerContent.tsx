@@ -225,18 +225,18 @@ export default function CustomDrawerContent(props: any) {
 						console.log('Do update?');
 
 						showDialog({
-							text: t('drawer.runUpdateDialog'),
+							text: t('dialog.runUpdate'),
 							onConfirmation: () => downloadUpdate(updateVersion),
 							testID: 'RunUpdateConfirmation',
 						});
 					} else {
 						console.log('Passive update check');
-						showSnackbar(t('drawer.passiveUpdateCheck'));
+						showSnackbar(t('dialog.passiveUpdateCheck'));
 					}
 				} else {
 					if (!passive) {
 						console.log('No update');
-						showSnackbar(t('drawer.noUpdate'));
+						showSnackbar(t('dialog.noUpdate'));
 					}
 				}
 			});
@@ -412,7 +412,7 @@ export default function CustomDrawerContent(props: any) {
 			?.updatePassword(newPassword)
 			.then(() => {
 				console.log('Password updated');
-				showSnackbar(t('drawer.passwordUpdated'));
+				showSnackbar(t('account.passwordUpdated'));
 				onChangePasswordModalDismiss();
 			})
 			.catch((e: any) => {
@@ -438,7 +438,7 @@ export default function CustomDrawerContent(props: any) {
 			<Portal>
 				<Dialog visible={updateDownloadProgressVisible}>
 					<Dialog.Title style={{ textAlign: 'center' }}>
-						{t('drawer.downloadingDialog')}
+						{t('dialog.downloading')}
 					</Dialog.Title>
 					<Dialog.Content>
 						<ProgressBar
@@ -482,7 +482,7 @@ export default function CustomDrawerContent(props: any) {
 								}}
 								error={currentPasswordError}
 								autoCapitalize='none'
-								label={t('drawer.currentPassword')}
+								label={t('account.currentPassword')}
 								secureTextEntry
 								testID='CurrentPasswordInput'
 							/>
@@ -493,7 +493,7 @@ export default function CustomDrawerContent(props: any) {
 									style={globalStyles.text.errorHelper}
 									testID='CurrentPasswordError'
 								>
-									{t('drawer.currentPasswordError')}
+									{t('account.currentPasswordError')}
 								</HelperText>
 							) : null}
 						</View>
@@ -512,7 +512,7 @@ export default function CustomDrawerContent(props: any) {
 								}}
 								error={newPasswordError}
 								autoCapitalize='none'
-								label={t('drawer.newPassword')}
+								label={t('account.newPassword')}
 								secureTextEntry
 								testID='NewPasswordInput'
 							/>
@@ -523,7 +523,7 @@ export default function CustomDrawerContent(props: any) {
 									style={globalStyles.text.errorHelper}
 									testID='NewPasswordError'
 								>
-									{t('drawer.newPasswordError')}
+									{t('account.newPasswordError')}
 								</HelperText>
 							) : null}
 						</View>
@@ -544,7 +544,7 @@ export default function CustomDrawerContent(props: any) {
 								}}
 								error={confirmNewPasswordError}
 								autoCapitalize='none'
-								label={t('drawer.confirmNewPassword')}
+								label={t('account.confirmNewPassword')}
 								secureTextEntry
 								testID='ConfirmNewPasswordInput'
 							/>
@@ -555,7 +555,7 @@ export default function CustomDrawerContent(props: any) {
 									style={globalStyles.text.errorHelper}
 									testID='ConfirmNewPasswordError'
 								>
-									{t('drawer.confirmNewPasswordError')}
+									{t('account.confirmNewPasswordError')}
 								</HelperText>
 							) : null}
 						</View>
@@ -569,7 +569,7 @@ export default function CustomDrawerContent(props: any) {
 						onPress={changePassword}
 						testID='ChangePasswordButton'
 					>
-						{t('drawer.changePassword')}
+						{t('button.changePassword')}
 					</Button>
 				</Modal>
 			</Portal>
@@ -602,7 +602,7 @@ export default function CustomDrawerContent(props: any) {
 
 						<DrawerItem
 							labelStyle={globalStyles.text.drawer}
-							label={t('drawer.home')}
+							label={t('button.home')}
 							style={globalStyles.drawerStyle}
 							icon={({ focused, size, color }) => (
 								<Ionicons
@@ -622,7 +622,7 @@ export default function CustomDrawerContent(props: any) {
 
 						<DrawerItem
 							labelStyle={globalStyles.text.drawer}
-							label={t('drawer.addMember')}
+							label={t('button.addMember')}
 							style={globalStyles.drawerStyle}
 							icon={({ focused, size, color }) => (
 								<Ionicons
@@ -642,7 +642,7 @@ export default function CustomDrawerContent(props: any) {
 
 						<DrawerItem
 							labelStyle={globalStyles.text.drawer}
-							label={t('drawer.searchMember')}
+							label={t('button.searchMember')}
 							style={globalStyles.drawerStyle}
 							icon={({ focused, size, color }) => (
 								<Ionicons
@@ -662,7 +662,7 @@ export default function CustomDrawerContent(props: any) {
 
 						<DrawerItem
 							labelStyle={globalStyles.text.drawer}
-							label={t('drawer.updateMember')}
+							label={t('button.updateMember')}
 							style={globalStyles.drawerStyle}
 							icon={({ focused, size, color }) => (
 								<Ionicons
@@ -682,7 +682,7 @@ export default function CustomDrawerContent(props: any) {
 
 						<DrawerItem
 							labelStyle={globalStyles.text.drawer}
-							label={t('drawer.importExport')}
+							label={t('button.importExport')}
 							style={globalStyles.drawerStyle}
 							icon={({ focused, size, color }) => (
 								<Ionicons
@@ -716,7 +716,7 @@ export default function CustomDrawerContent(props: any) {
 							}}
 						>
 							<List.Item
-								title={t('drawer.darkMode')}
+								title={t('feature.darkMode')}
 								titleStyle={globalStyles.text.drawer}
 								left={(props) => (
 									<Ionicons
@@ -739,7 +739,7 @@ export default function CustomDrawerContent(props: any) {
 							testID='LanguageButton'
 						>
 							<List.Item
-								title={t('drawer.language')}
+								title={t('feature.language')}
 								titleStyle={globalStyles.text.drawer}
 								left={(props) => (
 									<Ionicons
@@ -787,7 +787,7 @@ export default function CustomDrawerContent(props: any) {
 
 						<DrawerItem
 							labelStyle={globalStyles.text.drawer}
-							label={t('drawer.checkUpdate')}
+							label={t('feature.checkUpdate')}
 							style={globalStyles.drawerStyle}
 							icon={({ color }) => (
 								<Ionicons
@@ -802,7 +802,7 @@ export default function CustomDrawerContent(props: any) {
 							pressColor='rgba(80, 80, 80, 0.32)'
 							onPress={() =>
 								showDialog({
-									text: t('drawer.checkUpdateDialog'),
+									text: t('dialog.checkUpdate'),
 									onConfirmation: () => checkUpdates(),
 									testID: 'UpdateConfirmation',
 								})
@@ -812,7 +812,7 @@ export default function CustomDrawerContent(props: any) {
 
 						<DrawerItem
 							labelStyle={globalStyles.text.drawer}
-							label={t('drawer.changePassword')}
+							label={t('button.changePassword')}
 							style={globalStyles.drawerStyle}
 							icon={({ color }) => (
 								<Ionicons
@@ -831,7 +831,7 @@ export default function CustomDrawerContent(props: any) {
 
 						<DrawerItem
 							labelStyle={globalStyles.text.drawer}
-							label={t('drawer.signOut')}
+							label={t('button.signOut')}
 							style={globalStyles.drawerStyle}
 							icon={({ color }) => (
 								<Ionicons
@@ -846,7 +846,7 @@ export default function CustomDrawerContent(props: any) {
 							pressColor='rgba(80, 80, 80, 0.32)'
 							onPress={() =>
 								showDialog({
-									text: t('drawer.signOutDialog'),
+									text: t('account.signOutDialog'),
 									onConfirmation: () => {
 										signOut();
 									},
@@ -869,7 +869,7 @@ export default function CustomDrawerContent(props: any) {
 						style={globalStyles.text.footer}
 						testID='VersionText'
 					>
-						{t('drawer.version')}: {Constants.expoConfig?.version}
+						{t('feature.version')}: {Constants.expoConfig?.version}
 					</Text>
 				</View>
 			</View>

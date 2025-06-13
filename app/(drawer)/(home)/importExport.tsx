@@ -273,7 +273,7 @@ export default function importExport() {
 				!(grantedRead === PermissionsAndroid.RESULTS.GRANTED) ||
 				!(grantedWrite === PermissionsAndroid.RESULTS.GRANTED)
 			) {
-				showSnackbar(t('importExport.storagePermission'));
+				showSnackbar(t('permission.storage'));
 				return false;
 			}
 			return true;
@@ -351,10 +351,10 @@ export default function importExport() {
 			await batch.commit();
 			console.log(existingMembers);
 
-			let importMsg = t('importExport.importSuccess');
+			let importMsg = t('dialog.importSuccess');
 			if (existingMembers.length) {
 				importMsg += `\n${t(
-					'importExport.importExistingMembers'
+					'dialog.importExistingMembers'
 				)}: ${existingMembers.toString()}`;
 			}
 			showSnackbar(importMsg);
@@ -422,7 +422,7 @@ export default function importExport() {
 
 			await task
 				.then(() => {
-					showSnackbar(t('importExport.exportSuccess'));
+					showSnackbar(t('dialog.exportSuccess'));
 					console.log('Exporting successfull!');
 				})
 				.catch((e: any) => {
@@ -458,7 +458,7 @@ export default function importExport() {
 					onPress={importMembers}
 					testID='ImportButton'
 				>
-					{t('importExport.importMembers')}
+					{t('button.importMembers')}
 				</Button>
 				<Button
 					style={globalStyles.button.global}
@@ -470,7 +470,7 @@ export default function importExport() {
 					onPress={exportMembers}
 					testID='ExportButton'
 				>
-					{t('importExport.exportMembers')}
+					{t('button.exportMembers')}
 				</Button>
 			</View>
 		</View>

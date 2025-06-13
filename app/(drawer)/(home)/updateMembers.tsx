@@ -33,7 +33,7 @@ export default function UpdateMembers() {
 			});
 
 			await batch.commit();
-			showSnackbar(t('updateMembers.numbersSuccess'));
+			showSnackbar(t('dialog.updateNumbersSuccess'));
 		} catch (e: any) {
 			const err = e as FirebaseError;
 			//showSnackbar('Updating members numbers failed: ' + err.message);
@@ -60,7 +60,7 @@ export default function UpdateMembers() {
 					onPress={updateMembersNumbers}
 					testID='UpdateNumbersButton'
 				>
-					{t('home.updateMembersNumbers')}
+					{t('button.updateMembersNumbers')}
 				</Button>
 			</View>
 		</View>

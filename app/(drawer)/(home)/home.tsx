@@ -51,10 +51,10 @@ export default function Home() {
 		const nfcStatus = await checkNFC();
 		if (!nfcStatus) {
 			showDialog({
-				text: t('nfc.goToSettings'),
+				text: t('nfc.isDisabled'),
 				onConfirmation: () => goToNFCSettings(),
-				onDismissText: 'Cancel',
-				onConfirmationText: 'Go to Settings',
+				onDismissText: t('dialog.cancel'),
+				onConfirmationText: t('nfc.settings'),
 			});
 			return false;
 		}
@@ -115,7 +115,7 @@ export default function Home() {
 						onPress={() => router.push('/(drawer)/(home)/addMember')}
 						testID='AddButton'
 					>
-						{t('home.addMember')}
+						{t('button.addMember')}
 					</Button>
 					<Button
 						style={globalStyles.button.global}
@@ -127,7 +127,7 @@ export default function Home() {
 						onPress={() => router.push('/(drawer)/(home)/searchMember')}
 						testID='SearchButton'
 					>
-						{t('home.searchMember')}
+						{t('button.searchMember')}
 					</Button>
 					<Button
 						style={globalStyles.button.global}
@@ -139,7 +139,7 @@ export default function Home() {
 						onPress={() => router.push('/(drawer)/(home)/updateMembers')}
 						testID='UpdateMembersButton'
 					>
-						{t('home.updateMembers')}
+						{t('button.updateMembers')}
 					</Button>
 					<Button
 						style={globalStyles.button.global}
@@ -151,7 +151,7 @@ export default function Home() {
 						onPress={() => router.push('/(drawer)/(home)/importExport')}
 						testID='ImportExportButton'
 					>
-						{t('home.importExport')}
+						{t('button.importExport')}
 					</Button>
 					<Button
 						style={globalStyles.button.global}
@@ -163,7 +163,7 @@ export default function Home() {
 						onPress={rNFC}
 						testID='NFCButton'
 					>
-						{t('home.nfc')}
+						{t('button.nfc')}
 					</Button>
 				</View>
 			</View>

@@ -44,27 +44,27 @@ export default function Index() {
 		Keyboard.dismiss();
 
 		if (!email.trim() && !password.trim()) {
-			showSnackbar(t('index.emailPasswordEmpty'));
+			showSnackbar(t('account.emailPasswordEmpty'));
 			setSignupLoading(false);
 			setEmailError(true);
 			setPasswordError(true);
 			return;
 		} else if (!email.trim()) {
-			showSnackbar(t('index.emailEmpty'));
+			showSnackbar(t('account.emailEmpty'));
 			setSignupLoading(false);
 			setEmailError(true);
 			return;
 		} else if (!password.trim()) {
-			showSnackbar(t('index.passwordEmpty'));
+			showSnackbar(t('account.passwordEmpty'));
 			setSignupLoading(false);
 			return;
 		} else if (!email.match(emailRegex)) {
-			showSnackbar(t('index.emailError'));
+			showSnackbar(t('account.emailError'));
 			setSignupLoading(false);
 			setEmailError(true);
 			return;
 		} else if (password.length < 6) {
-			showSnackbar(t('index.passwordError'));
+			showSnackbar(t('account.passwordError'));
 			setSignupLoading(false);
 			setPasswordError(true);
 			return;
@@ -78,12 +78,12 @@ export default function Index() {
 		setConfirmSignupLoading(true);
 		Keyboard.dismiss();
 		if (!confirmPassword.trim()) {
-			showSnackbar(t('index.passwordEmpty'));
+			showSnackbar(t('account.passwordEmpty'));
 			setConfirmSignupLoading(false);
 			setConfirmPasswordError(true);
 			return;
 		} else if (password !== confirmPassword) {
-			showSnackbar(t('index.passwordNotMatch'));
+			showSnackbar(t('account.passwordNotMatch'));
 			setConfirmSignupLoading(false);
 			setConfirmPassword('');
 			setConfirmPasswordError(true);
@@ -108,31 +108,31 @@ export default function Index() {
 		Keyboard.dismiss();
 
 		if (!email.trim() && !password.trim()) {
-			showSnackbar(t('index.emailPasswordEmpty'));
+			showSnackbar(t('account.emailPasswordEmpty'));
 			setLoginLoading(false);
 			setEmailError(true);
 			setPasswordError(true);
 			return;
 		} else {
 			if (!email.trim()) {
-				showSnackbar(t('index.emailEmpty'));
+				showSnackbar(t('account.emailEmpty'));
 				setLoginLoading(false);
 				setEmailError(true);
 				return;
 			} else if (!email.match(emailRegex)) {
-				showSnackbar(t('index.emailError'));
+				showSnackbar(t('account.emailError'));
 				setLoginLoading(false);
 				setEmailError(true);
 				return;
 			}
 
 			if (!password.trim()) {
-				showSnackbar(t('index.passwordEmpty'));
+				showSnackbar(t('account.passwordEmpty'));
 				setLoginLoading(false);
 				setPasswordError(true);
 				return;
 			} else if (password.length < 6) {
-				showSnackbar(t('index.passwordError'));
+				showSnackbar(t('account.passwordError'));
 				setLoginLoading(false);
 				setPasswordError(true);
 				return;
@@ -146,7 +146,7 @@ export default function Index() {
 		} catch (e: any) {
 			const err = e as FirebaseError;
 			if (err.code === 'auth/invalid-credential') {
-				showSnackbar(t('index.emailPasswordWrong'));
+				showSnackbar(t('account.emailPasswordWrong'));
 				setLoginLoading(false);
 				setPassword('');
 			} else {
@@ -187,7 +187,7 @@ export default function Index() {
 						}}
 						error={confirmPasswordError}
 						autoCapitalize='none'
-						label={t('index.confirmPassword')}
+						label={t('account.confirmPassword')}
 						secureTextEntry
 						testID='ConfirmPasswordInput'
 					/>
@@ -198,7 +198,7 @@ export default function Index() {
 							style={globalStyles.errorHelper}
 							testID='ConfirmPasswordError'
 						>
-							{t('index.confirmPasswordError')}
+							{t('account.confirmPasswordError')}
 						</HelperText>
 					) : null}
 
@@ -213,7 +213,7 @@ export default function Index() {
 							onPress={confirmSignUp}
 							testID='ConfirmSignUp'
 						>
-							{t('index.confirmPassword')}
+							{t('account.confirmPassword')}
 						</Button>
 					</View>
 				</Modal>
@@ -250,7 +250,7 @@ export default function Index() {
 							error={emailError}
 							autoCapitalize='none'
 							keyboardType='email-address'
-							label={t('index.email')}
+							label={t('account.email')}
 							testID='EmailInput'
 						/>
 						{emailError ? (
@@ -260,7 +260,7 @@ export default function Index() {
 								style={globalStyles.errorHelper}
 								testID='EmailError'
 							>
-								{t('index.emailError')}
+								{t('account.emailError')}
 							</HelperText>
 						) : null}
 						<TextInput
@@ -276,7 +276,7 @@ export default function Index() {
 							error={passwordError}
 							autoCapitalize='none'
 							keyboardType='default'
-							label={t('index.password')}
+							label={t('account.password')}
 							secureTextEntry
 							testID='PasswordInput'
 						/>
@@ -287,7 +287,7 @@ export default function Index() {
 								style={globalStyles.errorHelper}
 								testID='PasswordError'
 							>
-								{t('index.passwordError')}
+								{t('account.passwordError')}
 							</HelperText>
 						) : null}
 					</View>
@@ -306,7 +306,7 @@ export default function Index() {
 						}}
 						testID='LoginButton'
 					>
-						{t('index.login')}
+						{t('button.login')}
 					</Button>
 					<Button
 						style={globalStyles.button.global}
@@ -318,7 +318,7 @@ export default function Index() {
 						onPress={signUp}
 						testID='CreateAccountButton'
 					>
-						{t('index.createAccount')}
+						{t('button.createAccount')}
 					</Button>
 				</View>
 			</View>

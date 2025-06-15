@@ -1,19 +1,10 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
-import { Provider as PaperProvider } from 'react-native-paper';
-import DialogConfirmation from '@/components/DialogConfirmation';
-
-jest.mock('react-i18next', () => ({
-	useTranslation: () => ({
-		t: (key: string) => {
-			const translations: Record<string, string> = {
-				'profile.yes': 'Yes',
-				'profile.no': 'No',
-			};
-			return translations[key] || key;
-		},
-	}),
-}));
+import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import { Button, Provider as PaperProvider } from 'react-native-paper';
+import {
+	DialogProvider,
+	useDialog,
+} from '@/context/DialogueConfirmationContext';
 
 describe('DialogConfirmation', () => {
 	const mockOnDismiss = jest.fn();
@@ -21,40 +12,80 @@ describe('DialogConfirmation', () => {
 
 	const defaultProps = {
 		text: 'Are you sure?',
-		visible: true,
 		onDismiss: mockOnDismiss,
 		onConfirmation: mockOnConfirmation,
+		onDismissText: 'No',
+		onConfirmationText: 'Yes',
+		testID: 'DialogConfirmation',
 	};
+
+	const DialogTrigger: React.FC = () => {
+		const { showDialog, hideDialog } = useDialog();
+
+		React.useEffect(() => {
+			showDialog(defaultProps);
+		}, []);
+
+		return (
+			<Button
+				onPress={hideDialog}
+				testID='HideDialogButton'
+			>
+				Hide Dialog
+			</Button>
+		);
+	};
+
+	const renderWithProviders = () =>
+		render(
+			<PaperProvider>
+				<DialogProvider>
+					<DialogTrigger />
+				</DialogProvider>
+			</PaperProvider>
+		);
 
 	afterEach(() => {
 		jest.clearAllMocks();
 	});
 
-	const renderWithProviders = (ui: React.ReactElement) =>
-		render(<PaperProvider>{ui}</PaperProvider>);
+	it('renders the dialog with text and buttons', async () => {
+		const { findByText } = renderWithProviders();
 
-	it('Renders the dialog with text and buttons', async () => {
-		const { findByText } = renderWithProviders(
-			<DialogConfirmation {...defaultProps} />
-		);
-		expect(await findByText('Are you sure?')).toBeTruthy();
-		expect(await findByText('Yes')).toBeTruthy();
-		expect(await findByText('No')).toBeTruthy();
+		expect(await findByText(defaultProps.text)).toBeTruthy();
+		expect(await findByText(defaultProps.onConfirmationText)).toBeTruthy();
+		expect(await findByText(defaultProps.onDismissText)).toBeTruthy();
 	});
 
-	it('Calls onConfirmation when "Yes" button is pressed', async () => {
-		const { findByText } = renderWithProviders(
-			<DialogConfirmation {...defaultProps} />
-		);
-		fireEvent.press(await findByText('Yes'));
-		expect(mockOnConfirmation).toHaveBeenCalledTimes(1);
+	it('calls onConfirmation when "Yes" button is pressed', async () => {
+		const { findByText } = renderWithProviders();
+		const yesButton = await findByText(defaultProps.onConfirmationText);
+		fireEvent.press(yesButton);
+
+		await waitFor(() => {
+			expect(mockOnConfirmation).toHaveBeenCalledTimes(1);
+		});
 	});
 
-	it('Calls onDismiss when "No" button is pressed', async () => {
-		const { findByText } = renderWithProviders(
-			<DialogConfirmation {...defaultProps} />
-		);
-		fireEvent.press(await findByText('No'));
-		expect(mockOnDismiss).toHaveBeenCalledTimes(1);
+	it('calls onDismiss when "No" button is pressed', async () => {
+		const { findByText } = renderWithProviders();
+		const noButton = await findByText(defaultProps.onDismissText);
+		fireEvent.press(noButton);
+
+		await waitFor(() => {
+			expect(mockOnDismiss).toHaveBeenCalledTimes(1);
+		});
+	});
+
+	it('hides dialog when hideDialog is called', async () => {
+		const { findByText, queryByText, findByTestId } = renderWithProviders();
+
+		expect(await findByText(defaultProps.text)).toBeTruthy();
+
+		fireEvent.press(await findByTestId('HideDialogButton'));
+
+		await waitFor(() => {
+			expect(queryByText(defaultProps.text)).toBeNull();
+		});
 	});
 });

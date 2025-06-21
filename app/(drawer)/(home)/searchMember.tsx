@@ -79,6 +79,7 @@ export default function SearchMember() {
 	const getAllMembers = async () => {
 		setLoadingName(true);
 		setLoadingNumber(true);
+
 		try {
 			const membersAll = await getMembers();
 			//console.log(membersAll);

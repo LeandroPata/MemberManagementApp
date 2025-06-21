@@ -98,7 +98,6 @@ export default function RootLayout() {
 					<DialogProvider>
 						<SnackbarProvider>
 							<StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-
 							<Stack
 								screenOptions={{
 									contentStyle: { backgroundColor: theme.colors.background },

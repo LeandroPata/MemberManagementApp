@@ -195,7 +195,7 @@ export default function Index() {
 						<HelperText
 							type='error'
 							visible={confirmPasswordError}
-							style={globalStyles.errorHelper}
+							style={globalStyles.text.errorHelper}
 							testID='ConfirmPasswordError'
 						>
 							{t('account.confirmPasswordError')}
@@ -257,7 +257,7 @@ export default function Index() {
 							<HelperText
 								type='error'
 								visible={emailError}
-								style={globalStyles.errorHelper}
+								style={globalStyles.text.errorHelper}
 								testID='EmailError'
 							>
 								{t('account.emailError')}
@@ -284,7 +284,7 @@ export default function Index() {
 							<HelperText
 								type='error'
 								visible={passwordError}
-								style={globalStyles.errorHelper}
+								style={globalStyles.text.errorHelper}
 								testID='PasswordError'
 							>
 								{t('account.passwordError')}

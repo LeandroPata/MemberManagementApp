@@ -112,7 +112,7 @@ export default function Home() {
 						icon='account-plus'
 						mode='elevated'
 						//loading={loginLoading}
-						onPress={() => router.push('/(drawer)/(home)/addMember')}
+						onPress={() => router.push('/addMember')}
 						testID='AddButton'
 					>
 						{t('button.addMember')}
@@ -124,7 +124,7 @@ export default function Home() {
 						icon='account-search'
 						mode='elevated'
 						//loading={loginLoading}
-						onPress={() => router.push('/(drawer)/(home)/searchMember')}
+						onPress={() => router.push('/searchMember')}
 						testID='SearchButton'
 					>
 						{t('button.searchMember')}
@@ -133,10 +133,10 @@ export default function Home() {
 						style={globalStyles.button.global}
 						contentStyle={globalStyles.buttonContent.global}
 						labelStyle={globalStyles.buttonText.global}
-						icon='nfc'
+						icon='account-sync'
 						mode='elevated'
 						//loading={loginLoading}
-						onPress={() => router.push('/(drawer)/(home)/updateMembers')}
+						onPress={() => router.push('/updateMembers')}
 						testID='UpdateMembersButton'
 					>
 						{t('button.updateMembers')}
@@ -148,7 +148,7 @@ export default function Home() {
 						icon='database'
 						mode='elevated'
 						//loading={loginLoading}
-						onPress={() => router.push('/(drawer)/(home)/importExport')}
+						onPress={() => router.push('/importExport')}
 						testID='ImportExportButton'
 					>
 						{t('button.importExport')}

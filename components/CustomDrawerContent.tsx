@@ -27,8 +27,8 @@ import {
 	useDrawerStatus,
 } from '@react-navigation/drawer';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { router, useFocusEffect, usePathname } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { router, useFocusEffect, usePathname, useRouter } from 'expo-router';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import auth from '@react-native-firebase/auth';
 import { useTranslation } from 'react-i18next';
 import Animated, {
@@ -57,6 +57,14 @@ export default function CustomDrawerContent(props: any) {
 	const scrollRef = useRef();
 
 	const isDrawerOpen = useDrawerStatus() === 'open';
+
+	const path = usePathname();
+	const [currentRoute, setCurrentRoute] = useState(path);
+
+	useEffect(() => {
+		setCurrentRoute(path);
+		//console.log(path);
+	}, [path]);
 
 	useBackHandler(() => {
 		if (isDrawerOpen) {
@@ -93,8 +101,6 @@ export default function CustomDrawerContent(props: any) {
 			};
 		}, [])
 	);
-
-	const [currentRoute, setCurrentRoute] = useState(usePathname());
 
 	const [expanded, setExpanded] = useState(false);
 	const [darkModeSwitch, setDarkModeSwitch] = useState(false);
@@ -430,7 +436,7 @@ export default function CustomDrawerContent(props: any) {
 	const drawerItemPress = (path: string) => {
 		props.navigation.closeDrawer();
 		setCurrentRoute(path);
-		router.replace(path);
+		router.replace(`/(drawer)/(home)/${path}`);
 	};
 
 	return (
@@ -560,6 +566,7 @@ export default function CustomDrawerContent(props: any) {
 							) : null}
 						</View>
 					</View>
+
 					<Button
 						style={globalStyles.button.global}
 						contentStyle={globalStyles.buttonContent.modal}
@@ -615,8 +622,8 @@ export default function CustomDrawerContent(props: any) {
 							activeTintColor={theme.colors.primary}
 							inactiveBackgroundColor='transparent'
 							pressColor='rgba(80, 80, 80, 0.32)'
-							focused={currentRoute === '/(drawer)/(home)/home'}
-							onPress={() => drawerItemPress('/(drawer)/(home)/home')}
+							focused={currentRoute.includes('/home')}
+							onPress={() => drawerItemPress('/home')}
 							testID='HomeDrawerButton'
 						/>
 
@@ -635,8 +642,8 @@ export default function CustomDrawerContent(props: any) {
 							activeTintColor={theme.colors.primary}
 							inactiveBackgroundColor='transparent'
 							pressColor='rgba(80, 80, 80, 0.32)'
-							focused={currentRoute === '/(drawer)/(home)/addMember'}
-							onPress={() => drawerItemPress('/(drawer)/(home)/addMember')}
+							focused={currentRoute.includes('/addMember')}
+							onPress={() => drawerItemPress('/addMember')}
 							testID='AddDrawerButton'
 						/>
 
@@ -655,18 +662,18 @@ export default function CustomDrawerContent(props: any) {
 							activeTintColor={theme.colors.primary}
 							inactiveBackgroundColor='transparent'
 							pressColor='rgba(80, 80, 80, 0.32)'
-							focused={currentRoute === '/(drawer)/(home)/searchMember'}
-							onPress={() => drawerItemPress('/(drawer)/(home)/searchMember')}
+							focused={currentRoute.includes('/searchMember')}
+							onPress={() => drawerItemPress('/searchMember')}
 							testID='SearchDrawerButton'
 						/>
 
 						<DrawerItem
 							labelStyle={globalStyles.text.drawer}
-							label={t('button.updateMember')}
+							label={t('button.updateMembers')}
 							style={globalStyles.drawerStyle}
 							icon={({ focused, size, color }) => (
-								<Ionicons
-									name={focused ? 'person-add' : 'person-add-outline'}
+								<MaterialCommunityIcons
+									name={focused ? 'account-sync' : 'account-sync-outline'}
 									size={size}
 									color={color}
 								/>
@@ -675,8 +682,8 @@ export default function CustomDrawerContent(props: any) {
 							activeTintColor={theme.colors.primary}
 							inactiveBackgroundColor='transparent'
 							pressColor='rgba(80, 80, 80, 0.32)'
-							focused={currentRoute === '/(drawer)/(home)/updateMember'}
-							onPress={() => drawerItemPress('/(drawer)/(home)/updateMembers')}
+							focused={currentRoute.includes('/updateMember')}
+							onPress={() => drawerItemPress('/updateMembers')}
 							testID='UpdateDrawerButton'
 						/>
 
@@ -695,8 +702,8 @@ export default function CustomDrawerContent(props: any) {
 							activeTintColor={theme.colors.primary}
 							inactiveBackgroundColor='transparent'
 							pressColor='rgba(80, 80, 80, 0.32)'
-							focused={currentRoute === '/(drawer)/(home)/importExport'}
-							onPress={() => drawerItemPress('/(drawer)/(home)/importExport')}
+							focused={currentRoute.includes('/importExport')}
+							onPress={() => drawerItemPress('/importExport')}
 							testID='ImportExportDrawerButton'
 						/>
 					</View>

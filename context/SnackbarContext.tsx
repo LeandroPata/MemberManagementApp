@@ -39,6 +39,7 @@ export const SnackbarProvider: React.FC = ({ children }) => {
 				onDismiss={onDismissSnackbar}
 				onIconPress={onDismissSnackbar}
 				duration={5000}
+				testID='SnackbarContext'
 			>
 				<Text
 					style={[

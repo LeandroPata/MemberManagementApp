@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, PermissionsAndroid, Platform } from 'react-native';
 import { Button } from 'react-native-paper';
+import { useBackHandler } from '@react-native-community/hooks';
+import { router } from 'expo-router';
 import type { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
@@ -18,6 +20,11 @@ export default function importExport() {
 
 	// All the logic to implement the snackbar
 	const { showSnackbar } = useSnackbar();
+
+	useBackHandler(() => {
+		router.replace('/(drawer)/(home)/home');
+		return true;
+	});
 
 	const reference = storage().ref('membersData.csv');
 

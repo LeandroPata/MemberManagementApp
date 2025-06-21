@@ -18,6 +18,8 @@ import {
 	HelperText,
 	Checkbox,
 } from 'react-native-paper';
+import { useBackHandler } from '@react-native-community/hooks';
+import { router } from 'expo-router';
 import DatePicker from 'react-native-date-picker';
 import type { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
@@ -72,6 +74,11 @@ export default function AddMember() {
 	const onYearReceived = (year: number) => {
 		setEndDate(year);
 	};
+
+	useBackHandler(() => {
+		router.replace('/(drawer)/(home)/home');
+		return true;
+	});
 
 	const emailRegex = /.+@.+\..+/g;
 	let minNumber = 0;
@@ -332,6 +339,7 @@ export default function AddMember() {
 									testID='AutoNumberSwitch'
 								/>
 							</View>
+
 							<View style={{ flex: 1, flexDirection: 'column' }}>
 								<TextInput
 									disabled={autoNumber}

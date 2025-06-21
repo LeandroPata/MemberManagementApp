@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
 import { Button } from 'react-native-paper';
+import { useBackHandler } from '@react-native-community/hooks';
+import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import type { FirebaseError } from 'firebase/app';
 import firestore from '@react-native-firebase/firestore';
@@ -14,6 +16,11 @@ export default function UpdateMembers() {
 
 	// All the logic to implement the snackbar
 	const { showSnackbar } = useSnackbar();
+
+	useBackHandler(() => {
+		router.replace('/(drawer)/(home)/home');
+		return true;
+	});
 
 	const updateMembersNumbers = async () => {
 		setLoadingNumbers(true);

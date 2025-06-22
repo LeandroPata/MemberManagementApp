@@ -28,7 +28,7 @@ import {
 } from '@react-navigation/drawer';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router, useFocusEffect, usePathname, useRouter } from 'expo-router';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import auth from '@react-native-firebase/auth';
 import { useTranslation } from 'react-i18next';
 import Animated, {
@@ -612,7 +612,7 @@ export default function CustomDrawerContent(props: any) {
 							label={t('button.home')}
 							style={globalStyles.drawerStyle}
 							icon={({ focused, size, color }) => (
-								<Ionicons
+								<MaterialCommunityIcons
 									name={focused ? 'home' : 'home-outline'}
 									size={size}
 									color={color}
@@ -632,8 +632,8 @@ export default function CustomDrawerContent(props: any) {
 							label={t('button.addMember')}
 							style={globalStyles.drawerStyle}
 							icon={({ focused, size, color }) => (
-								<Ionicons
-									name={focused ? 'person-add' : 'person-add-outline'}
+								<MaterialCommunityIcons
+									name={focused ? 'account-plus' : 'account-plus-outline'}
 									size={size}
 									color={color}
 								/>
@@ -652,8 +652,8 @@ export default function CustomDrawerContent(props: any) {
 							label={t('button.searchMember')}
 							style={globalStyles.drawerStyle}
 							icon={({ focused, size, color }) => (
-								<Ionicons
-									name={focused ? 'search' : 'search-outline'}
+								<MaterialCommunityIcons
+									name={focused ? 'account-search' : 'account-search-outline'}
 									size={size}
 									color={color}
 								/>
@@ -692,8 +692,8 @@ export default function CustomDrawerContent(props: any) {
 							label={t('button.importExport')}
 							style={globalStyles.drawerStyle}
 							icon={({ focused, size, color }) => (
-								<Ionicons
-									name={focused ? 'server' : 'server-outline'}
+								<MaterialCommunityIcons
+									name={focused ? 'database' : 'database-outline'}
 									size={size}
 									color={color}
 								/>
@@ -726,9 +726,9 @@ export default function CustomDrawerContent(props: any) {
 								title={t('feature.darkMode')}
 								titleStyle={globalStyles.text.drawer}
 								left={(props) => (
-									<Ionicons
+									<MaterialCommunityIcons
 										{...props}
-										name='moon-sharp'
+										name='theme-light-dark'
 										size={25}
 									/>
 								)}
@@ -749,14 +749,14 @@ export default function CustomDrawerContent(props: any) {
 								title={t('feature.language')}
 								titleStyle={globalStyles.text.drawer}
 								left={(props) => (
-									<Ionicons
+									<MaterialCommunityIcons
 										{...props}
-										name='language-sharp'
+										name='translate'
 										size={32}
 									/>
 								)}
 								right={(props) => (
-									<Ionicons
+									<MaterialCommunityIcons
 										{...props}
 										name={expanded ? 'arrow-up' : 'arrow-down'}
 										size={25}
@@ -797,7 +797,7 @@ export default function CustomDrawerContent(props: any) {
 							label={t('feature.checkUpdate')}
 							style={globalStyles.drawerStyle}
 							icon={({ color }) => (
-								<Ionicons
+								<MaterialCommunityIcons
 									name={'cloud-download-outline'}
 									color={color}
 									size={27}
@@ -822,8 +822,8 @@ export default function CustomDrawerContent(props: any) {
 							label={t('button.changePassword')}
 							style={globalStyles.drawerStyle}
 							icon={({ color }) => (
-								<Ionicons
-									name={'lock-open-outline'}
+								<MaterialCommunityIcons
+									name={'lock-open-variant-outline'}
 									color={color}
 									size={28}
 								/>
@@ -841,8 +841,8 @@ export default function CustomDrawerContent(props: any) {
 							label={t('button.signOut')}
 							style={globalStyles.drawerStyle}
 							icon={({ color }) => (
-								<Ionicons
-									name={'log-out-outline'}
+								<MaterialCommunityIcons
+									name={'logout'}
 									color={color}
 									size={32}
 								/>

@@ -3,7 +3,7 @@ import { Keyboard, TouchableOpacity, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Drawer } from 'expo-router/drawer';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import CustomDrawerContent from '@/components/CustomDrawerContent';
 import { globalStyles } from '@/styles/global';
 
@@ -35,7 +35,7 @@ const DrawerLayout = () => {
 							style={{ maxWidth: 36 }}
 							testID='DrawerButton'
 						>
-							<Ionicons
+							<MaterialCommunityIcons
 								name='menu'
 								size={45}
 								color={theme.colors.onBackground}

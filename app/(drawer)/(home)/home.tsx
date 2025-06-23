@@ -55,6 +55,7 @@ export default function Home() {
 				onConfirmation: () => goToNFCSettings(),
 				onDismissText: t('dialog.cancel'),
 				onConfirmationText: t('nfc.settings'),
+				testID: 'NFCDisabledDialog',
 			});
 			return false;
 		}
@@ -83,6 +84,7 @@ export default function Home() {
 						NfcManager.cancelTechnologyRequest();
 						setReadNFCVisible(false);
 					}}
+					testID='ReadNFCDialog'
 				>
 					<Dialog.Title style={{ textAlign: 'center' }}>
 						{t('nfc.readNFC')}
@@ -137,7 +139,7 @@ export default function Home() {
 						mode='elevated'
 						//loading={loginLoading}
 						onPress={() => router.push('/updateMembers')}
-						testID='UpdateMembersButton'
+						testID='UpdateButton'
 					>
 						{t('button.updateMembers')}
 					</Button>

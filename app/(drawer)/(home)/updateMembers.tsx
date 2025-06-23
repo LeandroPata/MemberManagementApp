@@ -54,7 +54,7 @@ export default function UpdateMembers() {
 	return (
 		<View
 			style={globalStyles.container.global}
-			testID='UpdateMemberPage'
+			testID='UpdatePage'
 		>
 			<View style={globalStyles.container.button}>
 				<Button

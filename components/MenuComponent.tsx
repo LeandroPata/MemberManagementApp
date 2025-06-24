@@ -18,10 +18,8 @@ const MenuComponent = (props: MenuComponentProps) => {
 	const [visible, setVisible] = useState(false);
 	const [menuAnchor, setMenuAnchor] = useState({ x: 0, y: 0 });
 
-	const openMenu = () => setVisible(true);
-	const closeMenu = () => setVisible(false);
-
-	const onIconPress = (event: GestureResponderEvent) => {
+	const openMenu = (event: GestureResponderEvent) => {
+		if (visible) closeMenu();
 		const { pageX, pageY } = event.nativeEvent;
 		const anchor = {
 			x: pageX,
@@ -29,8 +27,14 @@ const MenuComponent = (props: MenuComponentProps) => {
 		};
 
 		setMenuAnchor(anchor);
-		openMenu();
+		setVisible(true);
 	};
+	const closeMenu = () => setVisible(false);
+
+	const newAnchor = React.cloneElement(props.anchor, {
+		onPressIn: closeMenu,
+		onLongPress: openMenu,
+	});
 
 	const injectItems = React.Children.map(props.children, (child) => {
 		if (!React.isValidElement(child)) return child;
@@ -45,7 +49,7 @@ const MenuComponent = (props: MenuComponentProps) => {
 
 	return (
 		<>
-			{React.cloneElement(props.anchor, { onLongPress: onIconPress })}
+			{newAnchor}
 			<Menu
 				visible={visible}
 				onDismiss={closeMenu}
@@ -53,6 +57,7 @@ const MenuComponent = (props: MenuComponentProps) => {
 				//style={props.style}
 				//style={{ borderWidth: 5, borderRadius: 20 }}
 				contentStyle={props.contentStyle}
+				testID='MenuComponent'
 			>
 				{injectItems}
 			</Menu>

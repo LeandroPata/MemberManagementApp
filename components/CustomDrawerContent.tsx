@@ -205,6 +205,7 @@ export default function CustomDrawerContent(props: any) {
 	};
 
 	const checkUpdates = async (passive = false) => {
+		if (!currentRoute.includes('(drawer)')) return false;
 		setUpdateDownloadProgress(0);
 
 		const updatesStorageRef = storage().ref('updates');
@@ -814,7 +815,7 @@ export default function CustomDrawerContent(props: any) {
 									testID: 'UpdateConfirmation',
 								})
 							}
-							testID='UpdateDrawerButton'
+							testID='UpdateAppDrawerButton'
 						/>
 
 						<DrawerItem

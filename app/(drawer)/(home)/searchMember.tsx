@@ -28,7 +28,7 @@ import MenuComponent from '@/components/MenuComponent';
 import { goToProfile } from '@/utils/Utils';
 import NfcManager from 'react-native-nfc-manager';
 import { checkNFC, goToNFCSettings, writeNFC } from '@/utils/NFC';
-import { useDialog } from '@/context/DialogueConfirmationContext';
+import { useDialog } from '@/context/DialogContext';
 import { useSnackbar } from '@/context/SnackbarContext';
 
 export default function SearchMember() {
@@ -51,7 +51,7 @@ export default function SearchMember() {
 	const [refreshFlatlist, setRefreshFlatlist] = useState(false);
 	const [writeNFCVisible, setWriteNFCVisible] = useState(false);
 
-	// All the logic to implement DialogConfirmation
+	// All the logic to implement DialogContext
 	const { showDialog } = useDialog();
 
 	// All the logic to implement the snackbar
@@ -303,6 +303,7 @@ export default function SearchMember() {
 				onConfirmation: () => goToNFCSettings(),
 				onDismissText: t('dialog.cancel'),
 				onConfirmationText: t('nfc.settings'),
+				testID: 'NFCDisabledDialog',
 			});
 			return false;
 		}
@@ -374,12 +375,14 @@ export default function SearchMember() {
 						goToProfile(item.key);
 					}}
 					title='Open Member'
+					testID='OpenMemberMenu'
 				/>
 				<Menu.Item
 					onPress={() => {
 						wNFC(item.key);
 					}}
 					title='Write to NFC'
+					testID='WriteNFCMenu'
 				/>
 				<Menu.Item
 					onPress={() => {
@@ -402,9 +405,11 @@ export default function SearchMember() {
 								} else showSnackbar(t('dialog.deletedMemberFailed'));
 								setRefreshFlatlist(!refreshFlatlist);
 							},
+							testID: 'DeleteConfirmationDialog',
 						});
 					}}
 					title='Delete Member'
+					testID='DeleteMemberMenu'
 				/>
 			</MenuComponent>
 		);

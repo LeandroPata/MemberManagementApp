@@ -26,7 +26,7 @@ import type { FirebaseError } from 'firebase/app';
 import firestore, { Timestamp } from '@react-native-firebase/firestore';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from '@/context/SnackbarContext';
-import { useDialog } from '@/context/DialogueConfirmationContext';
+import { useDialog } from '@/context/DialogContext';
 import YearPicker from '@/components/YearPicker';
 import { globalStyles } from '@/styles/global';
 import { getLastNumber, checkNumber } from '@/utils/NumberManagement';
@@ -78,7 +78,7 @@ export default function Profile() {
 	// All the logic to implement the snackbar
 	const { showSnackbar } = useSnackbar();
 
-	// All the logic to implement DialogConfirmation
+	// All the logic to implement DialogContext
 	const { showDialog, hideDialog } = useDialog();
 
 	// All the logic to implement the YearPicker
@@ -837,6 +837,7 @@ export default function Profile() {
 												onConfirmation: () => {
 													deleteMember();
 												},
+												testID: 'DeleteConfirmationDialog',
 											});
 										}}
 										testID='DeleteButton'

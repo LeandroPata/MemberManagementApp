@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Dialog, Portal, Text } from 'react-native-paper';
 import { globalStyles } from '@/styles/global';
 
-/* // All the logic to implement DialogConfirmation
+/* // All the logic to implement DialogContext
 const { showDialog, hideDialog } = useDialog(); */
 
 /* // Usage
@@ -14,7 +14,7 @@ showDialog({
 	onConfirmation: () => {},
 	onDismissText: 'No',
 	onConfirmationText: 'Yes',
-	testID: 'DialogConfirmation',
+	testID: 'Dialog',
 });
 
 hideDialog() */
@@ -67,7 +67,7 @@ export const DialogProvider: React.FC = ({ children }) => {
 				<Dialog
 					visible={visible}
 					onDismiss={handleDismiss}
-					testID={options?.testID || 'DialogConfirmation'}
+					testID={options?.testID || 'Dialog'}
 				>
 					<Dialog.Content>
 						<Text style={globalStyles.text.dialog}>{options?.text}</Text>

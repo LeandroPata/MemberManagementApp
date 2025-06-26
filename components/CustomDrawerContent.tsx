@@ -45,7 +45,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 import Constants from 'expo-constants';
 import { getFlagEmoji } from '@/utils/GetCountryFlag';
 import { useSnackbar } from '@/context/SnackbarContext';
-import { useDialog } from '@/context/DialogueConfirmationContext';
+import { useDialog } from '@/context/DialogContext';
 import { globalStyles } from '@/styles/global';
 import { useBackHandler } from '@react-native-community/hooks';
 
@@ -125,7 +125,7 @@ export default function CustomDrawerContent(props: any) {
 	// All the logic to implement the snackbar
 	const { showSnackbar } = useSnackbar();
 
-	// All the logic to implement DialogConfirmation
+	// All the logic to implement DialogContext
 	const { showDialog, hideDialog } = useDialog();
 
 	AsyncStorage.getItem('colorScheme').then((token) => {
@@ -234,7 +234,7 @@ export default function CustomDrawerContent(props: any) {
 						showDialog({
 							text: t('dialog.runUpdate'),
 							onConfirmation: () => downloadUpdate(updateVersion),
-							testID: 'RunUpdateConfirmation',
+							testID: 'RunUpdateDialog',
 						});
 					} else {
 						console.log('Passive update check');
@@ -812,7 +812,7 @@ export default function CustomDrawerContent(props: any) {
 								showDialog({
 									text: t('dialog.checkUpdate'),
 									onConfirmation: () => checkUpdates(),
-									testID: 'UpdateConfirmation',
+									testID: 'UpdateDialog',
 								})
 							}
 							testID='UpdateAppDrawerButton'
@@ -858,7 +858,7 @@ export default function CustomDrawerContent(props: any) {
 									onConfirmation: () => {
 										signOut();
 									},
-									testID: 'SignOutConfirmation',
+									testID: 'SignOutDialog',
 								})
 							}
 							testID='SignOutDrawerButton'

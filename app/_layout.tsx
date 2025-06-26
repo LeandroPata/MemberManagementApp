@@ -11,7 +11,7 @@ import { EventRegister } from 'react-native-event-listeners';
 import '@/locales/i18n';
 import { globalTheme } from '@/styles/global';
 import { SnackbarProvider } from '@/context/SnackbarContext';
-import { DialogProvider } from '@/context/DialogueConfirmationContext';
+import { DialogProvider } from '@/context/DialogContext';
 
 export default function RootLayout() {
 	const router = useRouter();

@@ -1,12 +1,9 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { Button, Provider as PaperProvider } from 'react-native-paper';
-import {
-	DialogProvider,
-	useDialog,
-} from '@/context/DialogueConfirmationContext';
+import { DialogProvider, useDialog } from '@/context/DialogContext';
 
-describe('DialogConfirmation', () => {
+describe('Dialog', () => {
 	const mockOnDismiss = jest.fn();
 	const mockOnConfirmation = jest.fn();
 
@@ -16,7 +13,7 @@ describe('DialogConfirmation', () => {
 		onConfirmation: mockOnConfirmation,
 		onDismissText: 'No',
 		onConfirmationText: 'Yes',
-		testID: 'DialogConfirmation',
+		testID: 'Dialog',
 	};
 
 	const DialogTrigger: React.FC = () => {

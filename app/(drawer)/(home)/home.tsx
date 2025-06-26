@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { globalStyles } from '@/styles/global';
 import NfcManager from 'react-native-nfc-manager';
 import { checkNFC, goToNFCSettings, readNFC } from '@/utils/NFC';
-import { useDialog } from '@/context/DialogueConfirmationContext';
+import { useDialog } from '@/context/DialogContext';
 import { checkDoc } from '@/utils/Firebase';
 import { goToProfile } from '@/utils/Utils';
 import { useSnackbar } from '@/context/SnackbarContext';
@@ -19,7 +19,7 @@ export default function Home() {
 
 	const [readNFCVisible, setReadNFCVisible] = useState(false);
 
-	// All the logic to implement DialogConfirmation
+	// All the logic to implement DialogContext
 	const { showDialog } = useDialog();
 
 	// All the logic to implement the snackbar

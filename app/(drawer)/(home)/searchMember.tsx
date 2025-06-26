@@ -72,6 +72,8 @@ export default function SearchMember() {
 			// Screen unfocused in return
 			return () => {
 				//console.log('This route is now unfocused.');
+				setName('');
+				setMemberNumber('');
 			};
 		}, [])
 	);
@@ -369,6 +371,7 @@ export default function SearchMember() {
 						</View>
 					</TouchableRipple>
 				}
+				testID='ItemMenu'
 			>
 				<Menu.Item
 					onPress={() => {

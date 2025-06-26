@@ -12,6 +12,7 @@ type MenuComponentProps = {
 	style?: StyleProp<ViewStyle>;
 	contentStyle?: Animated.WithAnimatedValue<StyleProp<ViewStyle>>;
 	children: React.ReactElement | Array<React.ReactElement>;
+	testID?: string;
 };
 
 const MenuComponent = (props: MenuComponentProps) => {
@@ -54,10 +55,10 @@ const MenuComponent = (props: MenuComponentProps) => {
 				visible={visible}
 				onDismiss={closeMenu}
 				anchor={menuAnchor}
-				//style={props.style}
+				//style={props?.style}
 				//style={{ borderWidth: 5, borderRadius: 20 }}
 				contentStyle={props.contentStyle}
-				testID='MenuComponent'
+				testID={props?.testID || 'MenuComponent'}
 			>
 				{injectItems}
 			</Menu>

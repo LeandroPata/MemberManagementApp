@@ -250,6 +250,18 @@ appId: com.leandropata.membermanagementapp
 - assertVisible:
     id: 'EditButton'
 
+- tapOn:
+    id: 'DeleteButton'
+    retryTapIfNoChange: false
+- assertVisible: 'DeleteConfirmationDialog'
+- assertVisible: 'DialogConfirmation'
+- assertVisible: 'DialogDismiss'
+
+- tapOn:
+    id: 'DialogDismiss'
+    retryTapIfNoChange: false
+- assertNotVisible: 'DeleteConfirmationDialog'
+
 - back
 - assertVisible:
     id: 'SearchPage'

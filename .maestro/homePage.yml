@@ -9,7 +9,11 @@ appId: com.leandropata.membermanagementapp
 - assertVisible:
     id: 'SearchButton'
 - assertVisible:
+    id: 'UpdateButton'
+- assertVisible:
     id: 'ImportExportButton'
+- assertVisible:
+    id: 'NFCButton'
 
 - tapOn:
     id: 'AddButton'
@@ -30,10 +34,35 @@ appId: com.leandropata.membermanagementapp
     id: 'HomePage'
 
 - tapOn:
+    id: 'UpdateButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'UpdatePage'
+- back
+- assertVisible:
+    id: 'HomePage'
+
+- tapOn:
     id: 'ImportExportButton'
     retryTapIfNoChange: false
 - assertVisible:
     id: 'ImportExportPage'
 - back
+- assertVisible:
+    id: 'HomePage'
+
+- tapOn:
+    id: 'NFCButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'NFCDisabledDialog'
+- assertVisible:
+    id: 'DialogConfirmation'
+- assertVisible:
+    id: 'DialogDismiss'
+- tapOn:
+    id: 'DialogDismiss'
+    retryTapIfNoChange: false
+- assertNotVisible: 'NFCDisabledDialog'
 - assertVisible:
     id: 'HomePage'

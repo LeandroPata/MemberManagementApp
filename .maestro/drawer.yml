@@ -12,10 +12,13 @@ appId: com.leandropata.membermanagementapp
     id: 'DrawerLogo'
 - assertVisible:
     id: 'HomeDrawerButton'
+    selected: true
 - assertVisible:
     id: 'AddDrawerButton'
 - assertVisible:
     id: 'SearchDrawerButton'
+- assertVisible:
+    id: 'UpdateDrawerButton'
 - assertVisible:
     id: 'ImportExportDrawerButton'
 - assertVisible:
@@ -27,7 +30,7 @@ appId: com.leandropata.membermanagementapp
 - assertNotVisible:
     id: 'PtButton'
 - assertVisible:
-    id: 'UpdateDrawerButton'
+    id: 'UpdateAppDrawerButton'
 - assertVisible:
     id: 'ChangePasswordDrawerButton'
 - assertVisible:
@@ -44,6 +47,9 @@ appId: com.leandropata.membermanagementapp
 - tapOn:
     id: 'DrawerButton'
     retryTapIfNoChange: false
+- assertVisible:
+    id: 'HomeDrawerButton'
+    selected: false
 - assertVisible:
     id: 'AddDrawerButton'
     selected: true
@@ -65,6 +71,23 @@ appId: com.leandropata.membermanagementapp
     id: 'SearchDrawerButton'
     selected: true
 - assertVisible:
+    id: 'UpdateDrawerButton'
+- tapOn:
+    id: 'UpdateDrawerButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'updatePage'
+
+- tapOn:
+    id: 'DrawerButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'SearchDrawerButton'
+    selected: false
+- assertVisible:
+    id: 'UpdateDrawerButton'
+    selected: true
+- assertVisible:
     id: 'ImportExportDrawerButton'
 - tapOn:
     id: 'ImportExportDrawerButton'
@@ -76,7 +99,7 @@ appId: com.leandropata.membermanagementapp
     id: 'DrawerButton'
     retryTapIfNoChange: false
 - assertVisible:
-    id: 'SearchDrawerButton'
+    id: 'UpdateDrawerButton'
     selected: false
 - assertVisible:
     id: 'ImportExportDrawerButton'
@@ -129,21 +152,21 @@ appId: com.leandropata.membermanagementapp
     id: 'PtButton'
 
 - assertVisible:
-    id: 'UpdateDrawerButton'
+    id: 'UpdateAppDrawerButton'
 - tapOn:
-    id: 'UpdateDrawerButton'
+    id: 'UpdateAppDrawerButton'
     retryTapIfNoChange: false
 - assertVisible:
-    id: 'UpdateConfirmation'
+    id: 'UpdateDialog'
 - assertVisible:
-    id: 'DialogConfirmationYes'
+    id: 'DialogConfirmation'
 - assertVisible:
-    id: 'DialogConfirmationNo'
+    id: 'DialogDismiss'
 - tapOn:
-    id: 'DialogConfirmationNo'
+    id: 'DialogDismiss'
     retryTapIfNoChange: false
 - assertNotVisible:
-    id: 'UpdateConfirmation'
+    id: 'UpdateDialog'
 
 - assertVisible:
     id: 'ChangePasswordDrawerButton'
@@ -274,32 +297,32 @@ appId: com.leandropata.membermanagementapp
     id: 'SignOutDrawerButton'
     retryTapIfNoChange: false
 - assertVisible:
-    id: 'SignOutConfirmation'
+    id: 'SignOutDialog'
 - assertVisible:
-    id: 'DialogConfirmationYes'
+    id: 'DialogConfirmation'
 - assertVisible:
-    id: 'DialogConfirmationNo'
+    id: 'DialogDismiss'
 
 - tapOn:
-    id: 'DialogConfirmationNo'
+    id: 'DialogDismiss'
     retryTapIfNoChange: false
 - assertNotVisible:
-    id: 'SignOutConfirmation'
+    id: 'SignOutDialog'
 
 - tapOn:
     id: 'SignOutDrawerButton'
     retryTapIfNoChange: false
 - assertVisible:
-    id: 'SignOutConfirmation'
+    id: 'SignOutDialog'
 - assertVisible:
-    id: 'DialogConfirmationYes'
+    id: 'DialogConfirmation'
 - assertVisible:
-    id: 'DialogConfirmationNo'
+    id: 'DialogDismiss'
 - tapOn:
-    id: 'DialogConfirmationYes'
+    id: 'DialogConfirmation'
     retryTapIfNoChange: false
 - assertNotVisible:
-    id: 'SignOutConfirmation'
+    id: 'SignOutDialog'
 - assertNotVisible:
     id: 'DrawerLogo'
 - assertNotVisible:

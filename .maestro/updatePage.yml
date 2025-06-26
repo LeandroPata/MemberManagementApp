@@ -1,0 +1,16 @@
+appId: com.leandropata.membermanagementapp
+---
+- assertVisible:
+    id: 'HomePage'
+- tapOn:
+    id: 'UpdateButton'
+    retryTapIfNoChange: false
+
+- assertVisible:
+    id: 'UpdatePage'
+- assertVisible:
+    id: 'UpdateNumbersButton'
+
+- back
+- assertVisible:
+    id: 'HomePage'

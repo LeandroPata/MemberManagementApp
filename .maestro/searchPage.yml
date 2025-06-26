@@ -30,6 +30,73 @@ appId: com.leandropata.membermanagementapp
 - assertVisible:
     id: 'SearchPage'
 
+- longPressOn:
+    id: 'ItemButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'OpenMemberMenu'
+- assertVisible:
+    id: 'WriteNFCMenu'
+- assertVisible:
+    id: 'DeleteMemberMenu'
+- tapOn:
+    id: 'OpenMemberMenu'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'ProfilePage'
+- back
+- assertVisible:
+    id: 'SearchPage'
+
+- longPressOn:
+    id: 'ItemButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'OpenMemberMenu'
+- assertVisible:
+    id: 'WriteNFCMenu'
+- assertVisible:
+    id: 'DeleteMemberMenu'
+- tapOn:
+    id: 'WriteNFCMenu'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'NFCDisabledDialog'
+- assertVisible:
+    id: 'DialogConfirmation'
+- assertVisible:
+    id: 'DialogDismiss'
+- tapOn:
+    id: 'DialogDismiss'
+    retryTapIfNoChange: false
+- assertNotVisible: 'NFCDisabledDialog'
+
+- assertVisible:
+    id: 'SearchPage'
+
+- longPressOn:
+    id: 'ItemButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'OpenMemberMenu'
+- assertVisible:
+    id: 'WriteNFCMenu'
+- assertVisible:
+    id: 'DeleteMemberMenu'
+- tapOn:
+    id: 'DeleteMemberMenu'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'DeleteConfirmationDialog'
+- assertVisible:
+    id: 'DialogConfirmation'
+- assertVisible:
+    id: 'DialogDismiss'
+- tapOn:
+    id: 'DialogDismiss'
+    retryTapIfNoChange: false
+- assertNotVisible: 'DeleteConfirmationDialog'
+
 - tapOn:
     id: 'NumberSearch'
     retryTapIfNoChange: false

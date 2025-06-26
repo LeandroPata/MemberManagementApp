@@ -64,3 +64,34 @@ appId: com.leandropata.membermanagementapp
 
 - assertVisible:
     id: 'HomePage'
+- assertVisible:
+    id: 'DrawerButton'
+
+- tapOn:
+    id: 'DrawerButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'SignOutDrawerButton'
+
+- tapOn:
+    id: 'SignOutDrawerButton'
+    retryTapIfNoChange: false
+- assertVisible:
+    id: 'SignOutDialog'
+- assertVisible:
+    id: 'DialogConfirmation'
+- assertVisible:
+    id: 'DialogDismiss'
+- tapOn:
+    id: 'DialogConfirmation'
+    retryTapIfNoChange: false
+- assertNotVisible:
+    id: 'SignOutDialog'
+- assertNotVisible:
+    id: 'DrawerLogo'
+- assertNotVisible:
+    id: 'HomePage'
+- assertVisible:
+    id: 'LoginPage'
+- assertNotVisible:
+    id: 'DrawerButton'

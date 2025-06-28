@@ -1,41 +1,41 @@
-import React, { useCallback, useState } from 'react';
+import { useBackHandler } from '@react-native-community/hooks';
+import firestore, { Timestamp } from '@react-native-firebase/firestore';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import type { FirebaseError } from 'firebase/app';
+import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-	View,
+	Keyboard,
 	KeyboardAvoidingView,
 	Pressable,
 	ScrollView,
-	Keyboard,
+	View,
 } from 'react-native';
+import DatePicker from 'react-native-date-picker';
 import {
 	ActivityIndicator,
+	Avatar,
 	Button,
+	Checkbox,
+	HelperText,
 	Modal,
 	Portal,
-	TextInput,
 	Switch,
-	Avatar,
 	Text,
+	TextInput,
 	useTheme,
-	HelperText,
-	Checkbox,
 } from 'react-native-paper';
-import DatePicker from 'react-native-date-picker';
-import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { useBackHandler } from '@react-native-community/hooks';
-import type { FirebaseError } from 'firebase/app';
-import firestore, { Timestamp } from '@react-native-firebase/firestore';
-import { useTranslation } from 'react-i18next';
-import { useSnackbar } from '@/context/SnackbarContext';
-import { useDialog } from '@/context/DialogContext';
 import YearPicker from '@/components/YearPicker';
+import { useDialog } from '@/context/DialogContext';
+import { useSnackbar } from '@/context/SnackbarContext';
 import { globalStyles } from '@/styles/global';
-import { getLastNumber, checkNumber } from '@/utils/NumberManagement';
 import {
 	deleteMemberDoc,
 	getSingleMember,
 	uploadImage,
 } from '@/utils/Firebase';
 import { askPermission, launchCamera, launchGallery } from '@/utils/Image';
+import { checkNumber, getLastNumber } from '@/utils/NumberManagement';
 
 export default function Profile() {
 	const { profileID } = useLocalSearchParams();

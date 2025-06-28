@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useBackHandler } from '@react-native-community/hooks';
+import firestore from '@react-native-firebase/firestore';
+import { router } from 'expo-router';
+import type { FirebaseError } from 'firebase/app';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { Button } from 'react-native-paper';
-import { useBackHandler } from '@react-native-community/hooks';
-import { router } from 'expo-router';
-import { useTranslation } from 'react-i18next';
-import type { FirebaseError } from 'firebase/app';
-import firestore from '@react-native-firebase/firestore';
 import { useSnackbar } from '@/context/SnackbarContext';
 import { globalStyles } from '@/styles/global';
 
@@ -33,7 +33,7 @@ export default function UpdateMembers() {
 
 			const batch = firestore().batch();
 			let minNumber = 1;
-			// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary></Method>
+
 			members.forEach((docSnapshot) => {
 				batch.update(docSnapshot.ref, { memberNumber: minNumber });
 				minNumber++;

@@ -1,35 +1,35 @@
-import React, { useCallback, useState } from 'react';
-import { View, KeyboardAvoidingView, FlatList, Keyboard } from 'react-native';
+import { useBackHandler } from '@react-native-community/hooks';
+import firestore from '@react-native-firebase/firestore';
+import { router, useFocusEffect } from 'expo-router';
+import type { FirebaseError } from 'firebase/app';
+import Fuse from 'fuse.js';
+import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { FlatList, Keyboard, KeyboardAvoidingView, View } from 'react-native';
+import NfcManager from 'react-native-nfc-manager';
 import {
+	ActivityIndicator,
 	Avatar,
 	Button,
-	TouchableRipple,
-	Text,
-	useTheme,
+	Dialog,
 	Divider,
-	Searchbar,
-	Portal,
-	Modal,
 	IconButton,
 	Menu,
-	Dialog,
-	ActivityIndicator,
+	Modal,
+	Portal,
+	Searchbar,
+	Text,
+	TouchableRipple,
+	useTheme,
 } from 'react-native-paper';
-import { router, useFocusEffect } from 'expo-router';
-import firestore from '@react-native-firebase/firestore';
-import type { FirebaseError } from 'firebase/app';
-import { useTranslation } from 'react-i18next';
-import Fuse from 'fuse.js';
-import SearchList from '@/components/SearchList';
-import { globalStyles } from '@/styles/global';
-import { useBackHandler } from '@react-native-community/hooks';
-import { getMembers, getMemberNames, deleteMemberDoc } from '@/utils/Firebase';
 import MenuComponent from '@/components/MenuComponent';
-import { goToProfile } from '@/utils/Utils';
-import NfcManager from 'react-native-nfc-manager';
-import { checkNFC, goToNFCSettings, writeNFC } from '@/utils/NFC';
+import SearchList from '@/components/SearchList';
 import { useDialog } from '@/context/DialogContext';
 import { useSnackbar } from '@/context/SnackbarContext';
+import { globalStyles } from '@/styles/global';
+import { deleteMemberDoc, getMemberNames, getMembers } from '@/utils/Firebase';
+import { checkNFC, goToNFCSettings, writeNFC } from '@/utils/NFC';
+import { goToProfile } from '@/utils/Utils';
 
 export default function SearchMember() {
 	const theme = useTheme();
@@ -142,7 +142,6 @@ export default function SearchMember() {
 				.get()
 				.then((querySnapshot) => {
 					if (querySnapshot.docs.length) {
-						// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
 						querySnapshot.forEach((doc) => {
 							for (const hintMember of hintMemberList) {
 								//console.log(hintMember);
@@ -173,7 +172,6 @@ export default function SearchMember() {
 				.get()
 				.then((querySnapshot) => {
 					if (querySnapshot.docs.length) {
-						// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
 						querySnapshot.forEach((doc) => {
 							//console.log(doc.data());
 							currentMembers.push({
@@ -216,7 +214,6 @@ export default function SearchMember() {
 				.get()
 				.then((querySnapshot) => {
 					if (querySnapshot.docs.length) {
-						// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
 						querySnapshot.forEach((doc) => {
 							//console.log(doc.data());
 							currentMembers.push({

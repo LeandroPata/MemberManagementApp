@@ -14,7 +14,6 @@ export const getMembers = async () => {
 		});
 	const membersAll = [];
 
-	// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
 	querySnapshot.forEach((doc) => {
 		membersAll.push({
 			key: doc.id,
@@ -40,7 +39,6 @@ export const getMemberNames = async () => {
 		});
 	const membersName = [];
 
-	// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
 	querySnapshot.forEach((doc) => {
 		if (!membersName.includes(doc.data().name))
 			membersName.push(doc.data().name);

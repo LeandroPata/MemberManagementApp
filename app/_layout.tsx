@@ -1,17 +1,17 @@
-import { useEffect, useState } from 'react';
-import { useColorScheme, View } from 'react-native';
-import { PaperProvider, Portal, ActivityIndicator } from 'react-native-paper';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth, { type FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { Stack, useRouter, useSegments } from 'expo-router';
-import * as SystemUI from 'expo-system-ui';
 import { StatusBar } from 'expo-status-bar';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SystemUI from 'expo-system-ui';
+import { useEffect, useState } from 'react';
+import { useColorScheme, View } from 'react-native';
 import { EventRegister } from 'react-native-event-listeners';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { ActivityIndicator, PaperProvider, Portal } from 'react-native-paper';
 import '@/locales/i18n';
-import { globalTheme } from '@/styles/global';
-import { SnackbarProvider } from '@/context/SnackbarContext';
 import { DialogProvider } from '@/context/DialogContext';
+import { SnackbarProvider } from '@/context/SnackbarContext';
+import { globalTheme } from '@/styles/global';
 
 export default function RootLayout() {
 	const router = useRouter();

@@ -1,53 +1,53 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import {
-	Platform,
-	UIManager,
-	View,
-	TouchableOpacity,
-	Image,
-	useWindowDimensions,
-} from 'react-native';
-import {
-	Dialog,
-	List,
-	Portal,
-	ProgressBar,
-	Switch,
-	useTheme,
-	Text,
-	Modal,
-	TextInput,
-	HelperText,
-	Button,
-	Divider,
-} from 'react-native-paper';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useBackHandler } from '@react-native-community/hooks';
+import auth from '@react-native-firebase/auth';
+import storage from '@react-native-firebase/storage';
 import {
 	DrawerContentScrollView,
 	DrawerItem,
 	useDrawerStatus,
 } from '@react-navigation/drawer';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { router, useFocusEffect, usePathname, useRouter } from 'expo-router';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import auth from '@react-native-firebase/auth';
+import Constants from 'expo-constants';
+import { router, useFocusEffect, usePathname } from 'expo-router';
+import type { FirebaseError } from 'firebase/app';
+import i18next from 'i18next';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+	Image,
+	Platform,
+	TouchableOpacity,
+	UIManager,
+	useWindowDimensions,
+	View,
+} from 'react-native';
+import { EventRegister } from 'react-native-event-listeners';
+import {
+	Button,
+	Dialog,
+	Divider,
+	HelperText,
+	List,
+	Modal,
+	Portal,
+	ProgressBar,
+	Switch,
+	Text,
+	TextInput,
+	useTheme,
+} from 'react-native-paper';
 import Animated, {
-	useSharedValue,
 	useAnimatedStyle,
+	useSharedValue,
 	withTiming,
 } from 'react-native-reanimated';
-import { EventRegister } from 'react-native-event-listeners';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { FirebaseError } from 'firebase/app';
-import storage from '@react-native-firebase/storage';
-import i18next from 'i18next';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import RNFetchBlob from 'rn-fetch-blob';
-import Constants from 'expo-constants';
-import { getFlagEmoji } from '@/utils/GetCountryFlag';
-import { useSnackbar } from '@/context/SnackbarContext';
 import { useDialog } from '@/context/DialogContext';
+import { useSnackbar } from '@/context/SnackbarContext';
 import { globalStyles } from '@/styles/global';
-import { useBackHandler } from '@react-native-community/hooks';
+import { getFlagEmoji } from '@/utils/GetCountryFlag';
 
 export default function CustomDrawerContent(props: any) {
 	const theme = useTheme();

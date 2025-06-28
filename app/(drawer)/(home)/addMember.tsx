@@ -1,35 +1,35 @@
-import React, { useState } from 'react';
+import { useBackHandler } from '@react-native-community/hooks';
+import firestore, { Timestamp } from '@react-native-firebase/firestore';
+import { router } from 'expo-router';
+import type { FirebaseError } from 'firebase/app';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-	View,
+	Keyboard,
 	KeyboardAvoidingView,
 	Pressable,
 	ScrollView,
-	Keyboard,
+	View,
 } from 'react-native';
-import {
-	Button,
-	TextInput,
-	Switch,
-	Avatar,
-	Text,
-	Portal,
-	Modal,
-	useTheme,
-	HelperText,
-	Checkbox,
-} from 'react-native-paper';
-import { useBackHandler } from '@react-native-community/hooks';
-import { router } from 'expo-router';
 import DatePicker from 'react-native-date-picker';
-import type { FirebaseError } from 'firebase/app';
-import firestore, { Timestamp } from '@react-native-firebase/firestore';
-import { useTranslation } from 'react-i18next';
-import { useSnackbar } from '@/context/SnackbarContext';
+import {
+	Avatar,
+	Button,
+	Checkbox,
+	HelperText,
+	Modal,
+	Portal,
+	Switch,
+	Text,
+	TextInput,
+	useTheme,
+} from 'react-native-paper';
 import YearPicker from '@/components/YearPicker';
+import { useSnackbar } from '@/context/SnackbarContext';
 import { globalStyles } from '@/styles/global';
-import { getLastNumber, checkNumber } from '@/utils/NumberManagement';
-import { askPermission, launchCamera, launchGallery } from '@/utils/Image';
 import { uploadImage } from '@/utils/Firebase';
+import { askPermission, launchCamera, launchGallery } from '@/utils/Image';
+import { checkNumber, getLastNumber } from '@/utils/NumberManagement';
 
 export default function AddMember() {
 	const theme = useTheme();

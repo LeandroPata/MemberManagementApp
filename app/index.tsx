@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { KeyboardAvoidingView, View, Keyboard, Image } from 'react-native';
+import auth from '@react-native-firebase/auth';
+import type { FirebaseError } from 'firebase/app';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Image, Keyboard, KeyboardAvoidingView, View } from 'react-native';
 import {
-	Portal,
-	Modal,
-	TextInput,
 	Button,
-	useTheme,
 	HelperText,
+	Modal,
+	Portal,
+	TextInput,
+	useTheme,
 } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import type { FirebaseError } from 'firebase/app';
-import auth from '@react-native-firebase/auth';
-import { useTranslation } from 'react-i18next';
 import { useSnackbar } from '@/context/SnackbarContext';
 import { globalStyles } from '@/styles/global';
 

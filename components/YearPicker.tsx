@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button, Modal, Portal, useTheme } from 'react-native-paper';
 import WheelPicker from 'react-native-wheely';
 import { globalStyles } from '@/styles/global';

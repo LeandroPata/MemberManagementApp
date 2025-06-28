@@ -1,5 +1,5 @@
-import type { FirebaseError } from 'firebase/app';
 import firestore from '@react-native-firebase/firestore';
+import type { FirebaseError } from 'firebase/app';
 
 export const getLastNumber = async (): Promise<number> => {
 	try {
@@ -30,7 +30,6 @@ export const getAssignNumber = async (curNumber: number) => {
 
 		let minNumber = 0;
 		let i = 1;
-		// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
 		querySnapshot.forEach((documentSnapshot) => {
 			if (numCheck <= 1 && i === curNumber) {
 				minNumber = i;
@@ -57,7 +56,6 @@ export const checkNumber = async (curNumber: number) => {
 			.orderBy('memberNumber', 'asc')
 			.get();
 
-		// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
 		querySnapshot.forEach((documentSnapshot) => {
 			if (curNumber === documentSnapshot.data().memberNumber) {
 				numberAvailable++;

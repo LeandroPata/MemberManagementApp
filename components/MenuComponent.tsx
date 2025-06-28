@@ -21,6 +21,7 @@ const MenuComponent = (props: MenuComponentProps) => {
 
 	const openMenu = (event: GestureResponderEvent) => {
 		if (visible) closeMenu();
+
 		const { pageX, pageY } = event.nativeEvent;
 		const anchor = {
 			x: pageX,
@@ -30,6 +31,7 @@ const MenuComponent = (props: MenuComponentProps) => {
 		setMenuAnchor(anchor);
 		setVisible(true);
 	};
+
 	const closeMenu = () => setVisible(false);
 
 	const newAnchor = React.cloneElement(props.anchor, {

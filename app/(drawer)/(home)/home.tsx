@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { View, Image } from 'react-native';
-import { ActivityIndicator, Button, Dialog, Portal } from 'react-native-paper';
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { globalStyles } from '@/styles/global';
+import { Image, View } from 'react-native';
 import NfcManager from 'react-native-nfc-manager';
-import { checkNFC, goToNFCSettings, readNFC } from '@/utils/NFC';
+import { ActivityIndicator, Button, Dialog, Portal } from 'react-native-paper';
 import { useDialog } from '@/context/DialogContext';
-import { checkDoc } from '@/utils/Firebase';
-import { goToProfile } from '@/utils/Utils';
 import { useSnackbar } from '@/context/SnackbarContext';
+import { globalStyles } from '@/styles/global';
+import { checkDoc } from '@/utils/Firebase';
+import { checkNFC, goToNFCSettings, readNFC } from '@/utils/NFC';
+import { goToProfile } from '@/utils/Utils';
 
 /* import firestore, { Timestamp } from '@react-native-firebase/firestore';
 import type { FirebaseError } from 'firebase/app'; */
@@ -31,7 +31,6 @@ export default function Home() {
 			.orderBy('name', 'asc')
 			.get()
 			.then((querySnapshot) => {
-				// biome-ignore lint/complexity/noForEach:<Method that returns iterator necessary>
 				querySnapshot.forEach((doc) => {
 					const docRef = firestore().collection('members').doc(doc.id);
 					docRef.update({

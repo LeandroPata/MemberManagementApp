@@ -1,19 +1,14 @@
-import React, {
-	type ComponentPropsWithRef,
-	useEffect,
-	useRef,
-	useState,
-} from 'react';
+import { type ComponentPropsWithRef, useEffect, useRef, useState } from 'react';
 import {
 	Animated,
 	FlatList,
-	View,
 	type GestureResponderEvent,
 	type KeyboardTypeOptions,
 	type ListRenderItem,
 	type StyleProp,
 	type TextInput,
 	type TextStyle,
+	View,
 	type ViewStyle,
 } from 'react-native';
 import { Searchbar, useTheme } from 'react-native-paper';

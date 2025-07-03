@@ -1,9 +1,10 @@
-import type { ExpoConfig, ConfigContext } from '@expo/config';
+import type { ConfigContext, ExpoConfig } from '@expo/config';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
 	...config,
 	name: 'MemberManagementApp',
 	slug: 'MemberManagementApp',
+	owner: 'leandropata',
 	version: '1.5.5',
 	orientation: 'portrait',
 	icon: './assets/images/iconReact.png',

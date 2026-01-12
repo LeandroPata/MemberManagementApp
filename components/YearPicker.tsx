@@ -18,7 +18,7 @@ type YearPickerProps = {
 const YearPicker = (props: YearPickerProps) => {
 	const theme = useTheme();
 
-	const [selectedIndex, setSelectedIndex] = useState(24);
+	const [selectedIndex, setSelectedIndex] = useState(25);
 	const minimumYear = new Date().getFullYear() - 25;
 	const maximumYear = new Date().getFullYear() + 50;
 	const [yearOptions, setYearOptions] = useState([]);

@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { Button } from 'react-native-paper';
+import { useDialog } from '@/context/DialogContext';
 import { useSnackbar } from '@/context/SnackbarContext';
 import { globalStyles } from '@/styles/global';
 
@@ -16,6 +17,9 @@ export default function UpdateMembers() {
 
 	// All the logic to implement the snackbar
 	const { showSnackbar } = useSnackbar();
+
+	// All the logic to implement DialogContext
+	const { showDialog, hideDialog } = useDialog();
 
 	useBackHandler(() => {
 		router.replace('/(drawer)/(home)/home');
@@ -52,10 +56,7 @@ export default function UpdateMembers() {
 	};
 
 	return (
-		<View
-			style={globalStyles.container.global}
-			testID='UpdatePage'
-		>
+		<View style={globalStyles.container.global} testID='UpdatePage'>
 			<View style={globalStyles.container.button}>
 				<Button
 					style={globalStyles.button.global}
@@ -64,7 +65,15 @@ export default function UpdateMembers() {
 					icon='format-list-numbered'
 					mode='elevated'
 					loading={loadingNumbers}
-					onPress={updateMembersNumbers}
+					onPress={() => {
+						showDialog({
+							text: t('dialog.updateConfirmation'),
+							onConfirmation: () => {
+								updateMembersNumbers();
+							},
+							testID: 'UpdateConfirmationDialog',
+						});
+					}}
 					testID='UpdateNumbersButton'
 				>
 					{t('button.updateMembersNumbers')}

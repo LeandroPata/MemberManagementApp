@@ -104,6 +104,7 @@
 		"updatedMember": "Membro Atualizado!",
 		"deletedMember": "Membro Apagado!",
 		"deletedMemberFailed": "A eliminação do membro falhou!",
+		"updateConfirmation": "Tem a certeza que quer atualizar os números de todos os membros?",
 		"updateNumbersSuccess": "Números dos membros atualizados!"
 	}
 }

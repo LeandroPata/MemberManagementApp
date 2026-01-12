@@ -104,6 +104,7 @@
 		"updatedMember": "Updated Member!",
 		"deletedMember": "Member Deleted!",
 		"deletedMemberFailed": "Member deletion failed!",
-		"updateNumbersSuccess": "Members Numbers updated!"
+		"updateConfirmation": "Are you sure you want to update all member's numbers?",
+		"updateNumbersSuccess": "Members numbers updated!"
 	}
 }

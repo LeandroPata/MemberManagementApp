@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Button, Modal, Portal, useTheme } from 'react-native-paper';
-import WheelPicker from 'react-native-wheely';
+//import WheelPicker from "react-native-wheely";
 import { globalStyles } from '@/styles/global';
+
+import { WheelPicker } from './Wheely';
 
 type YearPickerProps = {
 	visible: boolean;
@@ -16,8 +18,8 @@ type YearPickerProps = {
 const YearPicker = (props: YearPickerProps) => {
 	const theme = useTheme();
 
-	const [selectedIndex, setSelectedIndex] = useState(0);
-	const minimumYear = new Date().getFullYear();
+	const [selectedIndex, setSelectedIndex] = useState(24);
+	const minimumYear = new Date().getFullYear() - 25;
 	const maximumYear = new Date().getFullYear() + 50;
 	const [yearOptions, setYearOptions] = useState([]);
 

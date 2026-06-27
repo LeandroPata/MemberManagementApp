@@ -163,10 +163,10 @@ export default function importExport() {
 				.map((row) =>
 					Object.values(row)
 						.map((value) => `"${value}"`)
-						.join(',')
+						.join(','),
 				)
 				.join('\n');
-			return `${headers}\n${rows}`;
+			return `\uFEFF${headers}\n${rows}`;
 		} catch (e: any) {
 			//showSnackbar('Error converting to CSV: ' + e.message);
 			console.log(`Error converting to CSV: ${e.message}`);
@@ -180,7 +180,7 @@ export default function importExport() {
 
 		task.on('state_changed', (taskSnapshot) => {
 			console.log(
-				`${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`
+				`${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`,
 			);
 		});
 
@@ -244,11 +244,11 @@ export default function importExport() {
 
 	const checkPermissions = async () => {
 		const checkRead = await PermissionsAndroid.check(
-			PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
+			PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
 		);
 
 		const checkWrite = await PermissionsAndroid.check(
-			PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+			PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
 		);
 
 		console.log(checkRead);
@@ -267,10 +267,10 @@ export default function importExport() {
 
 		try {
 			grantedRead = await PermissionsAndroid.request(
-				PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
+				PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
 			);
 			grantedWrite = await PermissionsAndroid.request(
-				PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+				PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
 			);
 
 			console.log(grantedRead);
@@ -361,7 +361,7 @@ export default function importExport() {
 			let importMsg = t('dialog.importSuccess');
 			if (existingMembers.length) {
 				importMsg += `\n${t(
-					'dialog.importExistingMembers'
+					'dialog.importExistingMembers',
 				)}: ${existingMembers.toString()}`;
 			}
 			showSnackbar(importMsg);
@@ -397,47 +397,28 @@ export default function importExport() {
 			formatDataToExport(membersData);
 
 			const file = convertJSONToCSV(membersData);
-			//console.log(file);
+			if (!file) {
+				setExportLoading(false);
+				return;
+			}
+			console.log(file);
 
-			const filePath = `${RNFetchBlob.fs.dirs.CacheDir}/membersData.csv`;
-			//console.log(filePath);
-
-			await RNFetchBlob.fs.writeFile(filePath, file);
-
-			await uploadFile(filePath);
-
-			let docPath = `${RNFetchBlob.fs.dirs.DownloadDir}/membersData.csv`;
-			//console.log(docPath);
+			let filePath = `${RNFetchBlob.fs.dirs.DownloadDir}/membersData.csv`;
 
 			let i = 1;
 
-			while (await RNFetchBlob.fs.exists(docPath)) {
-				docPath = `${
+			while (await RNFetchBlob.fs.exists(filePath)) {
+				filePath = `${
 					RNFetchBlob.fs.dirs.DownloadDir
 				}/membersData${i.toString()}.csv`;
-				console.log(docPath);
+				console.log(filePath);
 				i++;
 			}
 
-			const task = reference.writeToFile(docPath);
+			await RNFetchBlob.fs.writeFile(filePath, file, 'utf8');
+			console.log('File written successfully');
 
-			task.on('state_changed', (taskSnapshot) => {
-				console.log(
-					`${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`
-				);
-			});
-
-			await task
-				.then(() => {
-					showSnackbar(t('dialog.exportSuccess'));
-					console.log('Exporting successfull!');
-				})
-				.catch((e: any) => {
-					const err = e as FirebaseError;
-					//showSnackbar('Data download failed: ' + err.message);
-					console.log(`Data download failed: ${err.message}`);
-					setExportLoading(false);
-				});
+			await uploadFile(filePath);
 		} catch (e: any) {
 			const err = e as FirebaseError;
 			console.log(`Exporting members failed: ${err.message}`);
@@ -450,10 +431,7 @@ export default function importExport() {
 	};
 
 	return (
-		<View
-			style={globalStyles.container.global}
-			testID='ImportExportPage'
-		>
+		<View style={globalStyles.container.global} testID='ImportExportPage'>
 			<View style={globalStyles.container.button}>
 				<Button
 					style={globalStyles.button.global}
